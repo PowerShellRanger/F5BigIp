@@ -1,6 +1,6 @@
 function Get-F5SslCertificate
 {
-     <#
+    <#
     .Synopsis
        
     .DESCRIPTION
@@ -49,13 +49,13 @@ function Get-F5SslCertificate
         [Parameter(
             ParameterSetName = 'OnlyGetCertsRequested'
         )]
-        [ValidateScript({        
-            if ($_ -notmatch "(\.crt)")
-            {
-                throw "The CertificateName specified must be of type .crt"
-            }
-            return $true
-        })]
+        [ValidateScript( {        
+                if ($_ -notmatch "(\.crt)")
+                {
+                    throw "The CertificateName specified must be of type .crt"
+                }
+                return $true
+            })]
         [string[]]$CertificateName,
         
         # Switch to get all Certificates
@@ -71,6 +71,12 @@ function Get-F5SslCertificate
     }
     process
     {
+        $errorAction = $ErrorActionPreference        
+        if ($PSBoundParameters["ErrorAction"])
+        {
+            $errorAction = $PSBoundParameters["ErrorAction"]
+        }
+
         $headers = @{
             'X-F5-Auth-Token' = $Token
         }
@@ -78,7 +84,7 @@ function Get-F5SslCertificate
         {
             $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
             Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction Stop).items
+            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
         }
         else
         {
@@ -86,7 +92,7 @@ function Get-F5SslCertificate
             {                
                 $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
                 Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction Stop
+                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
             }
         }        
     }

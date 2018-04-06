@@ -35,7 +35,13 @@ function New-F5RestApiToken
     process
     {
         if ($PSCmdlet.Shouldprocess("Generate Rest API Token for User: $($Credential.UserName) on F5: $F5Name"))
-        {
+        {    
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
+
             $psObjectBody = [PSCustomObject] @{
                 username          = $($Credential.UserName)
                 password          = $($Credential.GetNetworkCredential().Password)
@@ -49,7 +55,7 @@ function New-F5RestApiToken
                 ContentType = 'application/json'
                 Method      = 'POST'
                 Body        = $body
-                ErrorAction = 'Stop'
+                ErrorAction = $errorAction
             }
             $response = Invoke-RestMethod @splatInvokeRestMethod
             
