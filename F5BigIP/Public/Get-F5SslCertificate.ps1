@@ -30,7 +30,7 @@ function Get-F5SslCertificate
         )]
         [string]$F5Name,
 
-        # Credentials to F5
+        # Token Based Authentication
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
@@ -43,7 +43,7 @@ function Get-F5SslCertificate
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'GetAllCerts'
         )]
-        [PSCredential]$Credential,
+        [string]$Token,
 
         # Name of Certificates to get
         [Parameter(
@@ -71,11 +71,14 @@ function Get-F5SslCertificate
     }
     process
     {
+        $headers = @{
+            'X-F5-Auth-Token' = $Token
+        }
         if ($PSBoundParameters['GetAllCertificates'])
         {
             $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
             Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Credential $Credential -ContentType "application/json" -ErrorAction Stop).items
+            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction Stop).items
         }
         else
         {
@@ -83,7 +86,7 @@ function Get-F5SslCertificate
             {                
                 $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
                 Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Credential $Credential -ContentType "application/json" -ErrorAction Stop
+                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction Stop
             }
         }        
     }
