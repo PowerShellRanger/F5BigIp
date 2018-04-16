@@ -1,4 +1,4 @@
-function Get-F5Member
+function Get-F5Pool
 {
     <#
     .Synopsis
@@ -11,7 +11,7 @@ function Get-F5Member
        
     #>
     [CmdletBinding(
-        DefaultParameterSetName = 'OnlyGetMembersRequested'
+        DefaultParameterSetName = 'OnlyGetPoolsRequested'
     )]
     param
     (
@@ -20,13 +20,13 @@ function Get-F5Member
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetMembersRequested'
+            ParameterSetName = 'OnlyGetPoolsRequested'
         )]
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllMembers'
+            ParameterSetName = 'GetAllPools'
         )]
         [string]$F5Name,
 
@@ -35,29 +35,29 @@ function Get-F5Member
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetMembersRequested'
+            ParameterSetName = 'OnlyGetPoolsRequested'
         )]
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllMembers'
+            ParameterSetName = 'GetAllPools'
         )]
         [string]$Token,
 
         # Name of Certificates to get
         [Parameter(
-            ParameterSetName = 'OnlyGetMembersRequested'
+            ParameterSetName = 'OnlyGetPoolsRequested'
         )]
-        [string[]]$MemberName,
+        [string[]]$PoolName,
         
         # Switch to get all Certificates
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllMembers'
+            ParameterSetName = 'GetAllPools'
         )]
-        [switch]$GetAllMembers
+        [switch]$GetAllPools
     )
     begin
     {
@@ -73,17 +73,17 @@ function Get-F5Member
         $headers = @{
             'X-F5-Auth-Token' = $Token
         }
-        if ($PSBoundParameters['GetAllMembers'])
+        if ($PSBoundParameters['GetAllPools'])
         {
-            $url = "https://$F5Name/mgmt/tm/ltm/node"
+            $url = "https://$F5Name/mgmt/tm/ltm/pool"
             Write-Verbose "Invoke Rest Method to: $url"
             (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
         }
         else
         {
-            foreach ($member in $MemberName)
+            foreach ($Pool in $PoolName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~*"
+                $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
                 Write-Verbose "Invoke Rest Method to: $url"
                 Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
             }
