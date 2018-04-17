@@ -45,13 +45,13 @@ function Get-F5Pool
         )]
         [string]$Token,
 
-        # Name of Pools to get
+        # Name of Certificates to get
         [Parameter(
             ParameterSetName = 'OnlyGetPoolsRequested'
         )]
         [string[]]$PoolName,
         
-        # Switch to get all Pools
+        # Switch to get all Certificates
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,

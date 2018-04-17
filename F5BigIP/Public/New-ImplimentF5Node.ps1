@@ -79,7 +79,6 @@ function New-ImplimentF5Node
                 }
                 elseif($PSBoundParameters['Force']){
                     Write-Verbose "Node already exist. Force switch accepted"
-                    Write-Verbose "Update-F5Node -F5Name $F5Name -Token $Token -NodeName $NodeName -IpV4Address $IpV4Address"
                     Update-F5Node -F5Name $F5Name -Token $Token -NodeName $NodeName -IpV4Address $IpV4Address
                 }
             }
