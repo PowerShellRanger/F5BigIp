@@ -83,7 +83,7 @@ function Get-F5Node
         {
             foreach ($Node in $NodeName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~*"
+                $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
                 Write-Verbose "Invoke Rest Method to: $url"
                 Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
             }

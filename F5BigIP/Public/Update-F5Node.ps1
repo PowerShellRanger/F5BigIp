@@ -42,7 +42,6 @@ function Update-F5Node
         }
 
         $nodeInfo = @{
-            name = "$NodeName"
             address = "$IpV4Address"
         }
         $nodeInfo = $nodeInfo | ConvertTo-Json        
@@ -51,7 +50,8 @@ function Update-F5Node
         Write-Verbose "Invoke Rest Method to: $url"
         try {
             Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
-            Invoke-RestMethod -Method Put -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            #Still not working
+            Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
         }
         catch {
             Write-Host $Error[0]
