@@ -1,4 +1,4 @@
-function New-F5Node
+function Invoke-F5NewNode
 {
     <#
     .Synopsis
@@ -45,11 +45,17 @@ function New-F5Node
             name = "$NodeName"
             address = "$IpV4Address"
         }
-        $nodeInfo = $nodeInfo | ConvertFrom-Json        
+        $nodeInfo = $nodeInfo | ConvertTo-Json        
 
         $url = "https://$F5Name/mgmt/tm/ltm/node"
         Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+        try {
+            Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+        }
+        catch {
+            Write-Host $Error[0]
+        }
+        
     }
     end
     {
