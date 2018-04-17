@@ -1,4 +1,4 @@
-function Invoke-F5NewNode
+function New-F5Node
 {
     <#
     .Synopsis
