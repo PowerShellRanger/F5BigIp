@@ -45,13 +45,13 @@ function Get-F5VirtualServer
         )]
         [string]$Token,
 
-        # Name of Certificates to get
+        # Name of Virtual Servers to get
         [Parameter(
             ParameterSetName = 'OnlyGetVirtualServersRequested'
         )]
         [string[]]$VirtualServerName,
         
-        # Switch to get all Certificates
+        # Switch to get all Virtual Servers
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,

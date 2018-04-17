@@ -45,13 +45,13 @@ function Get-F5Irule
         )]
         [string]$Token,
 
-        # Name of Certificates to get
+        # Name of iRule to get
         [Parameter(
             ParameterSetName = 'OnlyGetIrulesRequested'
         )]
         [string[]]$IruleName,
         
-        # Switch to get all Certificates
+        # Switch to get all iRules
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,

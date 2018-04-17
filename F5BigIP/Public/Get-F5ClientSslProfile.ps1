@@ -45,13 +45,13 @@ function Get-F5ClientSslProfile
         )]
         [string]$Token,
 
-        # Name of Certificates to get
+        # Name of Client SSL Profiles to get
         [Parameter(
             ParameterSetName = 'OnlyGetClientSslProfilesRequested'
         )]
         [string[]]$ClientSslProfileName,
         
-        # Switch to get all Certificates
+        # Switch to get all Client SSL Profiles
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,

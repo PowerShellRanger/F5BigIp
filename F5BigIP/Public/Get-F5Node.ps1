@@ -1,4 +1,4 @@
-function Get-F5Member
+function Get-F5Node
 {
     <#
     .Synopsis
@@ -11,7 +11,7 @@ function Get-F5Member
        
     #>
     [CmdletBinding(
-        DefaultParameterSetName = 'OnlyGetMembersRequested'
+        DefaultParameterSetName = 'OnlyGetNodesRequested'
     )]
     param
     (
@@ -20,13 +20,13 @@ function Get-F5Member
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetMembersRequested'
+            ParameterSetName = 'OnlyGetNodesRequested'
         )]
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllMembers'
+            ParameterSetName = 'GetAllNodes'
         )]
         [string]$F5Name,
 
@@ -35,29 +35,29 @@ function Get-F5Member
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetMembersRequested'
+            ParameterSetName = 'OnlyGetNodesRequested'
         )]
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllMembers'
+            ParameterSetName = 'GetAllNodes'
         )]
         [string]$Token,
 
-        # Name of Certificates to get
+        # Name of Nodes to get
         [Parameter(
-            ParameterSetName = 'OnlyGetMembersRequested'
+            ParameterSetName = 'OnlyGetNodesRequested'
         )]
-        [string[]]$MemberName,
+        [string[]]$NodeName,
         
-        # Switch to get all Certificates
+        # Switch to get all Nodes
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllMembers'
+            ParameterSetName = 'GetAllNodes'
         )]
-        [switch]$GetAllMembers
+        [switch]$GetAllNodes
     )
     begin
     {
@@ -73,7 +73,7 @@ function Get-F5Member
         $headers = @{
             'X-F5-Auth-Token' = $Token
         }
-        if ($PSBoundParameters['GetAllMembers'])
+        if ($PSBoundParameters['GetAllNodes'])
         {
             $url = "https://$F5Name/mgmt/tm/ltm/node"
             Write-Verbose "Invoke Rest Method to: $url"
@@ -81,7 +81,7 @@ function Get-F5Member
         }
         else
         {
-            foreach ($member in $MemberName)
+            foreach ($Node in $NodeName)
             {                
                 $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~*"
                 Write-Verbose "Invoke Rest Method to: $url"
