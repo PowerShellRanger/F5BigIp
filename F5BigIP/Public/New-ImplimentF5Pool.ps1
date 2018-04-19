@@ -50,19 +50,6 @@ function New-ImplimentF5Pool
     }
     process
     {
-<#
-[pscustomobject]$Members = @(
-    @{
-        name = "DEV10TLMPWEB01"
-        address = "10.192.11.25"
-    },
-    @{
-        name = "DEV10TLMPWEB02"
-        address = "10.192.11.26"
-    }
-)
-#>
-
         if ($PSCmdlet.Shouldprocess("Will validate\create\update Pool : $PoolName on F5: $F5Name"))
         {
             $errorAction = $ErrorActionPreference        
@@ -75,7 +62,7 @@ function New-ImplimentF5Pool
             $allPools = Get-F5Pool -F5Name $F5Name -Token $Token -GetAllPools
             if($allPools | Where-Object {$_.name -like $PoolName}){
                 Write-Verbose "Pool already exist"
-                $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $devToken.token -PoolName $PoolName).items
+                $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName).items
                 foreach($Member in $Members){
                     if($activeMembers | Where-Object {$_.name -like "$($Member.name)*"}){
                         Write-Verbose "Pool Member: $($Member.name) already exist in Pool: $PoolName"
