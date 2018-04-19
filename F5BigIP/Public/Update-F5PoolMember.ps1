@@ -1,4 +1,4 @@
-function New-F5Node
+function Update-F5PoolMember
 {
     <#
     .Synopsis
@@ -29,22 +29,21 @@ function New-F5Node
         )]        
         [string]$Token,
 
-        # Name of Node to create
+        # Name of pool adding member to
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
-        [string]$NodeName,
+        [string]$PoolName,
 
-        #Ip Address of Node to create
+        #Members of pool to add
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
-        [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]
-        $IpV4Address
+        [pscustomobject]$Members   
     )
     begin
     {
@@ -61,16 +60,34 @@ function New-F5Node
             'X-F5-Auth-Token' = $Token
         }
 
-        $nodeInfo = @{
-            name = "$NodeName"
-            address = "$IpV4Address"
-        }
-        $nodeInfo = $nodeInfo | ConvertTo-Json        
+        <#
+        $testMembers = @(
+            [pscustomobject]@{
+                name = "DEV11TLMPWEB01:80"
+                address = "10.192.11.46"
+            },
+            [pscustomobject]@{
+                name = "DEV10TLMPWEB01:80"
+                address = "10.192.11.25"
+            }
+        )
+        #>
 
-        $url = "https://$F5Name/mgmt/tm/ltm/node"
+        $poolInfo = [pscustomobject]@{
+            members = @(                
+            )
+        }
+        foreach($member in $Members){
+            $poolInfo.members += $member
+        }
+        $poolInfo         
+        $poolInfo = $poolInfo | ConvertTo-Json        
+
+        $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
         Write-Verbose "Invoke Rest Method to: $url"
         try {
-            Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
+            Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
         }
         catch {
             Write-Host $Error[0]

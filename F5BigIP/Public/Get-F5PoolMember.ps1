@@ -10,9 +10,7 @@ function Get-F5PoolMember
     .EXAMPLE
        
     #>
-    [CmdletBinding(
-        DefaultParameterSetName = 'OnlyGetPoolsRequested'
-    )]
+    [CmdletBinding()]
     param
     (
         # F5Name
@@ -32,7 +30,7 @@ function Get-F5PoolMember
         [string]$Token,
 
         # Name of Pools to get Memebrs from
-        [string[]]$PoolName
+        [string]$PoolName
     )
     begin
     {
