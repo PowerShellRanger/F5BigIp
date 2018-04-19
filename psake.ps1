@@ -54,7 +54,7 @@ Task Init {
 
 Task ScriptAnalysis -Depends Init {
     "Starting script analysis..."
-    #Invoke-ScriptAnalyzer -Path $mainControlScript
+    Invoke-ScriptAnalyzer -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*\*.ps1"
 }
 
 Task UnitTests -Depends ScriptAnalysis {

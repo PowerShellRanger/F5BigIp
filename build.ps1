@@ -6,6 +6,8 @@ param
     [string]$Task = 'Default'
 )
 
+$modules = 'Pester' , 'psake' , 'PSScriptAnalyzer'
+
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
 foreach ($module in $modules) 
