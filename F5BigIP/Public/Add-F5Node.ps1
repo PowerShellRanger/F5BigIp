@@ -69,23 +69,29 @@ function Add-F5Node
 
             Write-Verbose "Checking whether $NodeName already exist on $F5Name"
             $allNodes = Get-F5Node -F5Name $F5Name -Token $Token -GetAllNodes
-            if($allNodes | Where-Object {$_.name -like $NodeName -and $_.address -like $IpV4Address}){
+            if ($allNodes | Where-Object {$_.name -like $NodeName -and $_.address -like $IpV4Address})
+            {
                 Write-Verbose "Node already exist and has the correct IP"
             }
-            elseif ($allNodes | Where-Object {$_.name -like $NodeName}) {
+            elseif ($allNodes | Where-Object {$_.name -like $NodeName})
+            {
                 Write-Verbose "Node already exist, but.... has a different IP than submitted"
-                if($allNodes | Where-Object {$_.address -like $IpV4Address}){
+                if ($allNodes | Where-Object {$_.address -like $IpV4Address})
+                {
                     Write-Verbose "Node already exist, and... IP is already in use by another node"
                 }
-                elseif($PSBoundParameters['Force']){
+                elseif ($PSBoundParameters['Force'])
+                {
                     Write-Verbose "Node already exist. Force switch accepted"
                     Update-F5Node -F5Name $F5Name -Token $Token -NodeName $NodeName -IpV4Address $IpV4Address
                 }
             }
-            elseif ($allNodes | Where-Object {$_.address -like $IpV4Address}) {
+            elseif ($allNodes | Where-Object {$_.address -like $IpV4Address})
+            {
                 Write-Verbose "Node is new, but... IP is already in use by another node"
             }
-            else{
+            else
+            {
                 Write-Verbose "Creating new node with provided IP"
                 New-F5Node -F5Name $F5Name -Token $Token -NodeName $NodeName -IpV4Address $IpV4Address
             }

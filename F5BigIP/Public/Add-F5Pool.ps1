@@ -39,7 +39,7 @@ function Add-F5Pool
 
         #Members of Pool to create
         [Parameter(
-            Mandatory=$false, 
+            Mandatory = $false, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]
@@ -60,10 +60,12 @@ function Add-F5Pool
 
             Write-Verbose "Checking whether $PoolName already exist on $F5Name"
             $allPools = Get-F5Pool -F5Name $F5Name -Token $Token -GetAllPools
-            if($allPools | Where-Object {$_.name -like $PoolName}){
+            if ($allPools | Where-Object {$_.name -like $PoolName})
+            {
                 Write-Verbose "Pool already exist"                
             }
-            else {
+            else
+            {
                 Write-Verbose "Adding new pool"
                 New-F5Pool -F5Name $F5Name -Token $Token -PoolName $PoolName
             }
@@ -73,18 +75,21 @@ function Add-F5Pool
             $newMembers = @()
             
             $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName).items
-            foreach($member in $Members){
-                if($activeMembers | Where-Object {$_.name -like "$($member.name)*"}){
+            foreach ($member in $Members)
+            {
+                if ($activeMembers | Where-Object {$_.name -like "$($member.name)*"})
+                {
                     Write-Verbose "Pool Member: $($member.name) already exist in Pool: $PoolName"
                     $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($member.name)*"}
                 }
-                else{
+                else
+                {
                     Write-Verbose "Adding Pool Member: $($member.name) to Pool: $PoolName"
                     $newMembers += $member
                     $updatePoolMembers = $true
                 }
             }
-            if($updatePoolMembers){Update-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName -Members $newMembers}             
+            if ($updatePoolMembers) {Update-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName -Members $newMembers}             
         }        
     }
     end
