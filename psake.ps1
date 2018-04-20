@@ -31,7 +31,7 @@ function Invoke-TestFailure
     $exception = New-Object -TypeName System.SystemException -ArgumentList $errorMessage
     $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception, $errorID, $errorCategory, $null
 
-    Write-Output "##vso[task.logissue type=error]$errorMessage"
+    Write-Output "##vso[task.logissue type=error]Exception: $errorMessage"
     throw $errorRecord
 }
 
@@ -68,6 +68,7 @@ Task UnitTests -Depends ScriptAnalysis {
     if ($pesterResults.FailedCount)
     {
         Invoke-TestFailure -TestType Unit -PesterResults $pesterResults
+        exit 1
     }
 }
 
