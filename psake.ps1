@@ -32,7 +32,7 @@ function Invoke-TestFailure
     $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception, $errorID, $errorCategory, $null
 
     Write-Output "##vso[task.logissue type=error]Exception: $errorMessage"
-    throw $errorRecord
+    Write-Error $errorRecord    
 }
 
 FormatTaskName "--------------- {0} ---------------"
