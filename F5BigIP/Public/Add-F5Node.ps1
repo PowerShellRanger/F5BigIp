@@ -1,4 +1,4 @@
-function New-ImplimentF5Node
+function Add-F5Node
 {
     <#
     .Synopsis

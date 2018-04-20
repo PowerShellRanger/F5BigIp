@@ -1,4 +1,4 @@
-function New-ImplimentF5Pool
+function Add-F5Pool
 {
     <#
     .Synopsis

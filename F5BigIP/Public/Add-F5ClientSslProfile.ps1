@@ -1,4 +1,4 @@
-function New-ImplimentF5ClientSslProfile
+function Add-F5ClientSslProfile
 {
     <#
     .Synopsis
@@ -90,20 +90,20 @@ function New-ImplimentF5ClientSslProfile
 
             Write-Verbose "Checking whether $ClientSslProfileName already exist on $F5Name"
             $ClientSSLProfileParams = @{            
-                ClientSslProfileName = $ClientSslProfileName          
+                ClientSslProfileName = $ClientSslProfileName
+                CertificateName = $CertificateName
+                CABundleName = $CABundleName
+                DefaultSni = $DefaultSni
             }
             
-            if($CertificateName){$ClientSSLProfileParams.add("CertificateName", $CertificateName)}            
-            if($CABundleName){$ClientSSLProfileParams.add("CABundleName", $CABundleName)}
-            if($DefaultSni){$ClientSSLProfileParams.add("DefaultSni", $DefaultSni)}            
-            
-            $allPools = Get-F5Pool -F5Name $F5Name -Token $Token -GetAllPools
-            if($allPools | Where-Object {$_.name -like $ClientSslProfileName}){
-                Write-Verbose "Pool already exist"                
+            $allClientSslProfiles = Get-F5ClientSslProfile  -F5Name $F5Name -Token $Token -GetAllClientSslProfiles
+            if($allClientSslProfiles | Where-Object {$_.name -like $ClientSslProfileName}){
+                Write-Verbose "Client SSL Profile already exist"
+                Update-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams                
             }
             else {
                 Write-Verbose "Adding new Client SSL Profile"
-                New-F5ClientSslProfile -F5Name $F5Name -Token $Token -ClientSslProfileName $ClientSslProfileName @ClientSSLProfileParams
+                New-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams
             }
         }        
     }
