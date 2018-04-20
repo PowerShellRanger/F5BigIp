@@ -31,8 +31,8 @@ function Invoke-TestFailure
     $exception = New-Object -TypeName System.SystemException -ArgumentList $errorMessage
     $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception, $errorID, $errorCategory, $null
 
-    Write-Output "##vso[task.logissue type=error]$errorMessage"
-    throw $errorRecord
+    Write-Output "##vso[task.logissue type=error]Exception: $errorMessage"
+    Write-Error $errorRecord    
 }
 
 FormatTaskName "--------------- {0} ---------------"
@@ -44,7 +44,7 @@ Properties {
     $testResultsPath = "$TestsPath\Results"        
 }
 
-Task Default -Depends UnitTests, Build, Clean
+Task Default -Depends ScriptAnalysis, UnitTests, Build
 
 Task Init {     
     "Build System Details:"
@@ -68,6 +68,7 @@ Task UnitTests -Depends ScriptAnalysis {
     if ($pesterResults.FailedCount)
     {
         Invoke-TestFailure -TestType Unit -PesterResults $pesterResults
+        exit 1
     }
 }
 

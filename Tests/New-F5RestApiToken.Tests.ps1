@@ -18,7 +18,7 @@ InModuleScope -ModuleName $moduleName {
 
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.Credential.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.Credential.Attributes.Mandatory | should be $false
             }        
         }
 
