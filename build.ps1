@@ -21,5 +21,8 @@ foreach ($module in $modules)
 
 Invoke-PSake -buildFile "$PSScriptRoot\psake.ps1" -taskList $Task -Verbose:$VerbosePreference
 
-exit $($psake.build_success)
+if (-not $psake.build_success)
+{
+    throw "Build failed"
+}
 
