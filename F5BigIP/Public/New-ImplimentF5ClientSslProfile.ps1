@@ -1,4 +1,4 @@
-function New-F5ClientSslProfile
+function New-ImplimentF5ClientSslProfile
 {
     <#
     .Synopsis
@@ -10,7 +10,7 @@ function New-F5ClientSslProfile
     .EXAMPLE
        
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
     param
     (
         # F5Name
@@ -80,42 +80,34 @@ function New-F5ClientSslProfile
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
+        if ($PSCmdlet.Shouldprocess("Will validate\create\update Client SSL Profile: $ClientSslProfileName on F5: $F5Name"))
         {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
-
-        $newCertificateName = $CertificateName.Replace(".crt", "")
-
-        $clientSslProfileInfo = @{
-            name       = "$ClientSslProfileName"
-            cert       = "/Common/$($newCertificateName).crt"
-            key        = "/Common/$($newCertificateName).key"
-            chain      = "/Common/$($CABundleName)"
-            sniDefault = $DefaultSni  
-        }
-        $clientSslProfileInfo
-        $clientSslProfileInfo = $clientSslProfileInfo | ConvertTo-Json        
-
-        $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
-        Write-Verbose "Invoke Rest Method to: $url"
-        try
-        {
-            Invoke-RestMethod -Method POST -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
-        }
-        catch
-        {
-            Write-Host $Error[0]
-        }
-        
+            Write-Verbose "Checking whether $ClientSslProfileName already exist on $F5Name"
+            $ClientSSLProfileParams = @{            
+                ClientSslProfileName = $ClientSslProfileName          
+            }
+            
+            if($CertificateName){$ClientSSLProfileParams.add("CertificateName", $CertificateName)}            
+            if($CABundleName){$ClientSSLProfileParams.add("CABundleName", $CABundleName)}
+            if($DefaultSni){$ClientSSLProfileParams.add("DefaultSni", $DefaultSni)}            
+            
+            $allPools = Get-F5Pool -F5Name $F5Name -Token $Token -GetAllPools
+            if($allPools | Where-Object {$_.name -like $ClientSslProfileName}){
+                Write-Verbose "Pool already exist"                
+            }
+            else {
+                Write-Verbose "Adding new Client SSL Profile"
+                New-F5ClientSslProfile -F5Name $F5Name -Token $Token -ClientSslProfileName $ClientSslProfileName @ClientSSLProfileParams
+            }
+        }        
     }
     end
     {
     }
 }
-
