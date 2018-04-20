@@ -61,24 +61,30 @@ function New-ImplimentF5Pool
             Write-Verbose "Checking whether $PoolName already exist on $F5Name"
             $allPools = Get-F5Pool -F5Name $F5Name -Token $Token -GetAllPools
             if($allPools | Where-Object {$_.name -like $PoolName}){
-                $updatePoolMembers = $false
-                $newMembers = @()
-                Write-Verbose "Pool already exist"
-                $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName).items
-                foreach($Member in $Members){
-                    if($activeMembers | Where-Object {$_.name -like "$($Member.name)*"}){
-                        Write-Verbose "Pool Member: $($Member.name) already exist in Pool: $PoolName"
-                        $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($Member.name)*"}
-                    }
-                    else{
-                        Write-Verbose "Adding Pool Member: $($Member.name) to Pool: $PoolName"
-                        $newMembers += $Member
-                        $updatePoolMembers = $true
-                    }
-                }  
-
-                if($updatePoolMembers){Update-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName -Members $newMembers}                
-            }            
+                Write-Verbose "Pool already exist"                
+            }
+            else {
+                Write-Verbose "Adding new pool"
+                New-F5Pool -F5Name $F5Name -Token $Token -PoolName $PoolName
+            }
+            
+            Write-Verbose "Adding pool members"
+            $updatePoolMembers = $false
+            $newMembers = @()
+            
+            $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName).items
+            foreach($Member in $Members){
+                if($activeMembers | Where-Object {$_.name -like "$($Member.name)*"}){
+                    Write-Verbose "Pool Member: $($Member.name) already exist in Pool: $PoolName"
+                    $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($Member.name)*"}
+                }
+                else{
+                    Write-Verbose "Adding Pool Member: $($Member.name) to Pool: $PoolName"
+                    $newMembers += $Member
+                    $updatePoolMembers = $true
+                }
+            }
+            if($updatePoolMembers){Update-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName -Members $newMembers}             
         }        
     }
     end
