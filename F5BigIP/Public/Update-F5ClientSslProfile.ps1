@@ -54,7 +54,7 @@ function Update-F5ClientSslProfile
 
         # Name of certificate bundle name
         [Parameter(
-            Mandatory=$false, 
+            Mandatory = $false, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]
@@ -69,7 +69,7 @@ function Update-F5ClientSslProfile
 
         # SNI setting
         [Parameter(
-            Mandatory=$false,
+            Mandatory = $false,
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        

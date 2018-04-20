@@ -54,7 +54,7 @@ function Add-F5ClientSslProfile
 
         # Name of certificate bundle name
         [Parameter(
-            Mandatory=$false, 
+            Mandatory = $false, 
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]
@@ -69,7 +69,7 @@ function Add-F5ClientSslProfile
 
         # SNI setting
         [Parameter(
-            Mandatory=$false,
+            Mandatory = $false,
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
@@ -91,17 +91,19 @@ function Add-F5ClientSslProfile
             Write-Verbose "Checking whether $ClientSslProfileName already exist on $F5Name"
             $ClientSSLProfileParams = @{            
                 ClientSslProfileName = $ClientSslProfileName
-                CertificateName = $CertificateName
-                CABundleName = $CABundleName
-                DefaultSni = $DefaultSni
+                CertificateName      = $CertificateName
+                CABundleName         = $CABundleName
+                DefaultSni           = $DefaultSni
             }
             
             $allClientSslProfiles = Get-F5ClientSslProfile  -F5Name $F5Name -Token $Token -GetAllClientSslProfiles
-            if($allClientSslProfiles | Where-Object {$_.name -like $ClientSslProfileName}){
+            if ($allClientSslProfiles | Where-Object {$_.name -like $ClientSslProfileName})
+            {
                 Write-Verbose "Client SSL Profile already exist"
                 Update-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams                
             }
-            else {
+            else
+            {
                 Write-Verbose "Adding new Client SSL Profile"
                 New-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams
             }

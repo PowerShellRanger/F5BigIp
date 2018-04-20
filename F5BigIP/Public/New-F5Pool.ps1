@@ -102,19 +102,22 @@ function New-F5Pool
         $poolInfo = @{
             name = "$PoolName"
         }
-        switch($Monitor){
-            "HTTP"{$poolInfo.Add("monitor","/Common/http")}
-            "HTTPS"{$poolInfo.Add("monitor","/Common/https_443")}
-            "Custom"{$poolInfo.Add("monitor","/Common/$CustomMonitorName")}
+        switch ($Monitor)
+        {
+            "HTTP" {$poolInfo.Add("monitor", "/Common/http")}
+            "HTTPS" {$poolInfo.Add("monitor", "/Common/https_443")}
+            "Custom" {$poolInfo.Add("monitor", "/Common/$CustomMonitorName")}
         }
         $poolInfo = $poolInfo | ConvertTo-Json        
 
         $url = "https://$F5Name/mgmt/tm/ltm/pool"
         Write-Verbose "Invoke Rest Method to: $url"
-        try {
+        try
+        {
             Invoke-RestMethod -Method POST -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
         }
-        catch {
+        catch
+        {
             Write-Host $Error[0]
         }
         

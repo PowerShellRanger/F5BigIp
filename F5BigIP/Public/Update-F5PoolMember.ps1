@@ -64,7 +64,8 @@ function Update-F5PoolMember
             members = @(                
             )
         }
-        foreach($member in $Members){
+        foreach ($member in $Members)
+        {
             $poolInfo.members += $member
         }
         $poolInfo         
@@ -72,11 +73,13 @@ function Update-F5PoolMember
 
         $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
         Write-Verbose "Invoke Rest Method to: $url"
-        try {
+        try
+        {
             Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
             Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
         }
-        catch {
+        catch
+        {
             Write-Host $Error[0]
         }
         
