@@ -73,14 +73,14 @@ function New-ImplimentF5Pool
             $newMembers = @()
             
             $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName).items
-            foreach($Member in $Members){
-                if($activeMembers | Where-Object {$_.name -like "$($Member.name)*"}){
-                    Write-Verbose "Pool Member: $($Member.name) already exist in Pool: $PoolName"
-                    $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($Member.name)*"}
+            foreach($member in $Members){
+                if($activeMembers | Where-Object {$_.name -like "$($member.name)*"}){
+                    Write-Verbose "Pool Member: $($member.name) already exist in Pool: $PoolName"
+                    $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($member.name)*"}
                 }
                 else{
-                    Write-Verbose "Adding Pool Member: $($Member.name) to Pool: $PoolName"
-                    $newMembers += $Member
+                    Write-Verbose "Adding Pool Member: $($member.name) to Pool: $PoolName"
+                    $newMembers += $member
                     $updatePoolMembers = $true
                 }
             }
