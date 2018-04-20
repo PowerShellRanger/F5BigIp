@@ -60,19 +60,6 @@ function Update-F5PoolMember
             'X-F5-Auth-Token' = $Token
         }
 
-        <#
-        $testMembers = @(
-            [pscustomobject]@{
-                name = "DEV11TLMPWEB01:80"
-                address = "10.192.11.46"
-            },
-            [pscustomobject]@{
-                name = "DEV10TLMPWEB01:80"
-                address = "10.192.11.25"
-            }
-        )
-        #>
-
         $poolInfo = [pscustomobject]@{
             members = @(                
             )
