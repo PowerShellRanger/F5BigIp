@@ -1,4 +1,4 @@
-function New-ImplimentF5ClientSslProfile
+function Update-F5ClientSslProfile
 {
     <#
     .Synopsis
@@ -10,7 +10,7 @@ function New-ImplimentF5ClientSslProfile
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding()]
     param
     (
         # F5Name
@@ -80,34 +80,42 @@ function New-ImplimentF5ClientSslProfile
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Will validate\create\update Client SSL Profile: $ClientSslProfileName on F5: $F5Name"))
+        $errorAction = $ErrorActionPreference        
+        if ($PSBoundParameters["ErrorAction"])
         {
-            $errorAction = $ErrorActionPreference        
-            if ($PSBoundParameters["ErrorAction"])
-            {
-                $errorAction = $PSBoundParameters["ErrorAction"]
-            }
+            $errorAction = $PSBoundParameters["ErrorAction"]
+        }
 
-            Write-Verbose "Checking whether $ClientSslProfileName already exist on $F5Name"
-            $ClientSSLProfileParams = @{            
-                ClientSslProfileName = $ClientSslProfileName
-                CertificateName = $CertificateName
-                CABundleName = $CABundleName
-                DefaultSni = $DefaultSni
-            }
-            
-            $allClientSslProfiles = Get-F5ClientSslProfile  -F5Name $F5Name -Token $Token -GetAllClientSslProfiles
-            if($allClientSslProfiles | Where-Object {$_.name -like $ClientSslProfileName}){
-                Write-Verbose "Client SSL Profile already exist"
-                Update-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams                
-            }
-            else {
-                Write-Verbose "Adding new Client SSL Profile"
-                New-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams
-            }
-        }        
+        $headers = @{
+            'X-F5-Auth-Token' = $Token
+        }
+
+        $newCertificateName = $CertificateName.Replace(".crt", "")
+
+        $clientSslProfileInfo = @{
+            name       = "$ClientSslProfileName"
+            cert       = "/Common/$($newCertificateName).crt"
+            key        = "/Common/$($newCertificateName).key"
+            chain      = "/Common/$($CABundleName)"
+            sniDefault = $DefaultSni  
+        }
+        $clientSslProfileInfo
+        $clientSslProfileInfo = $clientSslProfileInfo | ConvertTo-Json        
+
+        $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl/~Common~$ClientSslProfileName"
+        Write-Verbose "Invoke Rest Method to: $url"
+        try
+        {
+            Invoke-RestMethod -Method PATCH -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+        }
+        catch
+        {
+            Write-Host $Error[0]
+        }
+        
     }
     end
     {
     }
 }
+
