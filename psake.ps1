@@ -44,7 +44,7 @@ Properties {
     $testResultsPath = "$TestsPath\Results"        
 }
 
-Task Default -Depends UnitTests, Build, Clean
+Task Default -Depends ScriptAnalysis, UnitTests, Build
 
 Task Init {     
     "Build System Details:"
