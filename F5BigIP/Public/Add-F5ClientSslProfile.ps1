@@ -1,4 +1,4 @@
-function New-ImplimentF5ClientSslProfile
+function Add-F5ClientSslProfile
 {
     <#
     .Synopsis
