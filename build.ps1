@@ -19,4 +19,4 @@ foreach ($module in $modules)
     }
 }
 
-Invoke-PSake -buildFile "$PSScriptRoot\psake.ps1" -taskList $Task -Verbose:$VerbosePreference
+exec { Invoke-PSake -buildFile "$PSScriptRoot\psake.ps1" -taskList $Task -Verbose:$VerbosePreference }
