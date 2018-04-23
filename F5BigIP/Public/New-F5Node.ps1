@@ -10,7 +10,7 @@ function New-F5Node
     .EXAMPLE
        
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
     param
     (
         # F5Name
@@ -51,25 +51,28 @@ function New-F5Node
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
-        {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
+        if ($PSCmdlet.Shouldprocess("Creates new node with name of: $($Credential.UserName) on F5: $F5Name"))
+        {                
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
 
-        $nodeInfo = @{
-            name    = "$NodeName"
-            address = "$IpV4Address"
-        }
-        $nodeInfo = $nodeInfo | ConvertTo-Json        
+            $nodeInfo = @{
+                name    = "$NodeName"
+                address = "$IpV4Address"
+            }
+            $nodeInfo = $nodeInfo | ConvertTo-Json        
 
-        $url = "https://$F5Name/mgmt/tm/ltm/node"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            $url = "https://$F5Name/mgmt/tm/ltm/node"
+            Write-Verbose "Invoke Rest Method to: $url"
+            Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+        }    
     }
     end
     {

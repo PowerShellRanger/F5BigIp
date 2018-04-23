@@ -11,6 +11,7 @@ function New-F5Pool
        
     #>
     [CmdletBinding(
+        SupportsShouldprocess, ConfirmImpact = "High",
         DefaultParameterSetName = 'DefaultMonitor'
     )]
     param
@@ -89,30 +90,33 @@ function New-F5Pool
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
-        {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
+        if ($PSCmdlet.Shouldprocess("Creates new pool with name of: $PoolName on F5: $F5Name"))
+        { 
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
 
-        $poolInfo = @{
-            name = "$PoolName"
-        }
-        switch ($Monitor)
-        {
-            "HTTP" {$poolInfo.Add("monitor", "/Common/http")}
-            "HTTPS" {$poolInfo.Add("monitor", "/Common/https_443")}
-            "Custom" {$poolInfo.Add("monitor", "/Common/$CustomMonitorName")}
-        }
-        $poolInfo = $poolInfo | ConvertTo-Json        
+            $poolInfo = @{
+                name = "$PoolName"
+            }
+            switch ($Monitor)
+            {
+                "HTTP" {$poolInfo.Add("monitor", "/Common/http")}
+                "HTTPS" {$poolInfo.Add("monitor", "/Common/https_443")}
+                "Custom" {$poolInfo.Add("monitor", "/Common/$CustomMonitorName")}
+            }
+            $poolInfo = $poolInfo | ConvertTo-Json        
 
-        $url = "https://$F5Name/mgmt/tm/ltm/pool"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method POST -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction        
+            $url = "https://$F5Name/mgmt/tm/ltm/pool"
+            Write-Verbose "Invoke Rest Method to: $url"
+            Invoke-RestMethod -Method POST -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+        }
     }
     end
     {
