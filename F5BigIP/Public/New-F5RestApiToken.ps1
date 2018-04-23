@@ -10,7 +10,7 @@ function New-F5RestApiToken
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param
     (
         # F5Name
@@ -34,7 +34,7 @@ function New-F5RestApiToken
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Generate Rest API Token for User: $($Credential.UserName) on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Generate Rest API Token for User: $($Credential.UserName) on F5: $F5Name"))
         {    
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

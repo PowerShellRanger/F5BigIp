@@ -11,7 +11,7 @@ function New-F5Pool
        
     #>
     [CmdletBinding(
-        SupportsShouldprocess,
+        SupportsShouldProcess,
         ConfirmImpact = "High",
         DefaultParameterSetName = 'DefaultMonitor'
     )]
@@ -91,7 +91,7 @@ function New-F5Pool
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Creates new pool: $PoolName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Creates new pool: $PoolName on F5: $F5Name"))
         { 
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
