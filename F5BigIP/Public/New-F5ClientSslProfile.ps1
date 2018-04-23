@@ -10,7 +10,10 @@ function New-F5ClientSslProfile
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
+    [CmdletBinding(
+        SupportsShouldProcess,
+        ConfirmImpact = "High"
+    )]
     param
     (
         # F5Name
