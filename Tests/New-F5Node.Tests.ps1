@@ -22,40 +22,52 @@ InModuleScope -ModuleName $moduleName {
             }        
         }
 
-        Context 'Testing function calls Invoke-RestMethod' {
+        Context 'Testing function calls Invoke-RestmMthod' {
 
-            $tokenMock = ((65..90) + (97..122) | Get-Random -Count 20 | ForEach-Object {[char]$_}) -join ''
             $mockedResponse = @{
-                UserName = $env:USERNAME
-                Token    = $tokenMock
+                kind      = "tm:ltm:node:nodestate"
+                name      = "test1234"
+                partition = "Common"
+                address   = "10.209.11.24"
+                logging   = "disabled"
+                monitor   = "default"
+                rateLimit = "disabled"
+                ratio     = "1"
+                session   = "monitor-enabled"
+                state     = "checking"
             }
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $mockedResponse}
 
+            $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
             $F5Name = 'foo'
-            $securePass = ConvertTo-SecureString -String 'Some Really Complex Password' -AsPlainText -Force
-            $credential = New-Object -TypeName System.Management.Automation.PSCredential ($env:USERNAME, $securePass)
+            $nodeNameMock = "test1234"
+            $ipV4AddressMock = "10.209.11.24"
+            $psObjectHeader = [PSCustomObject] @{
+                'X-F5-Auth-Token' = $tokenMock
+            }
+            $headerMock = $psobjectHeader | ConvertTo-Json            
             $psObjectBody = [PSCustomObject] @{
-                username          = $credential.UserName
-                password          = $credential.GetNetworkCredential().Password
-                loginProviderName = "tmos"
+                node    = $nodeNameMock
+                address = $ipV4AddressMock
             }
             $bodyMock = $psobjectBody | ConvertTo-Json
 
-            $newApiToken = New-F5RestApiToken -F5Name $F5Name -Credential $credential -Confirm:$false
+            $newNode = New-F5Node -F5Name $F5Name -Token $tokenMock -NodeNane $mockNodeName -IpV4Address $ipV4AddressMock
 
-            It "Should return two objects with correct properties" {                
-                foreach ($property in $newApiToken.PSObject.Properties)
+            It "Should return object with correct properties" {                
+                foreach ($property in $newNode.PSObject.Properties)
                 {
-                    $newApiToken.$property | Should Be $mockedResponse.$property
+                    $newNode.$property | Should Be $mockedResponse.$property
                 }
             }
 
             It 'Assert each mock called 1 time' {                
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Uri -eq "https://$F5Name/mgmt/shared/authn/login"}
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Uri -eq "https://$F5Name/mgmt/tm/ltm/node"}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Body -eq $bodyMock}
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Header -eq $headerMock}
             }
         }        
     }
