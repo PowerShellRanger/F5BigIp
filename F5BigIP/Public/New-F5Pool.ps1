@@ -11,7 +11,8 @@ function New-F5Pool
        
     #>
     [CmdletBinding(
-        SupportsShouldprocess, ConfirmImpact = "High",
+        SupportsShouldprocess,
+        ConfirmImpact = "High",
         DefaultParameterSetName = 'DefaultMonitor'
     )]
     param

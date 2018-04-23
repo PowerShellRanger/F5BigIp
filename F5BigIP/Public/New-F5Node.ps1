@@ -10,7 +10,10 @@ function New-F5Node
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding(
+        SupportsShouldprocess,
+        ConfirmImpact = "High"
+    )]
     param
     (
         # F5Name

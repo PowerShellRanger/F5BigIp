@@ -31,7 +31,7 @@ function Update-F5Node
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Creates new node with name of: $($Credential.UserName) on F5: $F5Name"))
+        if ($PSCmdlet.Shouldprocess("Updates node: $($Credential.UserName) on F5: $F5Name"))
         { 
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

@@ -10,7 +10,10 @@ function Update-F5PoolMember
     .EXAMPLE
        
     #>
-    [CmdletBinding()]
+    [CmdletBinding(
+        SupportsShouldprocess,
+        ConfirmImpact = "High"
+    )]
     param
     (
         # F5Name
@@ -50,31 +53,34 @@ function Update-F5PoolMember
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
-        {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
+        if ($PSCmdlet.Shouldprocess("Updates pool: $PoolName on F5: $F5Name"))
+        {         
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
 
-        $poolInfo = [pscustomobject]@{
-            members = @(                
-            )
-        }
-        foreach ($member in $Members)
-        {
-            $poolInfo.members += $member
-        }
-        $poolInfo         
-        $poolInfo = $poolInfo | ConvertTo-Json        
+            $poolInfo = [pscustomobject]@{
+                members = @(                
+                )
+            }
+            foreach ($member in $Members)
+            {
+                $poolInfo.members += $member
+            }
+            $poolInfo         
+            $poolInfo = $poolInfo | ConvertTo-Json        
 
-        $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
-        Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
+            Write-Verbose "Invoke Rest Method to: $url"
+            Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
+            Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+        }
     }
     end
     {
