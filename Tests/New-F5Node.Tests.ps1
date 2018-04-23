@@ -45,12 +45,12 @@ InModuleScope -ModuleName $moduleName {
             $F5Name = 'foo'
             $nodeNameMock = "test1234"
             $ipV4AddressMock = "10.209.11.24"
-            $psObjectHeader = [PSCustomObject] @{
+            $headersMock = @{
                 'X-F5-Auth-Token' = $tokenMock
             }
-            $headerMock = $psobjectHeader | ConvertTo-Json            
+           
             $psObjectBody = [PSCustomObject] @{
-                node    = $nodeNameMock
+                name    = $nodeNameMock
                 address = $ipV4AddressMock
             }
             $bodyMock = $psobjectBody | ConvertTo-Json
@@ -69,7 +69,7 @@ InModuleScope -ModuleName $moduleName {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Body -eq $bodyMock}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Header -eq $headerMock}
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Headers -eq $headersMock}
             }
         }        
     }
