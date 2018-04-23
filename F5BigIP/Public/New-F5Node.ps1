@@ -62,11 +62,11 @@ function New-F5Node
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            $headers = @{
+            $headersInfo = @{
                 'X-F5-Auth-Token' = $Token
             }
 
-            $nodeInfo = @{
+            $nodeInfo = [PSCustomObject] @{
                 name    = "$NodeName"
                 address = "$IpV4Address"
             }
@@ -74,7 +74,7 @@ function New-F5Node
 
             $url = "https://$F5Name/mgmt/tm/ltm/node"
             Write-Verbose "Invoke Rest Method to: $url"
-            Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+            Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headersInfo -ContentType "application/json" -ErrorAction $errorAction
         }    
     }
     end
