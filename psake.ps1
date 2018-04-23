@@ -46,7 +46,7 @@ Properties {
 
 Task Default -Depends ScriptAnalysis, UnitTests, Build
 
-Task Init {     
+Task Init {
     "Build System Details:"
     $env:BUILD_REPOSITORY_NAME
     "`n"
@@ -73,19 +73,20 @@ Task UnitTests -Depends ScriptAnalysis {
 
 Task Build -Depends UnitTests {
     "Starting update of module manifest..."
-    
+    "BuildID: $env:BUILD_BUILDID"
+    "BuildNumber: $env:BUILD_BUILDNUMBER"
     # Get public functions to export
     $functions = Get-ChildItem "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Public\*.ps1" | Where-Object { $_.name -notmatch 'Tests'} | Select-Object -ExpandProperty basename    
 
     # Bump the module version
     $manifest = Import-PowerShellDataFile -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1"
-    [version]$version = $manifest.ModuleVersion
+    #[version]$version = $manifest.ModuleVersion
     
     # Add one to the build of the version number
-    [version]$newVersion = "{0}.{1}.{2}" -f $version.Major, $version.Minor, ($version.Build + 1)
+    #[version]$newVersion = "{0}.{1}.{2}" -f $version.Major, $version.Minor, ($version.Build + 1)
     
     # Update the manifest file
-    Update-ModuleManifest -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1" -ModuleVersion $newVersion -FunctionsToExport $functions        
+    Update-ModuleManifest -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1" -ModuleVersion $env:BUILD_BUILDNUMBER -FunctionsToExport $functions        
 }
 
 Task Clean {
