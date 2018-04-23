@@ -11,7 +11,7 @@ function Update-F5ClientSslProfile
        
     #>
     [CmdletBinding(
-        SupportsShouldprocess,
+        SupportsShouldProcess,
         ConfirmImpact = "High"
     )]
     param
@@ -83,7 +83,7 @@ function Update-F5ClientSslProfile
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Updates node: $CertificateName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Updates node: $CertificateName on F5: $F5Name"))
         { 
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

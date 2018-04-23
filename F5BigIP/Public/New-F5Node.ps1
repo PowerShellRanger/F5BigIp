@@ -11,7 +11,7 @@ function New-F5Node
        
     #>
     [CmdletBinding(
-        SupportsShouldprocess,
+        SupportsShouldProcess,
         ConfirmImpact = "High"
     )]
     param
@@ -54,7 +54,7 @@ function New-F5Node
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Creates new node: $NodeName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $F5Name"))
         {                
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

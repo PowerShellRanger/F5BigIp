@@ -10,7 +10,7 @@ function Add-F5ClientSslProfile
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param
     (
         # F5Name
@@ -78,7 +78,7 @@ function Add-F5ClientSslProfile
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Will validate\create\update Client SSL Profile: $ClientSslProfileName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Will validate\create\update Client SSL Profile: $ClientSslProfileName on F5: $F5Name"))
         {
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

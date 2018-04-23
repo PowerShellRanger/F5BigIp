@@ -10,7 +10,7 @@ function Add-F5Pool
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param
     (
         # F5Name
@@ -49,7 +49,7 @@ function Add-F5Pool
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Will validate\create\update Pool : $PoolName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Will validate\create\update Pool : $PoolName on F5: $F5Name"))
         {
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

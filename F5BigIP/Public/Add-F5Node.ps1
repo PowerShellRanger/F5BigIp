@@ -10,7 +10,7 @@ function Add-F5Node
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param
     (
         # F5Name
@@ -59,7 +59,7 @@ function Add-F5Node
     process
     {
         #Modify response later
-        if ($PSCmdlet.Shouldprocess("Will validate\create\update node : $NodeName with ipaddress: $IpV4Address on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Will validate\create\update node : $NodeName with ipaddress: $IpV4Address on F5: $F5Name"))
         {
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
