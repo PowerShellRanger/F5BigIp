@@ -91,7 +91,7 @@ function New-F5Pool
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Creates new pool with name of: $PoolName on F5: $F5Name"))
+        if ($PSCmdlet.Shouldprocess("Creates new pool: $PoolName on F5: $F5Name"))
         { 
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
