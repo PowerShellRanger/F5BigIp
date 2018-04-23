@@ -54,15 +54,7 @@ function Clear-F5Node
 
         $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
         Write-Verbose "Invoke Rest Method to: $url"
-        try
-        {
-            Invoke-RestMethod -Method Delete -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
-        }
-        catch
-        {
-            Write-Host $Error[0]
-        }
-        
+        Invoke-RestMethod -Method Delete -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
     }
     end
     {

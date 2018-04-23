@@ -48,17 +48,9 @@ function Update-F5Node
 
         $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
         Write-Verbose "Invoke Rest Method to: $url"
-        try
-        {
-            Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
-            #Still not working
-            Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
-        }
-        catch
-        {
-            Write-Host $Error[0]
-        }
-        
+        Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
+        #Still not working
+        Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
     }
     end
     {

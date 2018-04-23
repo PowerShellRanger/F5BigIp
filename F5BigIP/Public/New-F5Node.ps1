@@ -69,15 +69,7 @@ function New-F5Node
 
         $url = "https://$F5Name/mgmt/tm/ltm/node"
         Write-Verbose "Invoke Rest Method to: $url"
-        try
-        {
-            Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
-        }
-        catch
-        {
-            Write-Host $Error[0]
-        }
-        
+        Invoke-RestMethod -Method POST -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
     }
     end
     {

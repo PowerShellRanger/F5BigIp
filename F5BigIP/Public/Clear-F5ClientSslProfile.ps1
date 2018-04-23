@@ -104,15 +104,7 @@ function New-F5ClientSslProfile
 
         $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
         Write-Verbose "Invoke Rest Method to: $url"
-        try
-        {
-            Invoke-RestMethod -Method POST -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
-        }
-        catch
-        {
-            Write-Host $Error[0]
-        }
-        
+        Invoke-RestMethod -Method POST -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
     }
     end
     {
