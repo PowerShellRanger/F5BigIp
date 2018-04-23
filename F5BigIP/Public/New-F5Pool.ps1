@@ -12,8 +12,7 @@ function New-F5Pool
     #>
     [CmdletBinding(
         SupportsShouldProcess,
-        ConfirmImpact = "High",
-        DefaultParameterSetName = 'DefaultMonitor'
+        ConfirmImpact = "High"
     )]
     param
     (
@@ -21,14 +20,7 @@ function New-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]        
         [string]$F5Name,
 
@@ -36,14 +28,7 @@ function New-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]        
         [string]$Token,
 
@@ -51,14 +36,7 @@ function New-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]        
         [string]$PoolName,
 
@@ -66,26 +44,30 @@ function New-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]  
         [ValidateSet('HTTP', 'HTTPS', 'Custom')]
-        $Monitor,
-        
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        $CustomMonitorName
+        $Monitor
     )
+   
+    DynamicParam
+    {
+        if ($Monitor -eq 'Custom')
+        {
+            Write-Verbose 'Create a new ParameterAttribute Object.'
+            $eventSourceNameAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $eventSourceNameAttribute.Mandatory = $true
+            $eventSourceNameAttribute.ValueFromPipeline = $true
+            $eventSourceNameAttribute.ValueFromPipelineByPropertyName = $true
+            Write-Verbose 'Create an attributecollection object for the attribute just created.'
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $attributeCollection.Add($eventSourceNameAttribute)
+            $eventSourceNameParam = New-Object System.Management.Automation.RuntimeDefinedParameter('CustomMonitorName', [string], $attributeCollection)
+            $paramDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            $paramDictionary.Add('CustomMonitorName', $eventSourceNameParam)
+            return $paramDictionary
+        }
+    }
     begin
     {
     }
