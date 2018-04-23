@@ -14,13 +14,13 @@ InModuleScope -ModuleName $moduleName {
 
     Describe $cmdletName {                   
         
-        Context "Testing Parameters" {            
+        Context "Testing Parameters" {           
 
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.Token.Attributes.Mandatory | should be $false
-                $cmdlet.Parameters.NodeName.Attributes.Mandatory | should be $false
-                $cmdlet.Parameters.IpV4Address.Attributes.Mandatory | should be $false
+                $cmdlet.Parameters.Token.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.NodeName.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.IpV4Address.Attributes.Mandatory | should be $true
             }        
         }
 
