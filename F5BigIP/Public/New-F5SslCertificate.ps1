@@ -1,4 +1,4 @@
-function Get-F5SslCertificate
+function New-F5SslCertificate
 {
     <#
     .Synopsis
@@ -11,7 +11,9 @@ function Get-F5SslCertificate
        
     #>
     [CmdletBinding(
-        DefaultParameterSetName = 'OnlyGetCertsRequested'
+        DefaultParameterSetName = 'OnlyGetCertsRequested',
+        SupportsShouldProcess,
+        ConfirmImpact = "High"
     )]
     param
     (
@@ -71,30 +73,33 @@ function Get-F5SslCertificate
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
+        if ($PSCmdlet.ShouldProcess("Create new SSL Certificate: $CertificateName on F5: $F5Name"))
         {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
-
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
-        if ($PSBoundParameters['GetAllCertificates'])
-        {
-            $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
-            Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
-        }
-        else
-        {
-            foreach ($certificate in $CertificateName)
-            {                
-                $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
             }
-        }        
+
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
+            if ($PSBoundParameters['GetAllCertificates'])
+            {
+                $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
+                Write-Verbose "Invoke Rest Method to: $url"
+                (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            }
+            else
+            {
+                foreach ($certificate in $CertificateName)
+                {                
+                    $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
+                    Write-Verbose "Invoke Rest Method to: $url"
+                    Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                }
+            }
+        }
     }
     end
     {
