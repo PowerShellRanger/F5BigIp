@@ -38,8 +38,7 @@ function Add-F5Pool
         [string]$PoolName,
 
         #Members of Pool to create
-        [Parameter(
-            Mandatory = $false, 
+        [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]
