@@ -53,7 +53,7 @@ InModuleScope -ModuleName $moduleName {
             }
             $bodyMock = $psobjectBody | ConvertTo-Json
 
-            $newNode = New-F5Node -F5Name $F5Name -Token $tokenMock -NodeNane $mockNodeName -IpV4Address $ipV4AddressMock
+            $newNode = New-F5Node -F5Name $F5Name -Token $tokenMock -NodeName $mockNodeName -IpV4Address $ipV4AddressMock
 
             It "Should return object with correct properties" {                
                 foreach ($property in $newNode.PSObject.Properties)
