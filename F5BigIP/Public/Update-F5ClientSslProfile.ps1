@@ -10,7 +10,10 @@ function Update-F5ClientSslProfile
     .EXAMPLE
        
     #>
-    [CmdletBinding()]
+    [CmdletBinding(
+        SupportsShouldprocess,
+        ConfirmImpact = "High"
+    )]
     param
     (
         # F5Name
@@ -80,31 +83,34 @@ function Update-F5ClientSslProfile
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
-        {
-            $errorAction = $PSBoundParameters["ErrorAction"]
+        if ($PSCmdlet.Shouldprocess("Updates node: $CertificateName on F5: $F5Name"))
+        { 
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
+
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
+
+            $newCertificateName = $CertificateName.Replace(".crt", "")
+
+            $clientSslProfileInfo = @{
+                name       = "$ClientSslProfileName"
+                cert       = "/Common/$($newCertificateName).crt"
+                key        = "/Common/$($newCertificateName).key"
+                chain      = "/Common/$($CABundleName)"
+                sniDefault = $DefaultSni  
+            }
+            $clientSslProfileInfo
+            $clientSslProfileInfo = $clientSslProfileInfo | ConvertTo-Json        
+
+            $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl/~Common~$ClientSslProfileName"
+            Write-Verbose "Invoke Rest Method to: $url"
+            Invoke-RestMethod -Method PATCH -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
         }
-
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
-
-        $newCertificateName = $CertificateName.Replace(".crt", "")
-
-        $clientSslProfileInfo = @{
-            name       = "$ClientSslProfileName"
-            cert       = "/Common/$($newCertificateName).crt"
-            key        = "/Common/$($newCertificateName).key"
-            chain      = "/Common/$($CABundleName)"
-            sniDefault = $DefaultSni  
-        }
-        $clientSslProfileInfo
-        $clientSslProfileInfo = $clientSslProfileInfo | ConvertTo-Json        
-
-        $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl/~Common~$ClientSslProfileName"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method PATCH -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
     }
     end
     {
