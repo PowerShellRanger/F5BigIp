@@ -27,7 +27,6 @@ InModuleScope -ModuleName $moduleName {
         Context 'Testing function calls Invoke-RestMethod' {
 
             $mockedResponse = @{
-                kind      = "tm:ltm:node:nodestate"
                 name      = "test1234"
                 partition = "Common"
                 address   = "10.209.11.24"
