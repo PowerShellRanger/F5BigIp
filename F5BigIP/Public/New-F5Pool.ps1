@@ -62,9 +62,9 @@ function New-F5Pool
             Write-Verbose 'Create an attributecollection object for the attribute just created.'
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $attributeCollection.Add($eventSourceNameAttribute)
-            $eventSourceNameParam = New-Object System.Management.Automation.RuntimeDefinedParameter('CustomMonitorName', [string], $attributeCollection)
+            $customMonitorNameParam = New-Object System.Management.Automation.RuntimeDefinedParameter('CustomMonitorName', [string], $attributeCollection)
             $paramDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-            $paramDictionary.Add('CustomMonitorName', $eventSourceNameParam)
+            $paramDictionary.Add('CustomMonitorName', $customMonitorNameParam)
             return $paramDictionary
         }
     }
@@ -92,7 +92,7 @@ function New-F5Pool
             {
                 "HTTP" {$psObjectBody.Add("monitor", "/Common/http")}
                 "HTTPS" {$psObjectBody.Add("monitor", "/Common/https_443")}
-                "Custom" {$psObjectBody.Add("monitor", "/Common/$CustomMonitorName")}
+                "Custom" {$psObjectBody.Add("monitor", "/Common/$($PSBoundParameters.CustomMonitorName)")}
             }
             $body = $psObjectBody | ConvertTo-Json        
             
