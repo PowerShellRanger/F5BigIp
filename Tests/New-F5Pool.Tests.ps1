@@ -14,7 +14,7 @@ InModuleScope -ModuleName $moduleName {
 
     Describe $cmdletName {                   
         
-        Mock -CommandName Invoke-RestMethod -MockWith {return $mockedResponse}
+        
 
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
@@ -29,7 +29,7 @@ InModuleScope -ModuleName $moduleName {
                 $cmdlet.Parameters.Monitor.Attributes.Mandatory | should be $true
             }        
         }
-
+        
         Context 'Testing function calls Invoke-RestMethod' {
 
             $mockedResponse = @{
@@ -60,64 +60,13 @@ InModuleScope -ModuleName $moduleName {
 
             $newNode = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "HTTPS" -confirm:$false
 
-            It "Should return object with correct properties" {                
-                foreach ($property in $newNode.PSObject.Properties)
-                {
-                    $newNode.$property | Should Be $mockedResponse.$property
-                }
+            It "Should return object with correct properties" {
+                Mock -CommandName Invoke-RestMethod -MockWith {return $mockedResponse}               
+                $newNode | Should be $mockedResponse
             }
 
-            It 'Assert each mock called 1 time' {                
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Uri -eq "https://$F5Name/mgmt/tm/ltm/pool"}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
-            }
         }
         
-        Context 'Testing function calls Invoke-RestMethod with dynamic parameter' {
 
-            $mockedResponse = @{
-                name                  = "test1234"
-                partition             = "Common"
-                fullPath              = "/Common/test1234"
-                generation            = "766"
-                allowNat              = "yes"
-                allowSnat             = "yes"
-                ignorePersistedWeight = "disabled"
-                ipTosToClient         = "pass-through"
-                ipTosToServer         = "pass-through"
-                linkQosToClient       = "pass-through"
-                linkQosToServer       = "pass-through"
-                loadBalancingMode     = "round-robin"
-                minActiveMembers      = "0"
-                minUpMembers          = "0"
-                minUpMembersAction    = "failover"
-                minUpMembersChecking  = "disabled"
-                monitor               = "/Common/test1234_443"
-                queueDepthLimit       = "0"
-                queueOnConnectionLimit= "disabled"
-                queueTimeLimit        = "0"
-                reselectTries         = "0"
-                serviceDownAction     = "none"
-                slowRampTime          = "10"
-            }
-
-            $customMonitorNameMock = "test1234_443"
-
-            $newNode = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "Custom" -CustomMonitorName $customMonitorNameMock -confirm:$false
-
-            It "Should return object with correct properties" {                
-                foreach ($property in $newNode.PSObject.Properties)
-                {
-                    $newNode.$property | Should Be $mockedResponse.$property
-                }
-            }
-
-            It 'Assert each mock called 1 time' {                
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Uri -eq "https://$F5Name/mgmt/tm/ltm/pool"}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
-            }
-        }  
     }
 }
