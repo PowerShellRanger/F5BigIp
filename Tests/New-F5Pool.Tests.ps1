@@ -14,7 +14,7 @@ InModuleScope -ModuleName $moduleName {
 
     Describe $cmdletName {                   
         
-        Mock -CommandName Invoke-RestMethod -MockWith {return $mockedResponse}
+        
 
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
@@ -60,7 +60,8 @@ InModuleScope -ModuleName $moduleName {
 
             $newNode = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "HTTPS" -confirm:$false
 
-            It "Should return object with correct properties" {                
+            It "Should return object with correct properties" {
+                Mock -CommandName Invoke-RestMethod -MockWith {return $mockedResponse}               
                 $newNode | Should be $mockedResponse
             }
 
