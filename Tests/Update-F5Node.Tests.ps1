@@ -16,17 +16,18 @@ InModuleScope -ModuleName $moduleName {
         
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
-        $poolNameMock = "test1234"
+        $nodeNameMock = "test1234"
+        $ipV4AddressMock = "127.0.0.1"
         
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.Token.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.PoolName.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.Monitor.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.NodeName.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.IpV4Address.Attributes.Mandatory | should be $true
             }
         }
-      
+
         Context 'Testing function calls Invoke-RestMethod' {
 
             $mockedHeaders = @{
@@ -35,39 +36,21 @@ InModuleScope -ModuleName $moduleName {
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
 
-            $newPool = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "HTTPS" -confirm:$false 
+            $return = Update-F5Node -F5Name $F5Name -Token $tokenMock -NodeName $nodeNameMock -IpV4Address $ipV4AddressMock -confirm:$false 
 
             It "Should return object with correct properties" {
-                $newPool | Should be $true
+                $return | Should be $true
             }
                 
             It 'Assert each mock called 1 time' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
-                    $Uri -eq "https://$F5Name/mgmt/tm/ltm/pool" `
+                    $Uri -eq "https://$F5Name/mgmt/tm/ltm/node/~Common~$nodeNameMock" `
                         -and $ContentType -eq 'application/json' `
-                        -and $Method -eq 'POST' `
+                        -and $Method -eq 'Patch' `
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
-                        -and $Headers.Values -eq $mockedHeaders.Values `
-                        -and ($Body | ConvertFrom-Json).name -eq "$poolNameMock" `
-                        -and ($Body | ConvertFrom-Json).monitor -eq "/Common/https_443" 
-                        
+                        -and $Headers.Values -eq $mockedHeaders.Values
                 } 
             }
-        }
-        
-        Context 'Testing function calls Invoke-RestMethod with dynamic parameter' {
-            $customMonitorNameMocked = "https_custom"
-
-            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
-
-            $null = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "Custom" -CustomMonitorName $customMonitorNameMocked -confirm:$false 
-
-            It 'Assert each mock called 1 time' {
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
-                    ($Body | ConvertFrom-Json).monitor -eq "/Common/$customMonitorNameMocked"
-                } 
-            }
-
-        }
+        }   
     }
 }

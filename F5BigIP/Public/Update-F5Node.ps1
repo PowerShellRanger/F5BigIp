@@ -10,19 +10,42 @@ function Update-F5Node
     .EXAMPLE
        
     #>
-    [CmdletBinding(SupportsShouldprocess, ConfirmImpact = "High")]
+    [CmdletBinding(
+        SupportsShouldprocess,
+        ConfirmImpact = "High"
+    )]
     param
     (
         # F5Name
+        [Parameter(
+            Mandatory, 
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName
+        )]
         [string]$F5Name,
 
         # Token Based Authentication
+        [Parameter(
+            Mandatory, 
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName
+        )]
         [string]$Token,
 
         # Name of Node to create
+        [Parameter(
+            Mandatory, 
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName
+        )]
         [string]$NodeName,
 
         #Ip Address of Node to create
+        [Parameter(
+            Mandatory, 
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName
+        )]
         [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]
         $IpV4Address       
     )
@@ -43,16 +66,20 @@ function Update-F5Node
                 'X-F5-Auth-Token' = $Token
             }
 
-            $nodeInfo = @{
+            $psObjectBody = [PSCustomObject] @{
                 address = "$IpV4Address"
             }
-            $nodeInfo = $nodeInfo | ConvertTo-Json        
+            $body = $psObjectBody | ConvertTo-Json        
 
-            $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-            Write-Verbose "Invoke Rest Method to: $url"
-            Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
-            #Still not working
-            Invoke-RestMethod -Method Patch -Uri $url -Body $nodeInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
+                ContentType = 'application/json'
+                Method      = 'Patch'
+                Body        = $body
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
         }
     }
     end
