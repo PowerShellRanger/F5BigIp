@@ -55,6 +55,7 @@ function New-F5VirtualServer
     {
         foreach ($virtualServ in $VirtualServer) 
         {
+            <# TODO: Need to finish
             if ($PSCmdlet.ShouldProcess("Creates new virtual server: $VirtualServer on F5: $F5Name"))
             { 
                 $errorAction = $ErrorActionPreference        
@@ -71,6 +72,7 @@ function New-F5VirtualServer
                 Write-Verbose "Invoke Rest Method to: $url"
                 Invoke-RestMethod -Method POST -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
             }
+            #>
         }
     }
     end
