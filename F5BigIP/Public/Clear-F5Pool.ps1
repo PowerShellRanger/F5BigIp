@@ -12,8 +12,7 @@ function Clear-F5Pool
     #>
     [CmdletBinding(
         SupportsShouldProcess,
-        ConfirmImpact = "High",        
-        DefaultParameterSetName = 'DefaultMonitor'
+        ConfirmImpact = "High"
     )]
     param
     (
