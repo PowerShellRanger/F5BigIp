@@ -58,8 +58,6 @@ InModuleScope -ModuleName $moduleName {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Uri -eq "https://$F5Name/mgmt/tm/ltm/node"}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 
             }
         }        
     }
