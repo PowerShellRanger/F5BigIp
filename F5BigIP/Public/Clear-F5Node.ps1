@@ -10,7 +10,10 @@ function Clear-F5Node
     .EXAMPLE
        
     #>
-    [CmdletBinding()]
+    [CmdletBinding(
+        SupportsShouldProcess,
+        ConfirmImpact = "High"
+    )]
     param
     (
         # F5Name
@@ -42,19 +45,27 @@ function Clear-F5Node
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
-        {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
+        if ($PSCmdlet.ShouldProcess("Deletes existing node: $NodeName on F5: $F5Name"))
+        {           
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
 
-        $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method Delete -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
+                ContentType = 'application/json'
+                Method      = 'Delete'
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
+        }
     }
     end
     {

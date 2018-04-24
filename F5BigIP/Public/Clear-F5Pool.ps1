@@ -11,6 +11,8 @@ function Clear-F5Pool
        
     #>
     [CmdletBinding(
+        SupportsShouldProcess,
+        ConfirmImpact = "High",        
         DefaultParameterSetName = 'DefaultMonitor'
     )]
     param
@@ -19,14 +21,7 @@ function Clear-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]        
         [string]$F5Name,
 
@@ -34,14 +29,7 @@ function Clear-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]        
         [string]$Token,
 
@@ -49,14 +37,7 @@ function Clear-F5Pool
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'CustomMonitor'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'DefaultMonitor'
+            ValueFromPipelineByPropertyName
         )]        
         [string]$PoolName
     )
@@ -65,19 +46,27 @@ function Clear-F5Pool
     }
     process
     {
-        $errorAction = $ErrorActionPreference        
-        if ($PSBoundParameters["ErrorAction"])
-        {
-            $errorAction = $PSBoundParameters["ErrorAction"]
-        }
+        if ($PSCmdlet.ShouldProcess("Deletes Pool: $PoolName on F5: $F5Name"))
+        {          
+            $errorAction = $ErrorActionPreference        
+            if ($PSBoundParameters["ErrorAction"])
+            {
+                $errorAction = $PSBoundParameters["ErrorAction"]
+            }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
+            $headers = @{
+                'X-F5-Auth-Token' = $Token
+            }
 
-        $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method Delete -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
+                ContentType = 'application/json'
+                Method      = 'Delete'
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
+        }
     }
     end
     {

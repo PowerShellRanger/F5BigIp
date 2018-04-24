@@ -72,9 +72,15 @@ function New-F5Node
             }
             $body = $psObjectBody | ConvertTo-Json        
 
-            $uri = "https://$F5Name/mgmt/tm/ltm/node"
-            Write-Verbose "Invoke Rest Method to: $uri"
-            Invoke-RestMethod -Method POST -Uri $uri -Body $body -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/node"
+                ContentType = 'application/json'
+                Method      = 'POST'
+                Body        = $body
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
         }    
     }
     end
