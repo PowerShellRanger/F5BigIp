@@ -85,20 +85,26 @@ function New-F5Pool
                 'X-F5-Auth-Token' = $Token
             }
 
-            $poolInfo = @{
+            $psObjectBody =  @{
                 name = "$PoolName"
             }
             switch ($Monitor)
             {
-                "HTTP" {$poolInfo.Add("monitor", "/Common/http")}
-                "HTTPS" {$poolInfo.Add("monitor", "/Common/https_443")}
-                "Custom" {$poolInfo.Add("monitor", "/Common/$CustomMonitorName")}
+                "HTTP" {$psObjectBody.Add("monitor", "/Common/http")}
+                "HTTPS" {$psObjectBody.Add("monitor", "/Common/https_443")}
+                "Custom" {$psObjectBody.Add("monitor", "/Common/$CustomMonitorName")}
             }
-            $poolInfo = $poolInfo | ConvertTo-Json        
-
-            $url = "https://$F5Name/mgmt/tm/ltm/pool"
-            Write-Verbose "Invoke Rest Method to: $url"
-            Invoke-RestMethod -Method POST -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+            $body = $psObjectBody | ConvertTo-Json        
+            
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/pool"
+                ContentType = 'application/json'
+                Method      = 'POST'
+                Body        = $body
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
         }
     }
     end
