@@ -72,7 +72,7 @@ function New-F5SslCertificate
     {
     }
     process
-    {
+    {<# TODO: Rewrite so this works
         if ($PSCmdlet.ShouldProcess("Create new SSL Certificate: $CertificateName on F5: $F5Name"))
         {
             $errorAction = $ErrorActionPreference        
@@ -99,7 +99,7 @@ function New-F5SslCertificate
                     Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
                 }
             }
-        }
+        }#>
     }
     end
     {
