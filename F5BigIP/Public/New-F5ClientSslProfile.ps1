@@ -95,18 +95,24 @@ function New-F5ClientSslProfile
 
             $newCertificateName = $CertificateName.Replace(".crt", "")
 
-            $clientSslProfileInfo = @{
+            $psObjectBody = @{
                 name       = "$ClientSslProfileName"
                 cert       = "/Common/$($newCertificateName).crt"
                 key        = "/Common/$($newCertificateName).key"
                 chain      = "/Common/$($CABundleName)"
                 sniDefault = $DefaultSni  
             }            
-            $clientSslProfileInfo = $clientSslProfileInfo | ConvertTo-Json
+            $body = $psObjectBody | ConvertTo-Json
 
-            $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
-            Write-Verbose "Invoke Rest Method to: $url"
-            Invoke-RestMethod -Method POST -Uri $url -Body $clientSslProfileInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction    
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
+                ContentType = 'application/json'
+                Method      = 'POST'
+                Body        = $body
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
         }
     }
     end

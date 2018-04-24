@@ -16,8 +16,11 @@ InModuleScope -ModuleName $moduleName {
         
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
-        $nodeNameMock = "test1234"
-        $ipV4AddressMock = "127.0.0.1"
+        $clientSslProfileNameMock = "test1234"
+        $certificateNameMock = "testcert.crt"
+        $newCertificateNameMock = $CertificateNameMock.Replace(".crt", "")
+        $caBundleNameMock = "test-bundle.crt"
+        $defaultSniMock = $false
         
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
@@ -38,7 +41,8 @@ InModuleScope -ModuleName $moduleName {
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
 
-            $newNode = New-F5Node -F5Name $F5Name -Token $tokenMock -NodeName $nodeNameMock -IpV4Address $ipV4AddressMock -confirm:$false 
+            $newNode = New-F5ClientSslProfile -F5Name $F5Name -Token $tokenMock -ClientSslProfileName $clientSslProfileNameMock `
+                 -CertificateName $certificateNameMock -CABundleName $caBundleNameMock -DefaultSni $defaultSniMock -Confirm:$false
 
             It "Should return object with correct properties" {
                 $newNode | Should be $true
@@ -46,11 +50,16 @@ InModuleScope -ModuleName $moduleName {
                 
             It 'Assert each mock called 1 time' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
-                    $Uri -eq "https://$F5Name/mgmt/tm/ltm/node" `
+                    $Uri -eq "https://$F5Name/mgmt/tm/ltm/profile/client-ssl" `
                         -and $ContentType -eq 'application/json' `
                         -and $Method -eq 'POST' `
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
-                        -and $Headers.Values -eq $mockedHeaders.Values
+                        -and $Headers.Values -eq $mockedHeaders.Values `
+                        -and ($Body | ConvertFrom-Json).name -eq "$clientSslProfileNameMock" `
+                        -and ($Body | ConvertFrom-Json).cert -eq "/Common/$($newCertificateNameMock).crt" `
+                        -and ($Body | ConvertFrom-Json).key -eq "/Common/$($newCertificateNameMock).key" `
+                        -and ($Body | ConvertFrom-Json).chain -eq "/Common/$($caBundleNameMock)" `
+                        -and ($Body | ConvertFrom-Json).sniDefault -eq "$defaultSniMock"
                 } 
             }
         }   
