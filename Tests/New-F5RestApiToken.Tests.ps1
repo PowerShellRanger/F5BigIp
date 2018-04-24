@@ -24,11 +24,14 @@ InModuleScope -ModuleName $moduleName {
 
         Context 'Testing function calls Invoke-RestMethod' {
 
-            $tokenMock = ((65..90) + (97..122) | Get-Random -Count 20 | ForEach-Object {[char]$_}) -join ''
+            $tokenMock = ((65..90) + (97..122) | Get-Random -Count 20 | ForEach-Object {[char]$_}) -join ''            
             $mockedResponse = @{
-                UserName = $env:USERNAME
-                Token    = $tokenMock
+                Token =  @{
+                    UserName = $env:USERNAME
+                    Token    = $tokenMock
+                }                
             }
+
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $mockedResponse}
 
@@ -44,18 +47,25 @@ InModuleScope -ModuleName $moduleName {
 
             $newApiToken = New-F5RestApiToken -F5Name $F5Name -Credential $credential -Confirm:$false
 
-            It "Should return two objects with correct properties" {                
+            It "Should return two objects with correct properties" {                      
                 foreach ($property in $newApiToken.PSObject.Properties)
                 {
-                    $newApiToken.$property | Should Be $mockedResponse.$property
+                    $newApiToken.PSObject.Properties | gm
+                    Write-warning $property
+                    $newApiToken.$property | Should Be $mockedResponse.Token.$property
                 }
-            }
+            }        
 
-            It 'Assert each mock called 1 time' {                
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Uri -eq "https://$F5Name/mgmt/shared/authn/login"}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
-                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Body -eq $bodyMock}
+            It 'Assert each mock called 1 time' {                                
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+                    $Uri -eq "https://$F5Name/mgmt/shared/authn/login" `
+                    -and $ContentType -eq 'application/json' `
+                    -and $Method -eq 'Post' `
+                    -and $Body -eq $bodyMock
+                }                
+                #Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$ContentType -eq 'application/json'}
+                #Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Method -eq 'Post'}
+                #Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {$Body -eq $bodyMock}
             }
         }        
     }
