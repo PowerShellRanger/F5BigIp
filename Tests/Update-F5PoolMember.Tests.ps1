@@ -17,7 +17,7 @@ InModuleScope -ModuleName $moduleName {
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
         $poolNameMock = "test1234"
-        $memberObjectMock = @(
+        $psObjectBody = @(
             [PSCustomObject] @{
                 hostname = "TESTWEB01"
                 domain =  "think.dev"
@@ -29,7 +29,7 @@ InModuleScope -ModuleName $moduleName {
                 ipaddress = "127.0.0.2"                    
             }
         )
-        #$memberObjectMock = $psObjectBody | ConvertTo-Json
+        $memberObjectMock = $psObjectBody | ConvertTo-Json
         
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
@@ -60,7 +60,9 @@ InModuleScope -ModuleName $moduleName {
                         -and $ContentType -eq 'application/json' `
                         -and $Method -eq 'Patch' `
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
-                        -and $Headers.Values -eq $mockedHeaders.Values
+                        -and $Headers.Values -eq $mockedHeaders.Values `
+                        -and ($body | ConvertFrom-Json).Members[0].Hostname -eq "TESTWEB01" `
+                        -and ($body | ConvertFrom-Json).Members[1].Hostname -eq "TESTWEB02"
                 } 
             }
         }   

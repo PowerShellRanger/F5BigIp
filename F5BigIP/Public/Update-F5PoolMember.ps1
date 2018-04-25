@@ -60,11 +60,16 @@ function Update-F5PoolMember
             {
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
-
+            
             $headers = @{
                 'X-F5-Auth-Token' = $Token
             }
-            
+            $Members = $Members | ConvertFrom-Json
+            $psObjectBody = [PSCustomObject]@{
+                name = "$PoolName"
+                members = @()
+            }
+           
             foreach ($member in $Members)
             {
                 $psObjectBody.members += $member
