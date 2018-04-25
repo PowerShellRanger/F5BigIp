@@ -38,11 +38,21 @@ function Add-F5Pool
         [string]$PoolName,
 
         #Members of Pool to create
-        [Parameter(            
+        [Parameter(
+            Mandatory,            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]
-        [pscustomobject]$Members
+        [PSCustomObject]$Members,
+
+        # Type of Monitor
+        [Parameter(
+            Mandatory, 
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName
+        )]  
+        [ValidateSet('HTTP', 'HTTPS', 'Custom')]
+        $Monitor
     )
     begin
     {
@@ -65,8 +75,14 @@ function Add-F5Pool
             }
             else
             {
+                $splatNewF5Pool = @{
+                    F5Name   = $F5Name
+                    Token    = $Token
+                    PoolName = $PoolName
+                    Monitor  = $Monitor
+                }
                 Write-Verbose "Adding new pool"
-                New-F5Pool -F5Name $F5Name -Token $Token -PoolName $PoolName
+                New-F5Pool @splatNewF5Pool -Confirm:$false
             }
             
             Write-Verbose "Adding pool members"
@@ -88,7 +104,16 @@ function Add-F5Pool
                     $updatePoolMembers = $true
                 }
             }
-            if ($updatePoolMembers) {Update-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $PoolName -Members $newMembers}             
+
+            if ($updatePoolMembers) {
+                $splatUpdateF5PoolMember = @{
+                    F5Name   = $F5Name
+                    Token    = $Token
+                    PoolName = $PoolName
+                    Members  = $newMembers
+                }
+                Update-F5PoolMember @splatUpdateF5PoolMember -Confirm:$false
+            }             
         }        
     }
     end
