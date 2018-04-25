@@ -18,16 +18,16 @@ class VirtualServer
 
     VirtualServer () {}        
 
-    VirtualServer ([string]$virtualServer, [string]$virtualIpAddress)
+    VirtualServer ([string]$VirtualServer, [string]$VirtualIpAddress)
     {
-        $this.VirtualServer = $virtualServer
-        $this.VirtualIpAddress = $virtualIpAddress
+        $this.VirtualServer = $VirtualServer
+        $this.VirtualIpAddress = $VirtualIpAddress
     }
 
-    VirtualServer ([string]$virtualServer, [string]$virtualIpAddress, [ServicePort]$servicePort)
+    VirtualServer ([string]$VirtualServer, [string]$VirtualIpAddress, [ServicePort]$ServicePort)
     {
-        $this.VirtualServer = $virtualServer
-        $this.VirtualIpAddress = $virtualIpAddress
-        $this.ServicePort = $servicePort
+        $this.VirtualServer = $VirtualServer
+        $this.VirtualIpAddress = $VirtualIpAddress
+        $this.ServicePort = $ServicePort
     }
 }
