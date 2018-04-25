@@ -46,7 +46,7 @@ function Update-F5PoolMember
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
-        [pscustomobject]$Members   
+        [PSCustomObject]$Members   
     )
     begin
     {
@@ -64,22 +64,22 @@ function Update-F5PoolMember
             $headers = @{
                 'X-F5-Auth-Token' = $Token
             }
-
-            $poolInfo = [pscustomobject]@{
-                members = @(                
-                )
-            }
+            
             foreach ($member in $Members)
             {
-                $poolInfo.members += $member
+                $psObjectBody.members += $member
             }
-            $poolInfo         
-            $poolInfo = $poolInfo | ConvertTo-Json        
+            $body = $psObjectBody | ConvertTo-Json        
 
-            $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
-            Write-Verbose "Invoke Rest Method to: $url"
-            Write-Verbose "Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType ""application/json"" -ErrorAction $errorAction"
-            Invoke-RestMethod -Method Patch -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+            $splatInvokeRestMethod = @{
+                Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
+                ContentType = 'application/json'
+                Method      = 'Patch'
+                Body        = $body
+                Headers     = $headers
+                ErrorAction = $errorAction
+            }
+            Invoke-RestMethod @splatInvokeRestMethod
         }
     }
     end
