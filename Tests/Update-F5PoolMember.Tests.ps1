@@ -61,8 +61,12 @@ InModuleScope -ModuleName $moduleName {
                         -and $Method -eq 'Patch' `
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
                         -and $Headers.Values -eq $mockedHeaders.Values `
-                        -and ($body | ConvertFrom-Json).Members[0].Hostname -eq "TESTWEB01" `
-                        -and ($body | ConvertFrom-Json).Members[1].Hostname -eq "TESTWEB02"
+                        -and ($body | ConvertFrom-Json).Members[0].hostname -eq "TESTWEB01" `
+                        -and ($body | ConvertFrom-Json).Members[1].hostname -eq "TESTWEB02" `
+                        -and ($body | ConvertFrom-Json).Members[0].domain -eq "think.dev" `
+                        -and ($body | ConvertFrom-Json).Members[1].domain -eq "think.dev" `
+                        -and ($body | ConvertFrom-Json).Members[0].ipaddress -eq "127.0.0.1" `
+                        -and ($body | ConvertFrom-Json).Members[1].ipaddress -eq "127.0.0.2"
                 } 
             }
         }   
