@@ -39,7 +39,7 @@ InModuleScope -ModuleName $moduleName {
                 $cmdlet.Parameters.Members.Attributes.Mandatory | should be $true
             }
         }
-        <#
+        
         Context 'Testing function calls Invoke-RestMethod' {
 
             $mockedHeaders = @{
@@ -69,6 +69,6 @@ InModuleScope -ModuleName $moduleName {
                         -and ($body | ConvertFrom-Json).Members[1].ipaddress -eq "127.0.0.2"
                 } 
             }
-        }#>   
+        }
     }
 }
