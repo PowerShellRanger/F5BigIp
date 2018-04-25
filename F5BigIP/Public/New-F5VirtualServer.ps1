@@ -38,23 +38,16 @@ function New-F5VirtualServer
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]        
-        [string[]]$VirtualServer,
-
-        # Virtual IP Address
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName           
-        )]        
-        [string]$VirtualIpAddress
+        [VirtualServer[]]$VirtualServer        
     )
     begin
     {
     }
     process
     {
-        foreach ($virtualServ in $VirtualServer) 
+        foreach ($server in $VirtualServer)
         {
+            $server
             <# TODO: Need to finish
             if ($PSCmdlet.ShouldProcess("Creates new virtual server: $VirtualServer on F5: $F5Name"))
             { 
@@ -79,4 +72,3 @@ function New-F5VirtualServer
     {
     }
 }
-
