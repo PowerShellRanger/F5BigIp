@@ -38,21 +38,7 @@ function New-F5VirtualServer
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]        
-        [VirtualServer[]]$VirtualServer,
-
-        # Client SSL Profile Name
-        [Parameter(
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName           
-        )]        
-        [string]$ClientSslProfileName,
-
-        # Pool Name
-        [Parameter(
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName           
-        )]        
-        [string]$PoolName  
+        [VirtualServer[]]$VirtualServer
     )
     begin
     {
@@ -80,7 +66,7 @@ function New-F5VirtualServer
                     ipProtocol               = $server.ipProtocol                    
                 }                
 
-                if ($PoolName) {$hashtableBody.Add("pool", "/Common/$PoolName")}
+                if ($server.PoolName) {$hashtableBody.Add("pool", "/Common/$($server.PoolName)")}
 
                 $hashtableProfiles = @(
                     @{
@@ -114,10 +100,10 @@ function New-F5VirtualServer
                     {
                         $hashtableBody.Add("destination", "/Common/$($server.Destination):443")
                         $hashtableBody.Add("rules", @("/Common/Security", "/Common/Standard"))
-                        if ($ClientSslProfileName)
+                        if ($server.ClientSslProfileName)
                         {
                             $hashtableProfiles += @{
-                                name    = $ClientSslProfileName;
+                                name    = $server.ClientSslProfileName;
                                 context = "clientside";
                                 kind    = "ltm:virtual:profile";
                             }
@@ -133,7 +119,7 @@ function New-F5VirtualServer
                 $hashtableBody.Add("profiles", $hashtableProfiles)
 
                 $body = $hashtableBody | ConvertTo-Json 
-                
+                write-verbose $body
                 $splatInvokeRestMethod = @{
                     Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
                     ContentType = 'application/json'
