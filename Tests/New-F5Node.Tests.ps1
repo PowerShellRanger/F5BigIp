@@ -35,11 +35,16 @@ InModuleScope -ModuleName $moduleName {
             }
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
-
-            $newNode = New-F5Node -F5Name $F5Name -Token $tokenMock -NodeName $nodeNameMock -IpV4Address $ipV4AddressMock -confirm:$false 
+            $splatNewF5Node = @{
+                F5Name   = $F5Name
+                Token    = $tokenMock
+                NodeName = $nodeNameMock
+                IpV4Address  = $ipV4AddressMock
+            }
+            $return = New-F5Node @splatNewF5Node -confirm:$false 
 
             It "Should return object with correct properties" {
-                $newNode | Should be $true
+                $return | Should be $true
             }
                 
             It 'Assert each mock called 1 time' {
