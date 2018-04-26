@@ -16,6 +16,8 @@ InModuleScope -ModuleName $moduleName {
         
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
+        $servicePortMock = "HTTPS"
+
         $virtualServerMock = [VirtualServer] @{
             name        = "test1234"
             destination = "127.0.0.1"
@@ -56,17 +58,21 @@ InModuleScope -ModuleName $moduleName {
                         -and $ContentType -eq 'application/json' `
                         -and $Method -eq 'Post' `
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
-                        -and $Headers.Values -eq $mockedHeaders.Values #`
-                        #-and ($Body | ConvertFrom-Json).Name -eq $virtualServerMock.name `
-                        #-and ($Body | ConvertFrom-Json).Destination -eq $virtualServerMock.destination `
-                        #-and ($Body | ConvertFrom-Json).ServicePort -eq $virtualServerMock.ServicePort `
-                        #-and ($Body | ConvertFrom-Json).Source -eq "0.0.0.0/0"
+                        -and $Headers.Values -eq $mockedHeaders.Values `
+                        -and ($Body | ConvertFrom-Json).Name -eq $virtualServerMock.name `
+                        -and ($Body | ConvertFrom-Json).Destination -eq "/Common/$($virtualServerMock.destination):443" `
+                        -and ($Body | ConvertFrom-Json).profiles[0].name -eq "http"
                 } 
             }
-
         }
         
-        Context 'Testing function calls New-F5VirtualServer w/PoolName' {
+        Context 'Testing function calls New-F5VirtualServer with HTTP port' {
+            
+            $virtualServerMock = [VirtualServer] @{
+                name        = "test1234"
+                destination = "127.0.0.1"
+                servicePort = "HTTP"
+            }
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
 
@@ -74,12 +80,42 @@ InModuleScope -ModuleName $moduleName {
                 F5Name        = $F5Name
                 Token         = $tokenMock
                 VirtualServer = $virtualServerMock
-                PoolName      = "TestPool"
             }
             $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
             
             It "Should return object with correct properties" {
                 $return | Should be $true
+            }
+
+            It 'Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected' {
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+                    ($Body | ConvertFrom-Json).Destination -eq "/Common/$($virtualServerMock.destination):80"
+                } 
+            }
+        }        
+        
+        Context 'Testing function calls New-F5VirtualServer w/PoolName' {
+
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+            
+            $poolNameMock = "TestPool"
+
+            $splatNewF5VirtualServer = @{
+                F5Name        = $F5Name
+                Token         = $tokenMock
+                VirtualServer = $virtualServerMock
+                PoolName      = $poolNameMock
+            }
+            $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
+            
+            It "Should return object with correct properties" {
+                $return | Should be $true
+            }
+
+            It 'Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected' {
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+                   ($Body | ConvertFrom-Json).pool -eq "/Common/$poolNameMock"
+                } 
             }
         }
         
@@ -87,17 +123,25 @@ InModuleScope -ModuleName $moduleName {
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
 
+            $clientSslProfileNameMock = "TestClientSSLProfile"
+
             $splatNewF5VirtualServer = @{
                 F5Name               = $F5Name
                 Token                = $tokenMock
                 VirtualServer        = $virtualServerMock
-                ClientSSLProfileName = "TestClientSSLProfile"
+                ClientSSLProfileName = $clientSslProfileNameMock
             }
             $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
             
             It "Should return object with correct properties" {
                 $return | Should be $true
             }
+
+            It 'Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected' {
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+                   ($Body | ConvertFrom-Json).profiles | Where-Object { $_.Name -like $clientSslProfileNameMock} 
+                } 
+            }            
         }        
     }
 }
