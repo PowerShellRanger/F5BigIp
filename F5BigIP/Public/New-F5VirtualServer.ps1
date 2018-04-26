@@ -38,7 +38,14 @@ function New-F5VirtualServer
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]        
-        [VirtualServer[]]$VirtualServer        
+        [VirtualServer[]]$VirtualServer,
+
+        # Pool Name
+        [Parameter(
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName           
+        )]        
+        [string]$PoolName        
     )
     begin
     {
@@ -47,9 +54,7 @@ function New-F5VirtualServer
     {
         foreach ($server in $VirtualServer)
         {
-            $server
-            <# TODO: Need to finish
-            if ($PSCmdlet.ShouldProcess("Creates new virtual server: $VirtualServer on F5: $F5Name"))
+            if ($PSCmdlet.ShouldProcess("Creates new virtual server: $Name on F5: $F5Name"))
             { 
                 $errorAction = $ErrorActionPreference        
                 if ($PSBoundParameters["ErrorAction"])
@@ -59,13 +64,40 @@ function New-F5VirtualServer
 
                 $headers = @{
                     'X-F5-Auth-Token' = $Token
-                }        
+                }
+                
+                $psObjectBody = @{
+                    name    = $server.Name
+                    source = "0.0.0.0/0"
+                    sourceAddressTranslation = @{type = "automap"}
+                    ipProtocol = "tcp"                    
+                }                
 
-                $url = "https://$F5Name/mgmt/tm/ltm/pool"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method POST -Uri $url -Body $poolInfo -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                if($PoolName){$psObjectBody.Add("pool", "/Common/$PoolName")}
+
+                switch("$($server.ServicePort)"){
+                    "HTTP"{
+                        $psObjectBody.Add("destination", "/Common/$($server.Destination):80")
+                        $psObjectBody.Add("rules", @("/Common/_sys_https_redirect"))
+                    }
+                    default{
+                        $psObjectBody.Add("destination", "/Common/$($server.Destination):443")
+                        $psObjectBody.Add("rules",  @("/Common/Security","/Common/Standard"))
+                    }
+                }
+
+                $body = $psObjectBody | ConvertTo-Json 
+                
+                $splatInvokeRestMethod = @{
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/virtual-address"
+                    ContentType = 'application/json'
+                    Method      = 'POST'
+                    Body        = $body
+                    Headers     = $headers
+                    ErrorAction = $errorAction
+                }
+                Invoke-RestMethod @splatInvokeRestMethod
             }
-            #>
         }
     }
     end

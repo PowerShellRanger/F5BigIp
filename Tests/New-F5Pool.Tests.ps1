@@ -34,11 +34,16 @@ InModuleScope -ModuleName $moduleName {
             }
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
-
-            $newPool = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "HTTPS" -confirm:$false 
+            $splatNewF5Pool = @{
+                F5Name   = $F5Name
+                Token    = $tokenMock
+                PoolName = $poolNameMock
+                Monitor  = "HTTPS"
+            }
+            $return = New-F5Pool @splatNewF5Pool -confirm:$false 
 
             It "Should return object with correct properties" {
-                $newPool | Should be $true
+                $return | Should be $true
             }
                 
             It 'Assert each mock called 1 time' {
@@ -60,7 +65,14 @@ InModuleScope -ModuleName $moduleName {
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
 
-            $null = New-F5Pool -F5Name $F5Name -Token $tokenMock -PoolName $poolNameMock -Monitor "Custom" -CustomMonitorName $customMonitorNameMocked -confirm:$false 
+            $splatNewF5Pool = @{
+                F5Name   = $F5Name
+                Token    = $tokenMock
+                PoolName = $poolNameMock
+                Monitor  = "Custom"
+                CustomMonitorName = $customMonitorNameMocked
+            }
+            $null = New-F5Pool @splatNewF5Pool -confirm:$false 
 
             It 'Assert each mock called 1 time' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
