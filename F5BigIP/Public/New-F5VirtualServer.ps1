@@ -58,68 +58,10 @@ function New-F5VirtualServer
                 $headers = @{
                     'X-F5-Auth-Token' = $Token
                 }
-                
-                $hashtableBody = @{
-                    name                     = $server.Name
-                    source                   = $server.source
-                    sourceAddressTranslation = $server.sourceAddressTranslation
-                    ipProtocol               = $server.ipProtocol                    
-                }                
+                                
 
-                if ($server.PoolName) {$hashtableBody.Add("pool", "/Common/$($server.PoolName)")}
-
-                $hashtableProfiles = @(
-                    @{
-                        name = "http";
-                        kind = "ltm:virtual:profile";
-                    },
-                    @{
-                        name    = "tcp-lan-optimized";
-                        context = "clientside";
-                        kind    = "ltm:virtual:profile";
-                    },
-                    @{
-                        name    = "tcp-wan-optimized";
-                        context = "serverside";
-                        kind    = "ltm:virtual:profile";
-                    },
-                    @{
-                        name = "wan-optimized-compression";
-                        kind = "ltm:virtual:profile";
-                    }
-                )
-
-                switch ("$($server.ServicePort)")
-                {
-                    "HTTP"
-                    {
-                        $hashtableBody.Add("destination", "/Common/$($server.Destination):80")
-                        $hashtableBody.Add("rules", @("/Common/_sys_https_redirect"))
-                    }
-                    default
-                    {
-                        $hashtableBody.Add("destination", "/Common/$($server.Destination):443")
-                        $hashtableBody.Add("rules", @("/Common/Security", "/Common/Standard"))
-                        if ($server.ClientSslProfileName)
-                        {
-                            $hashtableProfiles += @{
-                                name    = $server.ClientSslProfileName;
-                                context = "clientside";
-                                kind    = "ltm:virtual:profile";
-                            }
-                        }
-                        $hashtableProfiles += @{
-                            name    = "serverssl";
-                            context = "serverside";
-                            kind    = "ltm:virtual:profile"                    
-                        }   
-                        
-                    }
-                }
-                $hashtableBody.Add("profiles", $hashtableProfiles)
-
-                $body = $hashtableBody | ConvertTo-Json 
-                write-verbose $body
+                $body = $server | ConvertTo-Json 
+                Write-Verbose $body
                 $splatInvokeRestMethod = @{
                     Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
                     ContentType = 'application/json'
