@@ -40,12 +40,19 @@ function New-F5VirtualServer
         )]        
         [VirtualServer[]]$VirtualServer,
 
+        # Client SSL Profile Name
+        [Parameter(
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName           
+        )]        
+        [string]$ClientSslProfileName,
+
         # Pool Name
         [Parameter(
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]        
-        [string]$PoolName        
+        [string]$PoolName  
     )
     begin
     {
@@ -66,30 +73,69 @@ function New-F5VirtualServer
                     'X-F5-Auth-Token' = $Token
                 }
                 
-                $psObjectBody = @{
-                    name    = $server.Name
-                    source = "0.0.0.0/0"
-                    sourceAddressTranslation = @{type = "automap"}
-                    ipProtocol = "tcp"                    
+                $hashtableBody = @{
+                    name                     = $server.Name
+                    source                   = $server.source
+                    sourceAddressTranslation = $server.sourceAddressTranslation
+                    ipProtocol               = $server.ipProtocol                    
                 }                
 
-                if($PoolName){$psObjectBody.Add("pool", "/Common/$PoolName")}
+                if ($PoolName) {$hashtableBody.Add("pool", "/Common/$PoolName")}
 
-                switch("$($server.ServicePort)"){
-                    "HTTP"{
-                        $psObjectBody.Add("destination", "/Common/$($server.Destination):80")
-                        $psObjectBody.Add("rules", @("/Common/_sys_https_redirect"))
+                $hashtableProfiles = @(
+                    @{
+                        name = "http";
+                        kind = "ltm:virtual:profile";
+                    },
+                    @{
+                        name    = "tcp-lan-optimized";
+                        context = "clientside";
+                        kind    = "ltm:virtual:profile";
+                    },
+                    @{
+                        name    = "tcp-wan-optimized";
+                        context = "serverside";
+                        kind    = "ltm:virtual:profile";
+                    },
+                    @{
+                        name = "wan-optimized-compression";
+                        kind = "ltm:virtual:profile";
                     }
-                    default{
-                        $psObjectBody.Add("destination", "/Common/$($server.Destination):443")
-                        $psObjectBody.Add("rules",  @("/Common/Security","/Common/Standard"))
+                )
+
+                switch ("$($server.ServicePort)")
+                {
+                    "HTTP"
+                    {
+                        $hashtableBody.Add("destination", "/Common/$($server.Destination):80")
+                        $hashtableBody.Add("rules", @("/Common/_sys_https_redirect"))
+                    }
+                    default
+                    {
+                        $hashtableBody.Add("destination", "/Common/$($server.Destination):443")
+                        $hashtableBody.Add("rules", @("/Common/Security", "/Common/Standard"))
+                        if ($ClientSslProfileName)
+                        {
+                            $hashtableProfiles += @{
+                                name    = $ClientSslProfileName;
+                                context = "clientside";
+                                kind    = "ltm:virtual:profile";
+                            }
+                        }
+                        $hashtableProfiles += @{
+                            name    = "serverssl";
+                            context = "serverside";
+                            kind    = "ltm:virtual:profile"                    
+                        }   
+                        
                     }
                 }
+                $hashtableBody.Add("profiles", $hashtableProfiles)
 
-                $body = $psObjectBody | ConvertTo-Json 
+                $body = $hashtableBody | ConvertTo-Json 
                 
                 $splatInvokeRestMethod = @{
-                    Uri         = "https://$F5Name/mgmt/tm/ltm/virtual-address"
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
                     ContentType = 'application/json'
                     Method      = 'POST'
                     Body        = $body

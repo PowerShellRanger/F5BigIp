@@ -17,9 +17,9 @@ InModuleScope -ModuleName $moduleName {
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
         $virtualServerMock = [VirtualServer] @{
-            Name    = "test1234"
-            Destination = "127.0.0.1"
-            ServicePort      = "HTTPS"
+            name        = "test1234"
+            destination = "127.0.0.1"
+            servicePort = "HTTPS"
         }
 
         Context "Testing Parameters" {
@@ -49,20 +49,55 @@ InModuleScope -ModuleName $moduleName {
                 $return | Should be $true
             }
             
-            <#
-            It 'Assert each mock called 1 time and validate paramters stay as expected' {
+
+            It 'Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
-                    $Uri -eq "https://$F5Name/mgmt/tm/ltm/virtual-address" `
+                    $Uri -eq "https://$F5Name/mgmt/tm/ltm/virtual" `
                         -and $ContentType -eq 'application/json' `
                         -and $Method -eq 'Post' `
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
-                        -and $Headers.Values -eq $mockedHeaders.Values `
-                        -and ($Body | ConvertFrom-Json).name -eq "$($virtualServerMock.VirtualServer)" `
-                        -and ($Body | ConvertFrom-Json).destination -eq "/Common/$($virtualServerMock.VirtualIpAddress)" `
-                        -and ($Body | ConvertFrom-Json).ServicePort -eq "$($virtualServerMock.ServicePort)"
+                        -and $Headers.Values -eq $mockedHeaders.Values #`
+                        #-and ($Body | ConvertFrom-Json).Name -eq $virtualServerMock.name `
+                        #-and ($Body | ConvertFrom-Json).Destination -eq $virtualServerMock.destination `
+                        #-and ($Body | ConvertFrom-Json).ServicePort -eq $virtualServerMock.ServicePort `
+                        #-and ($Body | ConvertFrom-Json).Source -eq "0.0.0.0/0"
                 } 
             }
-            #>            
-        }   
+
+        }
+        
+        Context 'Testing function calls New-F5VirtualServer w/PoolName' {
+
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+
+            $splatNewF5VirtualServer = @{
+                F5Name        = $F5Name
+                Token         = $tokenMock
+                VirtualServer = $virtualServerMock
+                PoolName      = "TestPool"
+            }
+            $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
+            
+            It "Should return object with correct properties" {
+                $return | Should be $true
+            }
+        }
+        
+        Context 'Testing function calls New-F5VirtualServer w/ClientSSLProfileName' {
+
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+
+            $splatNewF5VirtualServer = @{
+                F5Name               = $F5Name
+                Token                = $tokenMock
+                VirtualServer        = $virtualServerMock
+                ClientSSLProfileName = "TestClientSSLProfile"
+            }
+            $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
+            
+            It "Should return object with correct properties" {
+                $return | Should be $true
+            }
+        }        
     }
 }
