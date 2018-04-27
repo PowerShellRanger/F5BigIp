@@ -22,7 +22,7 @@ InModuleScope -ModuleName $moduleName {
         $caBundleNameMock = "test-bundle.crt"
         $defaultSniMock = $false
         
-        Context "Testing Parameters" {
+        Context 'Validating mandatory parameters' {
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.Token.Attributes.Mandatory | should be $true
@@ -33,7 +33,7 @@ InModuleScope -ModuleName $moduleName {
             }
         }
 
-        Context 'Testing function calls Invoke-RestMethod' {
+        Context 'Testing function - Calls New-F5ClientSslProfile' {
 
             $mockedHeaders = @{
                 'X-F5-Auth-Token' = $tokenMock
@@ -44,11 +44,11 @@ InModuleScope -ModuleName $moduleName {
             $newNode = New-F5ClientSslProfile -F5Name $F5Name -Token $tokenMock -ClientSslProfileName $clientSslProfileNameMock `
                  -CertificateName $certificateNameMock -CABundleName $caBundleNameMock -DefaultSni $defaultSniMock -Confirm:$false
 
-            It "Should return object with correct properties" {
+            It 'Validating function returns values' {
                 $newNode | Should be $true
             }
                 
-            It 'Assert each mock called 1 time' {
+            It 'Validating Invoke-RestMethod parameters in function' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
                     $Uri -eq "https://$F5Name/mgmt/tm/ltm/profile/client-ssl" `
                         -and $ContentType -eq 'application/json' `

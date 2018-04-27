@@ -46,7 +46,7 @@ InModuleScope -ModuleName $moduleName {
                 $return | Should be $true
             }
                 
-            It 'Assert each mock called 1 time' {
+            It 'Validating Invoke-RestMethod parameters in function' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
                     $Uri -eq "https://$F5Name/mgmt/tm/ltm/pool" `
                         -and $ContentType -eq 'application/json' `
@@ -74,7 +74,7 @@ InModuleScope -ModuleName $moduleName {
             }
             $null = New-F5Pool @splatNewF5Pool -confirm:$false 
 
-            It 'Assert each mock called 1 time' {
+            It 'Validating Invoke-RestMethod parameters in function' {
                 Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
                     ($Body | ConvertFrom-Json).monitor -eq "/Common/$customMonitorNameMocked"
                 } 
