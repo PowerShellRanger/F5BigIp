@@ -38,14 +38,14 @@ function New-F5VirtualServer
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]        
-        $VirtualServer
+        [F5VirtualServer[]]$F5VirtualServer
     )
     begin
     {
     }
     process
     {
-        foreach ($server in $VirtualServer)
+        foreach ($server in $F5VirtualServer)
         {
             if ($PSCmdlet.ShouldProcess("Creates new virtual server: $Name on F5: $F5Name"))
             { 

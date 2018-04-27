@@ -38,16 +38,7 @@ function New-F5Pool
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
-        [string]$PoolName,
-
-        # Type of Monitor
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]  
-        [ValidateSet('HTTP', 'HTTPS', 'Custom')]
-        $Monitor
+        $F5Pool
     )
    
     DynamicParam

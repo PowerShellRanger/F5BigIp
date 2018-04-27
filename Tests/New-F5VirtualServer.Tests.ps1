@@ -18,13 +18,13 @@ InModuleScope -ModuleName $moduleName {
         $F5Name = 'foo'
         $servicePortMock = "HTTP"
 
-        $virtualServerMock = [VirtualServer]::New("test1234","127.0.0.1")
+        $virtualServerMock = [F5VirtualServer]::New("test1234","127.0.0.1")
 
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.Token.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.VirtualServer.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.F5VirtualServer.Attributes.Mandatory | should be $true
             }
         }
 
@@ -39,7 +39,7 @@ InModuleScope -ModuleName $moduleName {
             $splatNewF5VirtualServer = @{
                 F5Name        = $F5Name
                 Token         = $tokenMock
-                VirtualServer = $virtualServerMock
+                F5VirtualServer = $virtualServerMock
             }
             $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
             
@@ -71,7 +71,7 @@ InModuleScope -ModuleName $moduleName {
             $splatNewF5VirtualServer = @{
                 F5Name        = $F5Name
                 Token         = $tokenMock
-                VirtualServer = $virtualServerMock
+                F5VirtualServer = $virtualServerMock
             }
             $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
             
@@ -96,7 +96,7 @@ InModuleScope -ModuleName $moduleName {
             $splatNewF5VirtualServer = @{
                 F5Name        = $F5Name
                 Token         = $tokenMock
-                VirtualServer = $virtualServerMock
+                F5VirtualServer = $virtualServerMock
             }
             $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
             
@@ -115,14 +115,14 @@ InModuleScope -ModuleName $moduleName {
             $virtualServerMock.ServicePort = "HTTPS"
             $clientSslProfileNameMock = "TestClientSSLProfile"
             $virtualServerMock.ClientSSLProfileName = $clientSslProfileNameMock
-            $virtualServerMock.Profiles = [VirtualServer]::GetProfiles($clientSslProfileNameMock,$virtualServerMock.ServicePort)
+            $virtualServerMock.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileNameMock,$virtualServerMock.ServicePort)
             
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}
 
             $splatNewF5VirtualServer = @{
                 F5Name               = $F5Name
                 Token                = $tokenMock
-                VirtualServer        = $virtualServerMock
+                F5VirtualServer        = $virtualServerMock
             }
             $return = New-F5VirtualServer @splatNewF5VirtualServer -confirm:$false
             
