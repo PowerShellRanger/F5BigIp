@@ -1,16 +1,4 @@
 
-class IpAddress 
-{
-    # IP Address
-    [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]        
-    [string]$IpAddress
-
-    IpAddress ([string]$ip)
-    {
-        $this.IpAddress = $ip
-    }
-}
-
 class VirtualServer
 {
     # Virtual Server Name 
@@ -35,7 +23,7 @@ class VirtualServer
     [string]$IpProtocol = 'TCP'
 
     # Pool Name
-    # /Comon/$pool
+    # /Common/$pool
     [string]$Pool
 
     # Client SSL Profile Name    
@@ -47,41 +35,56 @@ class VirtualServer
     # Rules
     [array]$Rules
 
-    VirtualServer () {}    
+    #VirtualServer () {}
 
-    VirtualServer ([string]$name, [IpAddress]$vip)
+    VirtualServer ([string]$name, [IpAddress]$ip)
     {
         $this.Name = $name
-        $this.Destination = [VirtualServer]::GetDestination($vip, $this.ServicePort)
+        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
         $this.Rules = [VirtualServer]::GetRules($this.ServicePort)
         $this.Profiles = [VirtualServer]::GetProfiles($this.ClientSslProfileName, $this.ServicePort)
     }
 
-    VirtualServer ([string]$name, [IpAddress]$vip, [string]$clientSslProfileName)
+    VirtualServer ([string]$name, [IpAddress]$ip, [string]$clientSslProfileName)
     {
         $this.Name = $name
-        $this.Destination = [VirtualServer]::GetDestination($vip, $this.ServicePort)
+        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
         $this.ServicePort = $this.ServicePort
         $this.ClientSslProfileName = $clientSslProfileName
         $this.Rules = [VirtualServer]::GetRules($this.ServicePort)
         $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $this.ServicePort)
     }
 
-    VirtualServer ([string]$name, [IpAddress]$vip, [string]$servicePort, [string]$clientSslProfileName)
+    VirtualServer ([string]$name, [IpAddress]$ip, [string]$servicePort, [string]$clientSslProfileName)
     {
         $this.Name = $name
-        $this.Destination = [VirtualServer]::GetDestination($vip, $servicePort)
+        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
         $this.ServicePort = $servicePort
         $this.ClientSslProfileName = $clientSslProfileName
         $this.Rules = [VirtualServer]::GetRules($servicePort)
         $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
     }
 
-    static [string] GetDestination([string]$destination, [string]$servicePort)
+    VirtualServer ([string]$name, [string]$source, [IpAddress]$ip, [string]$servicePort,
+        [snat]$snat, [string]$ipProtocol, [string]$pool, [string]$clientSslProfileName)
+    {
+        $this.Name = $name
+        $this.Source = $source
+        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
+        $this.ServicePort = $servicePort
+        $this.SourceAddressTranslation = @{type = $snat.SourceAddressTranslation}
+        $this.IpProtocol = $ipProtocol
+        $this.Pool = "/Common/$pool"
+        $this.ClientSslProfileName = $clientSslProfileName
+        $this.Rules = [VirtualServer]::GetRules($servicePort)
+        $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
+    }
+
+    static [string] GetDestination([IpAddress]$ip, [string]$servicePort)
     {                
-        if ($servicePort -eq 'HTTP') {return "/Common/$($destination):80"}
+        if ($servicePort -eq 'HTTP') {return "/Common/$($ip.IpAddress):80"}
         
-        return "/Common/$($destination):443"
+        return "/Common/$($ip.IpAddress):443"
     }
 
     static [string[]] GetRules([string]$servicePort)
@@ -136,5 +139,30 @@ class VirtualServer
         }
 
         return $_profiles
+    }
+}
+
+
+class IpAddress 
+{
+    # IP Address
+    [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]        
+    [string]$IpAddress
+
+    IpAddress ([string]$ip)
+    {
+        $this.IpAddress = $ip
+    }
+}
+
+class snat
+{
+    # Source Address Translation
+    [ValidateSet('SNAT', 'AutoMap', 'None')]
+    [string]$SourceAddressTranslation
+
+    snat ([string]$snat)
+    {
+        $this.SourceAddressTranslation = $snat
     }
 }
