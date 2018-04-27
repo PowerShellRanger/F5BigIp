@@ -1,21 +1,14 @@
-enum ServicePort
-{
-    HTTP
-    HTTPS
-}
 
-enum SourceAddressTranslation
+class IpAddress 
 {
-    SNAT
-    AutoMap
-    None
-}
+    # IP Address
+    [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]        
+    [string]$IpAddress
 
-enum IpProtocol
-{
-    TCP
-    UDP
-    SCTP
+    IpAddress ([string]$ip)
+    {
+        $this.IpAddress = $ip
+    }
 }
 
 class VirtualServer
@@ -27,119 +20,80 @@ class VirtualServer
     # TODO: Add Validate Pattern for IP and Mask
     [string]$Source = '0.0.0.0/0'
 
-    # Virtual IP Address
-    [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]
+    # Virtual IP Address    
     [string]$Destination
 
     # Virtual Server Type (HTTP / HTTPS)
-    [ServicePort]$ServicePort = 'HTTPS'
+    [ValidateSet('HTTP', 'HTTPS')]
+    [string]$ServicePort = 'HTTPS'
 
-    # Source Address Translation
-    [SourceAddressTranslation]$SourceAddressTranslation = 'AutoMap'
+    # Source Address Translation    
+    [hashtable]$SourceAddressTranslation = @{type = 'AutoMap'}
 
     # Protocol
-    [IpProtocol]$IpProtocol = 'TCP'
+    [ValidateSet('TCP', 'UDP', 'SCTP')]
+    [string]$IpProtocol = 'TCP'
 
     # Pool Name
-    [string]$PoolName
+    # /Comon/$pool
+    [string]$Pool
 
     # Client SSL Profile Name    
     [string]$ClientSslProfileName
 
-    # Body Hashtable for API
-    [hashtable]$Body
+    # Profiles
+    [hashtable[]]$Profiles
 
+    # Rules
+    [array]$Rules
 
     VirtualServer () {}    
 
-    VirtualServer ([string]$Name, [string]$Destination)        
+    VirtualServer ([string]$name, [IpAddress]$vip)
     {
-        $this.Name = $Name
-        $this.Destination = $Destination                
-        $this.Body = [VirtualServer]::GenerateBody($this.Name, $this.Source, $this.SourceAddressTranslation, 
-            $this.IpProtocol, $this.ClientSslProfileName, $this.ServicePort, $this.PoolName, $this.Destination)
+        $this.Name = $name
+        $this.Destination = [VirtualServer]::GetDestination($vip, $this.ServicePort)
+        $this.Rules = [VirtualServer]::GetRules($this.ServicePort)
+        $this.Profiles = [VirtualServer]::GetProfiles($this.ClientSslProfileName, $this.ServicePort)
     }
 
-    VirtualServer ([string]$Name, [string]$Source, [string]$Destination, [ServicePort]$ServicePort,
-        [SourceAddressTranslation]$SourceAddressTranslation, [IpProtocol]$IpProtocol)
+    VirtualServer ([string]$name, [IpAddress]$vip, [string]$clientSslProfileName)
     {
-        $this.Name = $Name
-        $this.Source = $Source
-        $this.Destination = $Destination
-        $this.ServicePort = $ServicePort
-        $this.SourceAddressTranslation = $SourceAddressTranslation
-        $this.IpProtocol = $IpProtocol
-        $this.Body = [VirtualServer]::GenerateBody($this.Name, $this.Source, $this.SourceAddressTranslation, 
-            $this.IpProtocol, $this.ClientSslProfileName, $this.ServicePort, $this.PoolName, $this.Destination)
+        $this.Name = $name
+        $this.Destination = [VirtualServer]::GetDestination($vip, $this.ServicePort)
+        $this.ServicePort = $this.ServicePort
+        $this.ClientSslProfileName = $clientSslProfileName
+        $this.Rules = [VirtualServer]::GetRules($this.ServicePort)
+        $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $this.ServicePort)
     }
 
-    VirtualServer ([string]$Name, [string]$Source, [string]$Destination, [ServicePort]$ServicePort,
-        [SourceAddressTranslation]$SourceAddressTranslation, [IpProtocol]$IpProtocol,
-        [string]$PoolName)
+    VirtualServer ([string]$name, [IpAddress]$vip, [string]$servicePort, [string]$clientSslProfileName)
     {
-        $this.Name = $Name
-        $this.Source = $Source
-        $this.Destination = $Destination
-        $this.ServicePort = $ServicePort
-        $this.SourceAddressTranslation = $SourceAddressTranslation
-        $this.IpProtocol = $IpProtocol
-        $this.PoolName = $PoolName
-        $this.Body = [VirtualServer]::GenerateBody($this.Name, $this.Source, $this.SourceAddressTranslation, 
-            $this.IpProtocol, $this.ClientSslProfileName, $this.ServicePort, $this.PoolName, $this.Destination)
+        $this.Name = $name
+        $this.Destination = [VirtualServer]::GetDestination($vip, $servicePort)
+        $this.ServicePort = $servicePort
+        $this.ClientSslProfileName = $clientSslProfileName
+        $this.Rules = [VirtualServer]::GetRules($servicePort)
+        $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
     }
 
-    VirtualServer ([string]$Name, [string]$Source, [string]$Destination, [ServicePort]$ServicePort,
-        [SourceAddressTranslation]$SourceAddressTranslation, [IpProtocol]$IpProtocol,
-        [string]$PoolName, [string]$ClientSslProfileName)
-    {
-        $this.Name = $Name
-        $this.Source = $Source
-        $this.Destination = $Destination
-        $this.ServicePort = $ServicePort
-        $this.SourceAddressTranslation = $SourceAddressTranslation
-        $this.IpProtocol = $IpProtocol
-        $this.PoolName = $PoolName
-        $this.ClientSslProfileName = $ClientSslProfileName
-        $this.Body = [VirtualServer]::GenerateBody($this.Name, $this.Source, $this.SourceAddressTranslation, 
-            $this.IpProtocol, $this.ClientSslProfileName, $this.ServicePort, $this.PoolName, $this.Destination)
-    }
-
-    static [hashtable] GenerateBody([string]$name, [string]$source, 
-        [SourceAddressTranslation]$sourceAddressTranslation, [IpProtocol]$ipProtocol, [string]$clientSslProfileName, 
-        [ServicePort]$servicePort, [string]$poolName, [string]$destination)
-    {
-        $hashtableBody = @{
-            name                     = $name
-            source                   = $source
-            sourceAddressTranslation = $sourceAddressTranslation
-            ipProtocol               = $ipProtocol                    
-        }
-
-        if ($poolName) {$hashtableBody.Add("pool", "/Common/$poolName)")}
-
-        switch ($servicePort)
-        {
-            "HTTP"
-            {
-                $hashtableBody.Add("destination", "/Common/$($destination):80")
-                $hashtableBody.Add("rules", @("/Common/_sys_https_redirect"))
-            }
-            default
-            {
-                $hashtableBody.Add("destination", "/Common/$($destination):443")
-                $hashtableBody.Add("rules", @("/Common/Security", "/Common/Standard"))
-            }
-        }
-
-        $profiles = [VirtualServer]::GenerateProfiles($clientSslProfileName, $servicePort)
-        $hashtableBody.Add("profiles", $profiles)
+    static [string] GetDestination([string]$destination, [string]$servicePort)
+    {                
+        if ($servicePort -eq 'HTTP') {return "/Common/$($destination):80"}
         
-        return $hashtableBody
+        return "/Common/$($destination):443"
     }
 
-    static [System.Collections.Generic.List[hashtable]] GenerateProfiles([string]$clientSslProfileName, [ServicePort]$servicePort)
+    static [string[]] GetRules([string]$servicePort)
+    {                
+        if ($servicePort -eq 'HTTP') {return "/Common/_sys_https_redirect"}
+
+        return @("/Common/Security", "/Common/Standard")
+    }
+
+    static [hashtable[]] GetProfiles([string]$clientSslProfileName, [string]$servicePort)
     {
-        $profiles = New-Object 'System.Collections.Generic.List[hashtable]'                
+        $_profiles = New-Object 'System.Collections.Generic.List[hashtable]'                
         $hashtableProfiles = 
         @{
             name = "http"
@@ -159,7 +113,7 @@ class VirtualServer
             name = "wan-optimized-compression"
             kind = "ltm:virtual:profile"
         }
-        $hashtableProfiles | ForEach-Object { $profiles.Add($_) }
+        $hashtableProfiles | ForEach-Object { $_profiles.Add($_) }
 
         if ($clientSslProfileName)
         {
@@ -168,7 +122,7 @@ class VirtualServer
                 context = "clientside"
                 kind    = "ltm:virtual:profile"
             }
-            $profiles.Add($profile)
+            $_profiles.Add($profile)
         }
 
         if ($servicePort -ne 'HTTP')
@@ -178,9 +132,9 @@ class VirtualServer
                 context = "serverside";
                 kind    = "ltm:virtual:profile"                    
             }
-            $profiles.Add($profile)
+            $_profiles.Add($profile)
         }
 
-        return $profiles
+        return $_profiles
     }
 }
