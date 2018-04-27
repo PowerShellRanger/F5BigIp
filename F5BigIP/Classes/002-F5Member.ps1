@@ -1,12 +1,13 @@
 
 class F5Member
 {
-    # Virtual Server Name 
+    # Pool Name 
     [string]$Name
 
     # Source Address
     [string]$Address = '/Common/https_443'
 
+    #Service Port
     [string]$ServicePort = "HTTPS"
 
 
