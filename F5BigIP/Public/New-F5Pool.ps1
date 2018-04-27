@@ -76,16 +76,7 @@ function New-F5Pool
                 'X-F5-Auth-Token' = $Token
             }
 
-            $psObjectBody =  @{
-                name = "$PoolName"
-            }
-            switch ($Monitor)
-            {
-                "HTTP" {$psObjectBody.Add("monitor", "/Common/http")}
-                "HTTPS" {$psObjectBody.Add("monitor", "/Common/https_443")}
-                "Custom" {$psObjectBody.Add("monitor", "/Common/$($PSBoundParameters.CustomMonitorName)")}
-            }
-            $body = $psObjectBody | ConvertTo-Json        
+            $body = $F5Pool | ConvertTo-Json        
             
             $splatInvokeRestMethod = @{
                 Uri         = "https://$F5Name/mgmt/tm/ltm/pool"
