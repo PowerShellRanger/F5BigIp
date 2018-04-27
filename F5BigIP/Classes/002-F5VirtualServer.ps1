@@ -1,5 +1,5 @@
 
-class VirtualServer
+class F5VirtualServer
 {
     # Virtual Server Name 
     [string]$Name
@@ -37,32 +37,32 @@ class VirtualServer
 
     #VirtualServer () {}
 
-    VirtualServer ([string]$name, [IpAddress]$ip)
+    F5VirtualServer ([string]$name, [IpAddress]$ip)
     {
         $this.Name = $name
-        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
-        $this.Rules = [VirtualServer]::GetRules($this.ServicePort)
-        $this.Profiles = [VirtualServer]::GetProfiles($this.ClientSslProfileName, $this.ServicePort)
+        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
+        $this.Rules = [F5VirtualServer]::GetRules($this.ServicePort)
+        $this.Profiles = [F5VirtualServer]::GetProfiles($this.ClientSslProfileName, $this.ServicePort)
     }
 
     VirtualServer ([string]$name, [IpAddress]$ip, [string]$clientSslProfileName)
     {
         $this.Name = $name
-        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
+        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
         $this.ServicePort = $this.ServicePort
         $this.ClientSslProfileName = $clientSslProfileName
-        $this.Rules = [VirtualServer]::GetRules($this.ServicePort)
-        $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $this.ServicePort)
+        $this.Rules = [F5VirtualServer]::GetRules($this.ServicePort)
+        $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $this.ServicePort)
     }
 
     VirtualServer ([string]$name, [IpAddress]$ip, [string]$servicePort, [string]$clientSslProfileName)
     {
         $this.Name = $name
-        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
+        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
         $this.ServicePort = $servicePort
         $this.ClientSslProfileName = $clientSslProfileName
-        $this.Rules = [VirtualServer]::GetRules($servicePort)
-        $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
+        $this.Rules = [F5VirtualServer]::GetRules($servicePort)
+        $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
     }
 
     VirtualServer ([string]$name, [string]$source, [IpAddress]$ip, [string]$servicePort,
@@ -70,14 +70,14 @@ class VirtualServer
     {
         $this.Name = $name
         $this.Source = $source
-        $this.Destination = [VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
+        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
         $this.ServicePort = $servicePort
         $this.SourceAddressTranslation = @{type = $snat.SourceAddressTranslation}
         $this.IpProtocol = $ipProtocol
         $this.Pool = "/Common/$pool"
         $this.ClientSslProfileName = $clientSslProfileName
-        $this.Rules = [VirtualServer]::GetRules($servicePort)
-        $this.Profiles = [VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
+        $this.Rules = [F5VirtualServer]::GetRules($servicePort)
+        $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
     }
 
     static [string] GetDestination([IpAddress]$ip, [string]$servicePort)
@@ -139,19 +139,6 @@ class VirtualServer
         }
 
         return $_profiles
-    }
-}
-
-
-class IpAddress 
-{
-    # IP Address
-    [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]        
-    [string]$IpAddress
-
-    IpAddress ([string]$ip)
-    {
-        $this.IpAddress = $ip
     }
 }
 

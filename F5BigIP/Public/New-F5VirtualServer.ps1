@@ -38,7 +38,7 @@ function New-F5VirtualServer
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]        
-        $VirtualServer
+        [F5VirtualServer]$VirtualServer
     )
     begin
     {
