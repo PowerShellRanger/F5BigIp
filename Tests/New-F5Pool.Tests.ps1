@@ -20,7 +20,7 @@ InModuleScope -ModuleName $moduleName {
 
         $f5PoolObjectMock = [F5Pool]::New($poolNameMock)
         
-        Context "Testing Parameters" {
+        Context "Validating mandatory parameters" {
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.Token.Attributes.Mandatory | should be $true
@@ -29,13 +29,14 @@ InModuleScope -ModuleName $moduleName {
         }
       
        
-        Context 'Testing function calls Invoke-RestMethod' {
+        Context 'Testing function - Calls New-F5Pool' {
 
             $mockedHeaders = @{
                 'X-F5-Auth-Token' = $tokenMock
             }
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+            
             $splatNewF5Pool = @{
                 F5Name = $F5Name
                 Token  = $tokenMock
@@ -61,7 +62,7 @@ InModuleScope -ModuleName $moduleName {
             }
         }
         
-        Context 'Testing function calls Invoke-RestMethod with dynamic parameter' {
+        Context 'Testing function - Calls New-F5Pool - CustomMonitor' {
             $customMonitorNameMocked = "https_custom"
             $customMonitorNameMocked = [F5Pool]::GetMonitorName($customMonitorNameMocked)
             $f5PoolObjectMock.Monitor = $customMonitorNameMocked
@@ -81,5 +82,7 @@ InModuleScope -ModuleName $moduleName {
                 } 
             }
         }
+
+        #Todo add member object testing
     }
 }
