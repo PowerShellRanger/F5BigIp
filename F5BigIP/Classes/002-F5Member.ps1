@@ -10,9 +10,9 @@ class F5Member
     [string]$ServicePort = "HTTPS"
 
 
-    F5Pool ([string]$name, [string]$Address)
+    F5Member ([string]$name, [string]$Address)
     {
-        $this.Name = = [VirtualServer]::GetName($this.Name, $this.ServicePort)
+        $this.Name = = [F5Member]::GetMemberName($this.Name, $this.ServicePort)
         $this.Address = $Address
     }
 
