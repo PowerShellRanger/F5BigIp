@@ -38,15 +38,7 @@ function Update-F5PoolMember
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
-        [string]$PoolName,
-
-        #Members of pool to add
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]        
-        [PSCustomObject]$Members   
+        [F5Pool]$F5Pool
     )
     begin
     {
@@ -64,20 +56,11 @@ function Update-F5PoolMember
             $headers = @{
                 'X-F5-Auth-Token' = $Token
             }
-            $Members = $Members | ConvertFrom-Json
-            $psObjectBody = [PSCustomObject]@{
-                name = "$PoolName"
-                members = @()
-            }
-           
-            foreach ($member in $Members)
-            {
-                $psObjectBody.members += $member
-            }
-            $body = $psObjectBody | ConvertTo-Json        
+            
+            $body = $F5Pool | ConvertTo-Json           
 
             $splatInvokeRestMethod = @{
-                Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName"
+                Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$($F5Pool.Name)"
                 ContentType = 'application/json'
                 Method      = 'Patch'
                 Body        = $body
