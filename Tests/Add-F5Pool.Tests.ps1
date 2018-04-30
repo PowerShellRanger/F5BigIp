@@ -48,7 +48,7 @@ InModuleScope -ModuleName $moduleName {
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
                         
-            $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
+            $return = Add-F5Pool @splatNewF5Pool -Confirm:$false 
             
             It "Should return object with correct properties" {
                 $return | Should be $true
@@ -71,7 +71,7 @@ InModuleScope -ModuleName $moduleName {
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
                         
-            $return = Add-F5Pool @splatNewF5Pool -confirm:$false
+            $return = Add-F5Pool @splatNewF5Pool -Confirm:$false
 
             It "Should return object with correct properties" {
                 $return | Should be $null
@@ -79,13 +79,21 @@ InModuleScope -ModuleName $moduleName {
         }
 
         Context 'Testing adding one server to a pre-existing pool with one server' {
+
+            $poolMock = [F5Pool]::New($poolNameMock, $membersMock)
+
+            $membersMockWithItems = [PSCustomObject] @{
+                Items = @(
+                    [F5Member]::New('TESTWEB01', '127.0.0.1')                    
+                )
+            }
            
             Mock -CommandName Get-F5Pool -MockWith {return $poolMock}
-            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMock[0]}
+            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMockWithItems}
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
                         
-            $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
+            $return = Add-F5Pool @splatNewF5Pool -Confirm:$false 
 
             It "Should return object with correct properties" {
                 $return | Should be $true
@@ -96,10 +104,10 @@ InModuleScope -ModuleName $moduleName {
            
             Mock -CommandName Get-F5Pool -MockWith {return $poolMock}
             Mock -CommandName Get-F5PoolMember -MockWith {return $true}
-            Mock -CommandName New-F5Pool -MockWith {return $true}            
-            Mock -CommandName Update-F5PoolMember -MockWith {return $true}                        
+            Mock -CommandName New-F5Pool -MockWith {return $true}
+            Mock -CommandName Update-F5PoolMember -MockWith {return $true}
             
-            $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
+            $return = Add-F5Pool @splatNewF5Pool -Confirm:$false 
 
             It "Should return object with correct properties" {
                 $return | Should be $true
