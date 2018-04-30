@@ -17,50 +17,39 @@ InModuleScope -ModuleName $moduleName {
         $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
         $F5Name = 'foo'
         $poolNameMock = "test1234"
-        $psObjectPoolMock = [PSCustomObject]@{
-            name = "$poolNameMock"
-            members = @()
-        }
-        $psObjectMembersMock = @(
-            [PSCustomObject] @{
-                hostname  = "TESTWEB01"
-                domain    = "think.dev"
-                ipaddress = "127.0.0.1"
-            },
-            [PSCustomObject] @{
-                hostname  = "TESTWEB02"
-                domain    = "think.dev"
-                ipaddress = "127.0.0.2"                    
-            }
+        
+        $poolMock = [F5Pool]::New($poolNameMock)
+                
+        $membersMock = @(
+            [F5Member]::New('TESTWEB01', '127.0.0.1'),
+            [F5Member]::New('TESTWEB02', '127.0.0.2')
         )
-        $memberObjectMock = $psObjectMembersMock | ConvertTo-Json        
+
+        $splatNewF5Pool = @{                    
+            F5Name  = $F5Name
+            Token   = $tokenMock
+            F5Pool  = $poolMock                
+            Members = $membersMock
+        }
         
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
                 $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.Token.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.PoolName.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.Members.Attributes.Mandatory | should be $true
-                $cmdlet.Parameters.Monitor.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.F5Pool.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.Members.Attributes.Mandatory | should be $true                
             }
         }
 
         Context 'Testing adding new pool' {
            
             Mock -CommandName Get-F5Pool -MockWith {return $true}
-            Mock -CommandName Get-F5PoolMember -MockWith {return $psObjectMembersMock}
+            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMock}
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
-            
-            $splatNewF5Pool = @{                    
-                F5Name   = $F5Name
-                Token    = $tokenMock
-                PoolName = $poolNameMock
-                Monitor  = "HTTPS"
-                Members  = $memberObjectMock
-            }
+                        
             $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
-
+            
             It "Should return object with correct properties" {
                 $return | Should be $true
             }
@@ -68,39 +57,34 @@ InModuleScope -ModuleName $moduleName {
 
         Context 'Testing that all servers are in a pre-existing pool already' {
            
-            Mock -CommandName Get-F5Pool -MockWith {return $psObjectPoolMock}
-            Mock -CommandName Get-F5PoolMember -MockWith {return $psObjectMembersMock}
+            $poolMock = [F5Pool]::New($poolNameMock, $membersMock)
+
+            $membersMockWithItems = [PSCustomObject] @{
+                Items = @(
+                    [F5Member]::New('TESTWEB01', '127.0.0.1'),
+                    [F5Member]::New('TESTWEB02', '127.0.0.2')
+                )
+            }
+           
+            Mock -CommandName Get-F5Pool -MockWith {return $poolMock}
+            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMockWithItems}
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
-            
-            $splatNewF5Pool = @{                    
-                F5Name   = $F5Name
-                Token    = $tokenMock
-                PoolName = $poolNameMock
-                Monitor  = "HTTPS"
-                Members  = $memberObjectMock
-            }
-            $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
+                        
+            $return = Add-F5Pool @splatNewF5Pool -confirm:$false
 
             It "Should return object with correct properties" {
                 $return | Should be $null
             }
         }
 
-        Context 'Testing adding one server to a pre-existing pool with one server'  {
+        Context 'Testing adding one server to a pre-existing pool with one server' {
            
-            Mock -CommandName Get-F5Pool -MockWith {return $psObjectPoolMock}
-            Mock -CommandName Get-F5PoolMember -MockWith {return $psObjectMembersMock[0]}
+            Mock -CommandName Get-F5Pool -MockWith {return $poolMock}
+            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMock[0]}
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
-            
-            $splatNewF5Pool = @{                    
-                F5Name   = $F5Name
-                Token    = $tokenMock
-                PoolName = $poolNameMock
-                Monitor  = "HTTPS"
-                Members  = $memberObjectMock
-            }
+                        
             $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
 
             It "Should return object with correct properties" {
@@ -108,20 +92,13 @@ InModuleScope -ModuleName $moduleName {
             }
         }
 
-        Context 'Testing add multiple servers to an empty pool'  {
+        Context 'Testing add multiple servers to an empty pool' {
            
-            Mock -CommandName Get-F5Pool -MockWith {return $psObjectPoolMock}
+            Mock -CommandName Get-F5Pool -MockWith {return $poolMock}
             Mock -CommandName Get-F5PoolMember -MockWith {return $true}
             Mock -CommandName New-F5Pool -MockWith {return $true}            
-            Mock -CommandName Update-F5PoolMember -MockWith {return $true}
+            Mock -CommandName Update-F5PoolMember -MockWith {return $true}                        
             
-            $splatNewF5Pool = @{                    
-                F5Name   = $F5Name
-                Token    = $tokenMock
-                PoolName = $poolNameMock
-                Monitor  = "HTTPS"
-                Members  = $memberObjectMock
-            }
             $return = Add-F5Pool @splatNewF5Pool -confirm:$false 
 
             It "Should return object with correct properties" {
