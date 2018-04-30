@@ -62,7 +62,7 @@ InModuleScope -ModuleName $moduleName {
             }
         }
         
-        Context 'Testing function - Calls New-F5Pool - CustomMonitor' {
+        Context 'Testing function - Calls New-F5Pool w\CustomMonitor' {
             $customMonitorNameMocked = "https_custom"
             $customMonitorNameMocked = [F5Pool]::GetMonitorName($customMonitorNameMocked)
             $f5PoolObjectMock.Monitor = $customMonitorNameMocked
@@ -83,6 +83,56 @@ InModuleScope -ModuleName $moduleName {
             }
         }
 
-        #Todo add member object testing
+        Context 'Testing function - Calls New-F5Pool w\pool member' {
+            $f5memberNameMock = "testServer1"
+            $f5memberIpAddresswMock = "127.0.0.1"
+
+            $f5member = [F5Member]::New($f5memberNameMock, $f5memberIpAddresswMock)
+            $f5PoolObjectMock.Members = $f5member
+
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+
+            $splatNewF5Pool = @{
+                F5Name = $F5Name
+                Token  = $tokenMock
+                F5Pool = $f5PoolObjectMock
+            }
+            $null = New-F5Pool @splatNewF5Pool -confirm:$false 
+
+            It 'Validating Invoke-RestMethod parameters in function' {
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+                    ($Body | ConvertFrom-Json).Members[0].Name -eq $f5memberNameMock + ":443"
+                } 
+            }
+        }
+
+        Context 'Testing function - Calls New-F5Pool w\pool member' {
+            $f5member1NameMock = "testServer1"
+            $f5member1IpAddresswMock = "127.0.0.1"
+            $f5member2NameMock = "testServer2"
+            $f5member2IpAddresswMock = "127.0.0.2"
+
+            $f5membersMock = @(
+                [F5Member]::New($f5member1NameMock, $f5member1IpAddresswMock)
+                [F5Member]::New($f5member2NameMock, $f5member2IpAddresswMock)
+            )
+            $f5PoolObjectMock.Members = $f5membersMock
+
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+
+            $splatNewF5Pool = @{
+                F5Name = $F5Name
+                Token  = $tokenMock
+                F5Pool = $f5PoolObjectMock
+            }
+            $null = New-F5Pool @splatNewF5Pool -confirm:$false 
+
+            It 'Validating Invoke-RestMethod parameters in function' {
+                Assert-MockCalled -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+                    ($Body | ConvertFrom-Json).Members[0].Name -eq $f5member1NameMock + ":443"
+                    ($Body | ConvertFrom-Json).Members[0].Name -eq $f5member2NameMock + ":443"
+                } 
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ class F5Pool
     [string]$ServicePort = "HTTPS"
 
     # Member Class
-    [F5Member[]]$Members
+    $Members
     
     #F5Pool () {}
 
@@ -35,7 +35,6 @@ class F5Pool
     {                
         return  "/Common/" + $monitorName      
     }    
-
 }
 
 class F5Member
