@@ -38,7 +38,7 @@ function New-F5Pool
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]        
-        $F5Pool
+        [F5Pool]$F5Pool
     )
     begin
     {
