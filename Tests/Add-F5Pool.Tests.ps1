@@ -40,7 +40,7 @@ InModuleScope -ModuleName $moduleName {
                 $cmdlet.Parameters.Members.Attributes.Mandatory | should be $true                
             }
         }
-        <#
+        
         Context 'Testing adding new pool' {
            
             Mock -CommandName Get-F5Pool -MockWith {return $true}
@@ -51,10 +51,10 @@ InModuleScope -ModuleName $moduleName {
             $return = Add-F5Pool @splatNewF5Pool -Confirm:$false 
             
             It "Should return object with correct properties" {
-                $return | Should be $true
+                $return | Should be @($true, $true)
             }
         }        
-        #>
+        
         Context 'Testing that all servers are in a pre-existing pool already' {
            
             $poolMock = [F5Pool]::New($poolNameMock, $membersMock)

@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="80" errors="0" failures="8" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-04-30" time="16:01:21">
+  <environment user="a_jwainwright" machine-name="NOLJASONW1" cwd="C:\F5BigIP" user-domain="PAYDAYONE" platform="Microsoft Windows 10 Enterprise|C:\WINDOWS|\Device\Harddisk0\Partition2" nunit-version="2.5.8.0" os-version="10.0.16299" clr-version="4.0.30319.42000" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="5.9747" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Add-F5Pool.Tests.ps1" executed="True" result="Failure" success="False" time="0.7009" asserts="0" description="C:\F5BigIP\Tests\Add-F5Pool.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Add-F5Pool" executed="True" result="Failure" success="False" time="0.7009" asserts="0" description="Add-F5Pool">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.3584" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Add-F5Pool.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.3584" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing adding new pool" executed="True" result="Failure" success="False" time="0.0729" asserts="0" description="Testing adding new pool">
+                <results>
+                  <test-case description="Error occurred in Context block" name="Add-F5Pool.Testing adding new pool.Error occurred in Context block" time="0.0729" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'Members'. Cannot convert the "F5Member" value of type "F5Member" to type "F5Member".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\Add-F5Pool.Tests.ps1:51 char:34</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing that all servers are in a pre-existing pool already" executed="True" result="Failure" success="False" time="0.0811" asserts="0" description="Testing that all servers are in a pre-existing pool already">
+                <results>
+                  <test-case description="Error occurred in Context block" name="Add-F5Pool.Testing that all servers are in a pre-existing pool already.Error occurred in Context block" time="0.0811" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'Members'. Cannot convert the "F5Member" value of type "F5Member" to type "F5Member".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\Add-F5Pool.Tests.ps1:74 char:34</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing adding one server to a pre-existing pool with one server" executed="True" result="Failure" success="False" time="0.0759" asserts="0" description="Testing adding one server to a pre-existing pool with one server">
+                <results>
+                  <test-case description="Error occurred in Context block" name="Add-F5Pool.Testing adding one server to a pre-existing pool with one server.Error occurred in Context block" time="0.0759" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'Members'. Cannot convert the "F5Member" value of type "F5Member" to type "F5Member".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\Add-F5Pool.Tests.ps1:96 char:34</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing add multiple servers to an empty pool" executed="True" result="Failure" success="False" time="0.1126" asserts="0" description="Testing add multiple servers to an empty pool">
+                <results>
+                  <test-case description="Error occurred in Context block" name="Add-F5Pool.Testing add multiple servers to an empty pool.Error occurred in Context block" time="0.1126" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'Members'. Cannot convert the "F5Member" value of type "F5Member" to type "F5Member".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\Add-F5Pool.Tests.ps1:110 char:34</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Clear-F5ClientSslProfile.Tests.ps1" executed="True" result="Success" success="True" time="0.4057" asserts="0" description="C:\F5BigIP\Tests\Clear-F5ClientSslProfile.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Clear-F5ClientSslProfile" executed="True" result="Success" success="True" time="0.4057" asserts="0" description="Clear-F5ClientSslProfile">
+            <results>
+              <test-suite type="TestFixture" name="Validating mandatory parameters" executed="True" result="Success" success="True" time="0.295" asserts="0" description="Validating mandatory parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Clear-F5ClientSslProfile.Validating mandatory parameters.Should throw when mandatory parameters are not provided" time="0.295" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls Clear-F5ClientSslProfile" executed="True" result="Success" success="True" time="0.1107" asserts="0" description="Testing function - Calls Clear-F5ClientSslProfile">
+                <results>
+                  <test-case description="Validating function returns values" name="Clear-F5ClientSslProfile.Testing function - Calls Clear-F5ClientSslProfile.Validating function returns values" time="0.0925" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Validating Invoke-RestMethod parameters in function" name="Clear-F5ClientSslProfile.Testing function - Calls Clear-F5ClientSslProfile.Validating Invoke-RestMethod parameters in function" time="0.0182" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Clear-F5Node.Tests.ps1" executed="True" result="Success" success="True" time="0.3513" asserts="0" description="C:\F5BigIP\Tests\Clear-F5Node.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Clear-F5Node" executed="True" result="Success" success="True" time="0.3513" asserts="0" description="Clear-F5Node">
+            <results>
+              <test-suite type="TestFixture" name="Validating mandatory parameters" executed="True" result="Success" success="True" time="0.275" asserts="0" description="Validating mandatory parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Clear-F5Node.Validating mandatory parameters.Should throw when mandatory parameters are not provided" time="0.275" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls Clear-F5Node" executed="True" result="Success" success="True" time="0.0763" asserts="0" description="Testing function - Calls Clear-F5Node">
+                <results>
+                  <test-case description="Validating function returns values" name="Clear-F5Node.Testing function - Calls Clear-F5Node.Validating function returns values" time="0.0621" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Validating Invoke-RestMethod parameters in function" name="Clear-F5Node.Testing function - Calls Clear-F5Node.Validating Invoke-RestMethod parameters in function" time="0.0142" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Clear-F5Pool.Tests.ps1" executed="True" result="Success" success="True" time="0.3459" asserts="0" description="C:\F5BigIP\Tests\Clear-F5Pool.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Clear-F5Pool" executed="True" result="Success" success="True" time="0.3459" asserts="0" description="Clear-F5Pool">
+            <results>
+              <test-suite type="TestFixture" name="Validating mandatory parameters" executed="True" result="Success" success="True" time="0.2559" asserts="0" description="Validating mandatory parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Clear-F5Pool.Validating mandatory parameters.Should throw when mandatory parameters are not provided" time="0.2559" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls  Clear-F5Pool" executed="True" result="Success" success="True" time="0.09" asserts="0" description="Testing function - Calls  Clear-F5Pool">
+                <results>
+                  <test-case description="Validating function returns values" name="Clear-F5Pool.Testing function - Calls  Clear-F5Pool.Validating function returns values" time="0.0741" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Validating Invoke-RestMethod parameters in function" name="Clear-F5Pool.Testing function - Calls  Clear-F5Pool.Validating Invoke-RestMethod parameters in function" time="0.0159" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\F5BigIP.tests.ps1" executed="True" result="Success" success="True" time="0.75" asserts="0" description="C:\F5BigIP\Tests\F5BigIP.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="General project validation: F5BigIP" executed="True" result="Success" success="True" time="0.75" asserts="0" description="General project validation: F5BigIP">
+            <results>
+              <test-suite type="ParameterizedTest" name="General project validation: F5BigIP.Script &lt;file&gt; should be valid powershell" executed="True" result="Success" success="True" time="0.5847" asserts="0" description="Script &lt;file&gt; should be valid powershell">
+                <results>
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Classes\001-IpAddress.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Classes\001-IpAddress.ps1 should be valid powershell" time="0.1143" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Classes\002-F5VirtualServer.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Classes\002-F5VirtualServer.ps1 should be valid powershell" time="0.033" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Classes\003-F5Member.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Classes\003-F5Member.ps1 should be valid powershell" time="0.0142" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Classes\004-F5Pool.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Classes\004-F5Pool.ps1 should be valid powershell" time="0.0171" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Add-F5ClientSslProfile.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Add-F5ClientSslProfile.ps1 should be valid powershell" time="0.0371" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Add-F5Node.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Add-F5Node.ps1 should be valid powershell" time="0.017" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Add-F5Pool.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Add-F5Pool.ps1 should be valid powershell" time="0.0205" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Clear-F5ClientSslProfile.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Clear-F5ClientSslProfile.ps1 should be valid powershell" time="0.0171" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Clear-F5Node.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Clear-F5Node.ps1 should be valid powershell" time="0.0143" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Clear-F5Pool.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Clear-F5Pool.ps1 should be valid powershell" time="0.0105" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5ClientSslProfile.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5ClientSslProfile.ps1 should be valid powershell" time="0.015" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5Irule.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5Irule.ps1 should be valid powershell" time="0.0201" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5Node.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5Node.ps1 should be valid powershell" time="0.0149" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5Pool.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5Pool.ps1 should be valid powershell" time="0.0111" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5PoolMember.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5PoolMember.ps1 should be valid powershell" time="0.0106" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5SslCertificate.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5SslCertificate.ps1 should be valid powershell" time="0.0257" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Get-F5VirtualServer.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Get-F5VirtualServer.ps1 should be valid powershell" time="0.0149" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\New-F5ClientSslProfile.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\New-F5ClientSslProfile.ps1 should be valid powershell" time="0.0112" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\New-F5Node.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\New-F5Node.ps1 should be valid powershell" time="0.0161" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\New-F5Pool.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\New-F5Pool.ps1 should be valid powershell" time="0.0205" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\New-F5RestApiToken.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\New-F5RestApiToken.ps1 should be valid powershell" time="0.0109" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\New-F5SslCertificate.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\New-F5SslCertificate.ps1 should be valid powershell" time="0.0153" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\New-F5VirtualServer.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\New-F5VirtualServer.ps1 should be valid powershell" time="0.0122" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Update-F5ClientSslProfile.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Update-F5ClientSslProfile.ps1 should be valid powershell" time="0.0291" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Update-F5Node.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Update-F5Node.ps1 should be valid powershell" time="0.0114" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\Public\Update-F5PoolMember.ps1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\Public\Update-F5PoolMember.ps1 should be valid powershell" time="0.0119" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\F5BigIP.psd1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\F5BigIP.psd1 should be valid powershell" time="0.0174" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script C:\F5BigIP\F5BigIP\F5BigIP.psm1 should be valid powershell" name="General project validation: F5BigIP.Script C:\F5BigIP\F5BigIP\F5BigIP.psm1 should be valid powershell" time="0.0215" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-case description="Module 'F5BigIP' can import cleanly" name="General project validation: F5BigIP.Module 'F5BigIP' can import cleanly" time="0.1653" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Get-F5SslCertificate.Tests.ps1" executed="True" result="Success" success="True" time="0.3504" asserts="0" description="C:\F5BigIP\Tests\Get-F5SslCertificate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-F5SslCertificate" executed="True" result="Success" success="True" time="0.3504" asserts="0" description="Get-F5SslCertificate">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.2633" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Get-F5SslCertificate.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.2275" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should have non-mandatory parameters and not throw when they are not used" name="Get-F5SslCertificate.Testing Parameters.Should have non-mandatory parameters and not throw when they are not used" time="0.0093" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="CertificateName parameter should accept an array of strings" name="Get-F5SslCertificate.Testing Parameters.CertificateName parameter should accept an array of strings" time="0.0264" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls Invoke-RestMethod" executed="True" result="Success" success="True" time="0.0871" asserts="0" description="Testing function calls Invoke-RestMethod">
+                <results>
+                  <test-case description="Should Invoke-RestMethod to get all Certificates when GetAllCertificates switch is used" name="Get-F5SslCertificate.Testing function calls Invoke-RestMethod.Should Invoke-RestMethod to get all Certificates when GetAllCertificates switch is used" time="0.0615" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should Invoke-RestMethod to get one Certificate when CertificateName parameter is used" name="Get-F5SslCertificate.Testing function calls Invoke-RestMethod.Should Invoke-RestMethod to get one Certificate when CertificateName parameter is used" time="0.0256" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\New-F5ClientSslProfile.Tests.ps1" executed="True" result="Success" success="True" time="0.3255" asserts="0" description="C:\F5BigIP\Tests\New-F5ClientSslProfile.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-F5ClientSslProfile" executed="True" result="Success" success="True" time="0.3255" asserts="0" description="New-F5ClientSslProfile">
+            <results>
+              <test-suite type="TestFixture" name="Validating mandatory parameters" executed="True" result="Success" success="True" time="0.2426" asserts="0" description="Validating mandatory parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="New-F5ClientSslProfile.Validating mandatory parameters.Should throw when mandatory parameters are not provided" time="0.2426" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls New-F5ClientSslProfile" executed="True" result="Success" success="True" time="0.0829" asserts="0" description="Testing function - Calls New-F5ClientSslProfile">
+                <results>
+                  <test-case description="Validating function returns values" name="New-F5ClientSslProfile.Testing function - Calls New-F5ClientSslProfile.Validating function returns values" time="0.0692" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Validating Invoke-RestMethod parameters in function" name="New-F5ClientSslProfile.Testing function - Calls New-F5ClientSslProfile.Validating Invoke-RestMethod parameters in function" time="0.0137" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\New-F5Node.Tests.ps1" executed="True" result="Success" success="True" time="0.3456" asserts="0" description="C:\F5BigIP\Tests\New-F5Node.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-F5Node" executed="True" result="Success" success="True" time="0.3456" asserts="0" description="New-F5Node">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.261" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="New-F5Node.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.261" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls Invoke-RestMethod" executed="True" result="Success" success="True" time="0.0846" asserts="0" description="Testing function calls Invoke-RestMethod">
+                <results>
+                  <test-case description="Should return object with correct properties" name="New-F5Node.Testing function calls Invoke-RestMethod.Should return object with correct properties" time="0.0587" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Validating Invoke-RestMethod parameters in function" name="New-F5Node.Testing function calls Invoke-RestMethod.Validating Invoke-RestMethod parameters in function" time="0.0259" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\New-F5Pool.Tests.ps1" executed="True" result="Failure" success="False" time="0.4811" asserts="0" description="C:\F5BigIP\Tests\New-F5Pool.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-F5Pool" executed="True" result="Failure" success="False" time="0.4811" asserts="0" description="New-F5Pool">
+            <results>
+              <test-suite type="TestFixture" name="Validating mandatory parameters" executed="True" result="Success" success="True" time="0.257" asserts="0" description="Validating mandatory parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="New-F5Pool.Validating mandatory parameters.Should throw when mandatory parameters are not provided" time="0.257" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls New-F5Pool" executed="True" result="Failure" success="False" time="0.0595" asserts="0" description="Testing function - Calls New-F5Pool">
+                <results>
+                  <test-case description="Error occurred in Context block" name="New-F5Pool.Testing function - Calls New-F5Pool.Error occurred in Context block" time="0.0595" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'F5Pool'. Cannot convert the "F5Pool" value of type "F5Pool" to type "F5Pool".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\New-F5Pool.Tests.ps1:45 char:34</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls New-F5Pool w\CustomMonitor" executed="True" result="Failure" success="False" time="0.0662" asserts="0" description="Testing function - Calls New-F5Pool w\CustomMonitor">
+                <results>
+                  <test-case description="Error occurred in Context block" name="New-F5Pool.Testing function - Calls New-F5Pool w\CustomMonitor.Error occurred in Context block" time="0.0662" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'F5Pool'. Cannot convert the "F5Pool" value of type "F5Pool" to type "F5Pool".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\New-F5Pool.Tests.ps1:77 char:32</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls New-F5Pool w\pool member" executed="True" result="Failure" success="False" time="0.0474" asserts="0" description="Testing function - Calls New-F5Pool w\pool member">
+                <results>
+                  <test-case description="Error occurred in Context block" name="New-F5Pool.Testing function - Calls New-F5Pool w\pool member.Error occurred in Context block" time="0.0474" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'F5Pool'. Cannot convert the "F5Pool" value of type "F5Pool" to type "F5Pool".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\New-F5Pool.Tests.ps1:100 char:32</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function - Calls New-F5Pool w\pool member" executed="True" result="Failure" success="False" time="0.051" asserts="0" description="Testing function - Calls New-F5Pool w\pool member">
+                <results>
+                  <test-case description="Error occurred in Context block" name="New-F5Pool.Testing function - Calls New-F5Pool w\pool member.Error occurred in Context block" time="0.051" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Cannot process argument transformation on parameter 'F5Pool'. Cannot convert the "F5Pool" value of type "F5Pool" to type "F5Pool".</message>
+                      <stack-trace>At C:\F5BigIP\Tests\New-F5Pool.Tests.ps1:128 char:32</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\New-F5RestApiToken.Tests.ps1" executed="True" result="Success" success="True" time="0.3458" asserts="0" description="C:\F5BigIP\Tests\New-F5RestApiToken.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-F5RestApiToken" executed="True" result="Success" success="True" time="0.3458" asserts="0" description="New-F5RestApiToken">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.2496" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="New-F5RestApiToken.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.2496" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls Invoke-RestMethod" executed="True" result="Success" success="True" time="0.0962" asserts="0" description="Testing function calls Invoke-RestMethod">
+                <results>
+                  <test-case description="Should return two objects with correct properties" name="New-F5RestApiToken.Testing function calls Invoke-RestMethod.Should return two objects with correct properties" time="0.0799" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Validating Invoke-RestMethod parameters in function" name="New-F5RestApiToken.Testing function calls Invoke-RestMethod.Validating Invoke-RestMethod parameters in function" time="0.0163" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\New-F5VirtualServer.Tests.ps1" executed="True" result="Success" success="True" time="0.5565" asserts="0" description="C:\F5BigIP\Tests\New-F5VirtualServer.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-F5VirtualServer" executed="True" result="Success" success="True" time="0.5565" asserts="0" description="New-F5VirtualServer">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.2638" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="New-F5VirtualServer.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.2638" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls New-F5VirtualServer" executed="True" result="Success" success="True" time="0.0814" asserts="0" description="Testing function calls New-F5VirtualServer">
+                <results>
+                  <test-case description="Should return object with correct properties" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer.Should return object with correct properties" time="0.0672" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer.Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" time="0.0143" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls New-F5VirtualServer with HTTP port" executed="True" result="Success" success="True" time="0.0862" asserts="0" description="Testing function calls New-F5VirtualServer with HTTP port">
+                <results>
+                  <test-case description="Should return object with correct properties" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer with HTTP port.Should return object with correct properties" time="0.066" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer with HTTP port.Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" time="0.0202" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls New-F5VirtualServer w/PoolName" executed="True" result="Success" success="True" time="0.0607" asserts="0" description="Testing function calls New-F5VirtualServer w/PoolName">
+                <results>
+                  <test-case description="Should return object with correct properties" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer w/PoolName.Should return object with correct properties" time="0.0403" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer w/PoolName.Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" time="0.0204" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls New-F5VirtualServer w/ClientSSLProfileName" executed="True" result="Success" success="True" time="0.0644" asserts="0" description="Testing function calls New-F5VirtualServer w/ClientSSLProfileName">
+                <results>
+                  <test-case description="Should return object with correct properties" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer w/ClientSSLProfileName.Should return object with correct properties" time="0.0494" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" name="New-F5VirtualServer.Testing function calls New-F5VirtualServer w/ClientSSLProfileName.Assert Invoke-RestMethod Mock is called 1 time and validate paramters stay as expected" time="0.015" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Update-F5ClientSslProfile.Tests.ps1" executed="True" result="Success" success="True" time="0.3345" asserts="0" description="C:\F5BigIP\Tests\Update-F5ClientSslProfile.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Update-F5ClientSslProfile" executed="True" result="Success" success="True" time="0.3345" asserts="0" description="Update-F5ClientSslProfile">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.2512" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Update-F5ClientSslProfile.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.2512" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls Invoke-RestMethod" executed="True" result="Success" success="True" time="0.0833" asserts="0" description="Testing function calls Invoke-RestMethod">
+                <results>
+                  <test-case description="Should return object with correct properties" name="Update-F5ClientSslProfile.Testing function calls Invoke-RestMethod.Should return object with correct properties" time="0.0702" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert each mock called 1 time" name="Update-F5ClientSslProfile.Testing function calls Invoke-RestMethod.Assert each mock called 1 time" time="0.0131" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Update-F5Node.Tests.ps1" executed="True" result="Success" success="True" time="0.3317" asserts="0" description="C:\F5BigIP\Tests\Update-F5Node.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Update-F5Node" executed="True" result="Success" success="True" time="0.3317" asserts="0" description="Update-F5Node">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.2532" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Update-F5Node.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.2532" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls Invoke-RestMethod" executed="True" result="Success" success="True" time="0.0785" asserts="0" description="Testing function calls Invoke-RestMethod">
+                <results>
+                  <test-case description="Should return object with correct properties" name="Update-F5Node.Testing function calls Invoke-RestMethod.Should return object with correct properties" time="0.0681" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert each mock called 1 time" name="Update-F5Node.Testing function calls Invoke-RestMethod.Assert each mock called 1 time" time="0.0104" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\F5BigIP\Tests\Update-F5PoolMember.Tests.ps1" executed="True" result="Success" success="True" time="0.3498" asserts="0" description="C:\F5BigIP\Tests\Update-F5PoolMember.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Update-F5PoolMember" executed="True" result="Success" success="True" time="0.3498" asserts="0" description="Update-F5PoolMember">
+            <results>
+              <test-suite type="TestFixture" name="Testing Parameters" executed="True" result="Success" success="True" time="0.2664" asserts="0" description="Testing Parameters">
+                <results>
+                  <test-case description="Should throw when mandatory parameters are not provided" name="Update-F5PoolMember.Testing Parameters.Should throw when mandatory parameters are not provided" time="0.2664" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Testing function calls Invoke-RestMethod" executed="True" result="Success" success="True" time="0.0835" asserts="0" description="Testing function calls Invoke-RestMethod">
+                <results>
+                  <test-case description="Should return object with correct properties" name="Update-F5PoolMember.Testing function calls Invoke-RestMethod.Should return object with correct properties" time="0.0588" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Assert each mock called 1 time" name="Update-F5PoolMember.Testing function calls Invoke-RestMethod.Assert each mock called 1 time" time="0.0247" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
