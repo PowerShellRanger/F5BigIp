@@ -57,13 +57,8 @@ Description = 'This module uses the REST API in the F5 to query and manipulate t
 # RequiredAssemblies = @()
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-<<<<<<< HEAD
-ScriptsToProcess = 'Classes\001-IpAddress.ps1', 'Classes\002-F5VirtualServer.ps1', 
-               'Classes\003-F5Member.ps1', 'Classes\004-F5Pool.ps1'
-=======
-ScriptsToProcess = @('Classes\001-IpAddress.ps1', 'Classes\002-F5VirtualServer.ps1', 'Classes\003-F5Member.ps1',
-            'Classes\004-F5Pool.ps1')
->>>>>>> ee788bdd54e15065d561ee7628a46360e8fbb196
+ScriptsToProcess = @('Classes\001-IpAddress.ps1', 'Classes\002-F5VirtualServer.ps1', 
+                'Classes\003-F5Member.ps1', 'Classes\004-F5Pool.ps1')
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
