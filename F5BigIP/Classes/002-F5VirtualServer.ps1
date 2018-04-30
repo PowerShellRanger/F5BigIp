@@ -74,7 +74,7 @@ class F5VirtualServer
         $this.ServicePort = $servicePort
         $this.SourceAddressTranslation = @{type = $snat.SourceAddressTranslation}
         $this.IpProtocol = $ipProtocol
-        $this.Pool = "/Common/$pool"
+        $this.Pool = [F5VirtualServer]::SetPoolName($pool)
         $this.ClientSslProfileName = $clientSslProfileName
         $this.Rules = [F5VirtualServer]::GetRules($servicePort)
         $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
@@ -93,6 +93,11 @@ class F5VirtualServer
 
         return @("/Common/Security", "/Common/Standard")
     }
+
+    static [string] SetPoolName([string]$pool)
+    {                
+        return "/Common/$pool"
+    }    
 
     static [hashtable[]] GetProfiles([string]$clientSslProfileName, [string]$servicePort)
     {
