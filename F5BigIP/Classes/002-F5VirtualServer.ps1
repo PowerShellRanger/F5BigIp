@@ -5,7 +5,7 @@ class F5VirtualServer
     [string]$Name
 
     # Source Address/Mask
-    # TODO: Add Validate Pattern for IP and Mask
+    [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/\b(0?[0-9]|[1-2][0-9]|3[0-2])\b\z")] 
     [string]$Source = '0.0.0.0/0'
 
     # Virtual IP Address    
@@ -24,6 +24,7 @@ class F5VirtualServer
 
     # Pool Name
     # /Common/$pool
+    [ValidatePattern("^\/Common\/(?:[^\/]+)")]
     [string]$Pool
 
     # Client SSL Profile Name    
@@ -74,7 +75,7 @@ class F5VirtualServer
         $this.ServicePort = $servicePort
         $this.SourceAddressTranslation = @{type = $snat.SourceAddressTranslation}
         $this.IpProtocol = $ipProtocol
-        $this.Pool = [F5VirtualServer]::SetPoolName($pool)
+        $this.Pool = $pool
         $this.ClientSslProfileName = $clientSslProfileName
         $this.Rules = [F5VirtualServer]::GetRules($servicePort)
         $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
@@ -93,11 +94,6 @@ class F5VirtualServer
 
         return @("/Common/Security", "/Common/Standard")
     }
-
-    static [string] SetPoolName([string]$pool)
-    {                
-        return "/Common/$pool"
-    }    
 
     static [hashtable[]] GetProfiles([string]$clientSslProfileName, [string]$servicePort)
     {
