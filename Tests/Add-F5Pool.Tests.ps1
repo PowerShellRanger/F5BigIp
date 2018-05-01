@@ -25,6 +25,13 @@ InModuleScope -ModuleName $moduleName {
             [F5Member]::New('TESTWEB02', '127.0.0.2')
         )
 
+        $membersMockWithItems = [PSCustomObject] @{
+            Items = @(
+                [F5Member]::New('TESTWEB01', '127.0.0.1'),
+                [F5Member]::New('TESTWEB02', '127.0.0.2')
+            )
+        }
+
         $splatNewF5Pool = @{                    
             F5Name  = $F5Name
             Token   = $tokenMock
@@ -44,27 +51,20 @@ InModuleScope -ModuleName $moduleName {
         Context 'Testing adding new pool' {
            
             Mock -CommandName Get-F5Pool -MockWith {return $true}
-            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMock}
+            Mock -CommandName Get-F5PoolMember -MockWith {return $membersMockWithItems}
             Mock -CommandName New-F5Pool -MockWith {return $true}            
             Mock -CommandName Update-F5PoolMember -MockWith {return $true}
                         
-            $return = Add-F5Pool @splatNewF5Pool -Confirm:$false 
+            $return = Add-F5Pool @splatNewF5Pool -Confirm:$false
             
             It "Should return object with correct properties" {
-                $return | Should be @($true, $true)
+                $return | Should be $true
             }
         }        
         
         Context 'Testing that all servers are in a pre-existing pool already' {
            
-            $poolMock = [F5Pool]::New($poolNameMock, $membersMock)
-
-            $membersMockWithItems = [PSCustomObject] @{
-                Items = @(
-                    [F5Member]::New('TESTWEB01', '127.0.0.1'),
-                    [F5Member]::New('TESTWEB02', '127.0.0.2')
-                )
-            }
+            $poolMock = [F5Pool]::New($poolNameMock, $membersMock)            
            
             Mock -CommandName Get-F5Pool -MockWith {return $poolMock}
             Mock -CommandName Get-F5PoolMember -MockWith {return $membersMockWithItems}
@@ -110,7 +110,7 @@ InModuleScope -ModuleName $moduleName {
             $return = Add-F5Pool @splatNewF5Pool -Confirm:$false 
 
             It "Should return object with correct properties" {
-                $return | Should be $true
+                $return | Should be @($true, $true)
             }
         }
     }
