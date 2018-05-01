@@ -50,7 +50,7 @@ function Add-F5Pool
     }
     process
     {
-        if ($PSCmdlet.ShouldProcess("Will validate\create\update Pool : $F5Pool.Name on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Will validate\create\update Pool : $($F5Pool.Name) on F5: $F5Name"))
         {
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
@@ -58,9 +58,9 @@ function Add-F5Pool
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            Write-Verbose "Checking whether $F5Pool.Name already exist on $F5Name"
+            Write-Verbose "Checking whether $($F5Pool.Name) already exist on $F5Name"
             $allPools = Get-F5Pool -F5Name $F5Name -Token $Token -GetAllPools
-            if ($allPools | Where-Object {$_.name -like $F5Pool.Name})
+            if ($allPools | Where-Object {$_.name -like $($F5Pool.Name)})
             {
                 Write-Verbose "Pool already exist"                
             }
@@ -75,36 +75,30 @@ function Add-F5Pool
                 New-F5Pool @splatNewF5Pool -Confirm:$false
             }
             
-            Write-Verbose "Adding pool members"
-            $updatePoolMembers = $false
+            Write-Verbose "Adding pool members"            
             $newMembers = @()
             
-            $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $F5Pool.Name).items            
+            $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $($F5Pool.Name)).items            
             foreach ($member in $Members)
             {
                 if ($activeMembers | Where-Object {$_.name -like "$($member.name)*"})
                 {
-                    Write-Verbose "Pool Member: $($member.name) already exist in Pool: $F5Pool.Name"
+                    Write-Verbose "Pool Member: $($member.name) already exist in Pool: $($F5Pool.Name)"
                     $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($member.name)*"}
                 }
                 else
                 {
-                    Write-Verbose "Adding Pool Member: $($member.name) to Pool: $F5Pool.Name"
-                    $newMembers += $member
-                    $updatePoolMembers = $true
-                }
-            }
+                    Write-Verbose "Adding Pool Member: $($member.Name) to Pool: $($F5Pool.Name)"
+                    $F5Pool.Members += [F5Member]::New($member.Name, $member.IpAddress, $member.ServicePort)                    
 
-            if ($updatePoolMembers)
-            {
-                $splatUpdateF5PoolMember = @{
-                    F5Name   = $F5Name
-                    Token    = $Token
-                    PoolName = $F5Pool.Name
-                    Members  = $newMembers
+                    $splatUpdateF5PoolMember = @{
+                        F5Name = $F5Name
+                        Token  = $Token                    
+                        F5Pool = $F5Pool
+                    }
+                    Update-F5PoolMember @splatUpdateF5PoolMember -Confirm:$false
                 }
-                Update-F5PoolMember @splatUpdateF5PoolMember -Confirm:$false
-            }             
+            }                      
         }        
     }
     end
