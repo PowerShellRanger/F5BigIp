@@ -45,7 +45,7 @@ function Update-F5PoolMember
     }
     process
     {
-        if ($PSCmdlet.ShouldProcess("Updates pool: $PoolName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Updates pool: $($F5Pool.Name) on F5: $F5Name"))
         {         
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
