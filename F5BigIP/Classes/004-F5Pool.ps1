@@ -7,8 +7,9 @@ class F5Pool
     # Monitor Name
     [string]$MonitorName = "https_443"
 
-    # Monitor Name
-    [string]$Monitor = "https_443"
+    # Monitor path
+    [ValidatePattern("^\/Common\/(?:[^\/]+)")] 
+    [string]$Monitor = "/Common/https_443"
 
     [ValidateSet('HTTP', 'HTTPS')]
     [string]$ServicePort = "HTTPS"
@@ -28,6 +29,19 @@ class F5Pool
     {
         $this.Name = $name
         $this.Monitor = [F5Pool]::GetMonitorName($this.MonitorName)
+        $this.Members = $members
+    }
+
+    F5Pool ([string]$name, [string]$monitor )
+    {
+        $this.Name = $name
+        $this.Monitor = $monitor
+    }
+    
+    F5Pool ([string]$name, [F5Member[]]$members, [string]$monitor)
+    {
+        $this.Name = $name
+        $this.Monitor = $monitor
         $this.Members = $members
     }
 

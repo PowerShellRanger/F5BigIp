@@ -35,15 +35,7 @@ function Add-F5Pool
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName
         )]
-        [F5Pool]$F5Pool,
-
-        #Members of Pool to create
-        [Parameter(
-            Mandatory,            
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]
-        [F5Member[]]$Members
+        [F5Pool]$F5Pool
     )
     begin
     {
@@ -76,29 +68,36 @@ function Add-F5Pool
             }
             
             Write-Verbose "Adding pool members"            
-            $newMembers = @()
-            
-            $activeMembers = (Get-F5PoolMember -F5Name $F5Name -Token $Token -PoolName $($F5Pool.Name)).items            
-            foreach ($member in $Members)
+            $splatGetF5Pool = @{
+                F5Name   = $F5Name
+                Token    = $Token
+                PoolName = $F5Pool.Name
+            }
+            $activeMembers = (Get-F5PoolMember @splatGetF5Pool).items
+            $updatePoolMembers = $false            
+            foreach ($member in $F5Pool.Members)
             {
                 if ($activeMembers | Where-Object {$_.name -like "$($member.name)*"})
                 {
                     Write-Verbose "Pool Member: $($member.name) already exist in Pool: $($F5Pool.Name)"
-                    $newMembers += $activeMembers | Select-Object kind, name, partition, address, connectionLimit, dynamicRatio, ephemeral, logging, monitor, priorityGroup, rateLimit, ratio | Where-Object {$_.name -like "$($member.name)*"}
                 }
                 else
                 {
                     Write-Verbose "Adding Pool Member: $($member.Name) to Pool: $($F5Pool.Name)"
-                    $F5Pool.Members += [F5Member]::New($member.Name, $member.IpAddress, $member.ServicePort)                    
+                    $F5Pool.Members += [F5Member]::New($member.Name, $member.IpAddress, $member.ServicePort)
+                    $updatePoolMembers = $true 
+                }                
+            }
 
-                    $splatUpdateF5PoolMember = @{
-                        F5Name = $F5Name
-                        Token  = $Token                    
-                        F5Pool = $F5Pool
-                    }
-                    Update-F5PoolMember @splatUpdateF5PoolMember -Confirm:$false
+            if ($updatePoolMembers)
+            {
+                $splatUpdateF5PoolMember = @{
+                    F5Name = $F5Name
+                    Token  = $Token                    
+                    F5Pool = $F5Pool
                 }
-            }                      
+                Update-F5PoolMember @splatUpdateF5PoolMember -Confirm:$false
+            }
         }        
     }
     end
