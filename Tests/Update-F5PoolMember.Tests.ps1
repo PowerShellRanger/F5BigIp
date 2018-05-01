@@ -69,7 +69,7 @@ InModuleScope -ModuleName $moduleName {
             }
         }
 
-        <#
+        
         Context 'Testing function Update-F5PoolMember - 1 server' {
 
             $mockedHeaders = @{
@@ -78,6 +78,8 @@ InModuleScope -ModuleName $moduleName {
 
             $f5member3NameMock = "testServer3"
             $f5member3IpAddresswMock = "127.0.0.3"
+
+            $f5PoolObjectMock.Members += [F5Member]::New($f5member3NameMock, $f5member3IpAddresswMock)
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}
             
@@ -100,7 +102,8 @@ InModuleScope -ModuleName $moduleName {
                         -and $Headers.Keys -eq $mockedHeaders.Keys `
                         -and $Headers.Values -eq $mockedHeaders.Values `
                         -and ($body | ConvertFrom-Json).Members[0].Name -eq $f5member1NameMock + ":443" `
-                        -and ($body | ConvertFrom-Json).Members[1].Name -eq $f5member2NameMock + ":443" 
+                        -and ($body | ConvertFrom-Json).Members[1].Name -eq $f5member2NameMock + ":443" `
+                        -and ($body | ConvertFrom-Json).Members[2].Name -eq $f5member3NameMock + ":443"
                 } 
             }
         }
