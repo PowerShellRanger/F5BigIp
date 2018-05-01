@@ -27,7 +27,7 @@ class F5Pool
     F5Pool ([string]$name, [F5Member[]]$members)
     {
         $this.Name = $name
-        $this.Monitor = "/Common/" + $this.MonitorName
+        $this.Monitor = [F5Pool]::GetMonitorName($this.MonitorName)
         $this.Members = $members
     }
 
@@ -59,6 +59,7 @@ class F5Member
     {
         $this.Name = [F5Member]::GetMemberName($name, $servicePort)
         $this.Address = $ip.IpAddress
+        $this.ServicePort = $servicePort
     }
 
     static [string] GetMemberName([string]$name, [string]$servicePort)

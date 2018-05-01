@@ -1,4 +1,3 @@
-
 class F5Member
 {
     # Member Name 
@@ -21,6 +20,7 @@ class F5Member
     {
         $this.Name = [F5Member]::GetMemberName($name, $servicePort)
         $this.Address = $ip.IpAddress
+        $this.ServicePort = $servicePort
     }
 
     static [string] GetMemberName([string]$name, [string]$servicePort)
@@ -29,4 +29,4 @@ class F5Member
         
         return "$($name):443"
     }    
-}  
+}
