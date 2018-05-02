@@ -80,9 +80,10 @@ function Get-F5ClientSslProfile
                 Method      = "GET"
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
+                ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod @splatGetAllClientSslProfile -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetAllClientSslProfile).items
         }
         else
         {
@@ -93,10 +94,11 @@ function Get-F5ClientSslProfile
                     Method      = "GET"
                     ContentType = "application/json"                
                     Uri         = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl/~Common~$ClientSslProfile"
+                    ErrorAction = $errorAction
                 }
                 
                 Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod @splatGetClientSslProfile -ErrorAction $errorAction
+                Invoke-RestMethod @splatGetClientSslProfile
             }
         }        
     }

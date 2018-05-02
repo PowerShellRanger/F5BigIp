@@ -80,9 +80,10 @@ function Get-F5Irule
                 Method      = "GET"
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/ltm/rule"
+                ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/rule"
-            (Invoke-RestMethod @splatGetAllIrules -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetAllIrules).items
         }
         else
         {
@@ -93,9 +94,10 @@ function Get-F5Irule
                     Method      = "GET"
                     ContentType = "application/json"                
                     Uri         = "https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
+                    ErrorAction = $errorAction
                 }
                 Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
-                Invoke-RestMethod @splatGetIrules -ErrorAction $errorAction
+                Invoke-RestMethod @splatGetIrules
             }
         }        
     }

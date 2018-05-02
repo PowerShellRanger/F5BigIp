@@ -52,9 +52,10 @@ function Get-F5PoolMember
             Method      = "GET"
             ContentType = "application/json"                
             Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName/members"
+            ErrorAction = $errorAction
         }
         Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName/members"
-        Invoke-RestMethod @splatGetPoolMembers -ErrorAction $errorAction
+        Invoke-RestMethod @splatGetPoolMembers
     }
     end
     {

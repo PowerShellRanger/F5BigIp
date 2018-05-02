@@ -80,9 +80,10 @@ function Get-F5Pool
                 Method      = "GET"
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/ltm/pool"
+                ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool"
-            (Invoke-RestMethod @splatGetAllPools -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetAllPools).items
         }
         else
         {
@@ -93,9 +94,10 @@ function Get-F5Pool
                     Method      = "GET"
                     ContentType = "application/json"                
                     Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
+                    ErrorAction = $errorAction
                 }
                 Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
-                Invoke-RestMethod @splatGetPool -ErrorAction $errorAction
+                Invoke-RestMethod @splatGetPool
             }
         }        
     }

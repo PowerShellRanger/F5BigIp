@@ -80,9 +80,10 @@ function Get-F5Node
                 Method      = "GET"
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/ltm/node"
+                ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node"
-            (Invoke-RestMethod @splatGetAllNodes -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetAllNodes).items
         }
         else
         {
@@ -93,9 +94,10 @@ function Get-F5Node
                     Method      = "GET"
                     ContentType = "application/json"                
                     Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
+                    ErrorAction = $errorAction
                 }
                 Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                Invoke-RestMethod @splatGetNode -ErrorAction $errorAction
+                Invoke-RestMethod @splatGetNode
             }
         }        
     }

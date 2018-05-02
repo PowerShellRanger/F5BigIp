@@ -80,9 +80,10 @@ function Get-F5VirtualServer
                 Method      = "GET"
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
+                ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual"
-            (Invoke-RestMethod @splatGetAllVirtualServers -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetAllVirtualServers).items
         }
         else
         {
@@ -93,9 +94,10 @@ function Get-F5VirtualServer
                     Method      = "GET"
                     ContentType = "application/json"                
                     Uri         = "https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
+                    ErrorAction = $errorAction
                 }
                 Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
-                Invoke-RestMethod @splatGetVirtualServers -ErrorAction $errorAction
+                Invoke-RestMethod @splatGetVirtualServers
             }
         }        
     }

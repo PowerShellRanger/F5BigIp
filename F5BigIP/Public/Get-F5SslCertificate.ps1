@@ -87,6 +87,7 @@ function Get-F5SslCertificate
                 Method      = "GET"
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
+                ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/sys/file/ssl-cert"
             (Invoke-RestMethod @splatGetSslCerts -ErrorAction $errorAction).items
@@ -100,9 +101,10 @@ function Get-F5SslCertificate
                     Method      = "GET"
                     ContentType = "application/json"                
                     Uri         = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
+                    ErrorAction = $errorAction
                 }
                 Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
-                Invoke-RestMethod @splatCertificate -ErrorAction $errorAction
+                Invoke-RestMethod @splatCertificate
             }
         }        
     }
