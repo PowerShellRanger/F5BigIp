@@ -8,7 +8,7 @@ class F5Pool
     [string]$MonitorName = "https_443"
 
     # Monitor path
-    [ValidatePattern("^\/Common\/(?:[^\/]+)")] 
+    #[ValidatePattern("^\/Common\/(?:[^\/]+)")] 
     [string]$Monitor = "/Common/https_443"
 
     [ValidateSet('HTTP', 'HTTPS')]
