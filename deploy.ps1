@@ -8,7 +8,7 @@ param
 
     # OnDemand EnvironmentID
     [Parameter(Mandatory)]    
-    [string]$EnvironmentId,
+    [string[]]$EnvironmentId,
 
     # Password from TFS Build Variable
     [Parameter(Mandatory)]    
@@ -20,7 +20,7 @@ $secpasswd = ConvertTo-SecureString $Password -AsPlainText -Force
 $creds = New-Object System.Management.Automation.PSCredential ("think.local\s_IIS_OND", $secpasswd)
 $dateTime = Get-Date -f G
 
-$component = Invoke-RestMethod -Credential $creds -Method GET -Uri "$url/Components/$($ComponentId)"
+$component = Invoke-RestMethod -Credential $creds -Method GET -Uri "$url/Components/$ComponentId"
 
 #TFS Copy
 $buildPath = $component.BuildPath
@@ -52,13 +52,20 @@ $deploymentStep = [PSCustomObject] @{
     Status = 'PENDING'
 }
 
-$deployment = [PSCustomObject] @{
-    ServerEnvironmentId = $EnvironmentId
-    DeploymentMethod    = 'AllNodes'
-    DeploymentDate      = $dateTime
-    DeploymentSteps     = @($deploymentStep)
-    IsRejected          = 'false'
+foreach ($environment in $EnvironmentId)
+{
+    $deployment = [PSCustomObject] @{
+        ServerEnvironmentId = $environment
+        DeploymentMethod    = 'AllNodes'
+        DeploymentDate      = $dateTime
+        DeploymentSteps     = @($deploymentStep)
+        IsRejected          = 'false'
+    }
+
+    $environmentInfo = Invoke-RestMethod -Credential $creds -Method GET -Uri "$url/Environments/$environment"
+    
+    Write-Verbose "Kicking off deployment for: $($component.Name) to Environment: $($environmentInfo.Name)"
+    
+    Invoke-RestMethod -Credential $creds -Method Post -Uri "$url/Deployments" -Body ($deployment | ConvertTo-Json) -ContentType 'application/json'        
 }
 
-Write-Verbose "Kicking off deployment for $($component.Name)"
-Invoke-RestMethod -Credential $creds -Method Post -Uri "$url/Deployments" -Body ($deployment | ConvertTo-Json) -ContentType 'application/json'
