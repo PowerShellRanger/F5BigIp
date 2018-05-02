@@ -81,7 +81,6 @@ function Get-F5VirtualServer
                 ContentType = "application/json"                
                 Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
             }
-            $url = "https://$F5Name/mgmt/tm/ltm/virtual"
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual"
             (Invoke-RestMethod @splatGetAllVirtualServers -ErrorAction $errorAction).items
         }
