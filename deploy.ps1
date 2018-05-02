@@ -10,6 +10,10 @@ param
     [Parameter(Mandatory)]    
     [string[]]$EnvironmentId,
 
+    # OnDemand EnvironmentID
+    [Parameter(Mandatory)]    
+    [string]$EnvironmentId2,
+
     # Password from TFS Build Variable
     [Parameter(Mandatory)]    
     [string]$Password
@@ -51,6 +55,8 @@ $deploymentStep = [PSCustomObject] @{
     DeployOrder = 0
     Status = 'PENDING'
 }
+
+if($EnvironmentId2){$EnvironmentId += $EnvironmentId2}
 
 foreach ($environment in $EnvironmentId)
 {
