@@ -22,12 +22,7 @@ InModuleScope -ModuleName $moduleName {
         $f5member2NameMock = "testServer2"
         $f5member2IpAddresswMock = "127.0.0.2"
 
-        $f5membersMock = @(
-            [F5Member]::New($f5member1NameMock, $f5member1IpAddresswMock)
-            [F5Member]::New($f5member2NameMock, $f5member2IpAddresswMock)
-        )
-
-        $f5PoolObjectMock = [F5Pool]::New($poolNameMock, $f5membersMock)
+        $f5PoolObjectMock = [F5Pool]::New($poolNameMock)
         
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
@@ -42,6 +37,13 @@ InModuleScope -ModuleName $moduleName {
             $mockedHeaders = @{
                 'X-F5-Auth-Token' = $tokenMock
             }
+
+            $f5membersMock = @(
+                [F5Member]::New($f5member1NameMock, $f5member1IpAddresswMock)
+                [F5Member]::New($f5member2NameMock, $f5member2IpAddresswMock)
+            )
+
+            $f5PoolObjectMock.Members = $f5membersMock
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}
             
@@ -107,6 +109,5 @@ InModuleScope -ModuleName $moduleName {
                 } 
             }
         }
-        #>        
     }
 }
