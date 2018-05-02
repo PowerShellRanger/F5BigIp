@@ -75,25 +75,59 @@ function Add-F5Node
             }
             elseif ($allNodes | Where-Object {$_.name -like $NodeName})
             {
-                Write-Verbose "Node already exist, but.... has a different IP than submitted"
-                if ($allNodes | Where-Object {$_.address -like $IpV4Address})
+                Write-Verbose "Node already exist. Validating the IP Address is the same."
+                if ($allNodes | Where-Object {$_.name -notlike $NodeName -and $_.address -like $IpV4Address})
                 {
-                    Write-Verbose "Node already exist, and... IP is already in use by another node"
+                    if ($PSBoundParameters['Force'])
+                    {
+                        Write-Verbose "Node already exist. Force switch accepted"
+                        $splatUpdateNode = @{
+                            F5Name      = $F5Name 
+                            Token       = $Token
+                            NodeName    = $NodeName
+                            IpV4Address = $IpV4Address
+                            ErrorAction = $errorAction
+                        }
+                        Update-F5Node @splatUpdateNode
+                    }
+                    else 
+                    {
+                        Write-Verbose "Node already exist, but... IP is already in use by another node"    
+                    }                    
                 }
-                elseif ($PSBoundParameters['Force'])
-                {
-                    Write-Verbose "Node already exist. Force switch accepted"
-                    Update-F5Node -F5Name $F5Name -Token $Token -NodeName $NodeName -IpV4Address $IpV4Address
-                }
+                
             }
             elseif ($allNodes | Where-Object {$_.address -like $IpV4Address})
             {
-                Write-Verbose "Node is new, but... IP is already in use by another node"
+                if ($PSBoundParameters['Force'])
+                {
+                    Write-Verbose "Node already exist. Force switch accepted"
+                    $splatUpdateNode = @{
+                        F5Name      = $F5Name 
+                        Token       = $Token
+                        NodeName    = $NodeName
+                        IpV4Address = $IpV4Address
+                        ErrorAction = $errorAction
+                    }
+                    Update-F5Node @splatUpdateNode
+                }
+                else 
+                {
+                    Write-Verbose "Node is new, but... IP is already in use by another node"
+                }
+                
             }
             else
             {
                 Write-Verbose "Creating new node with provided IP"
-                New-F5Node -F5Name $F5Name -Token $Token -NodeName $NodeName -IpV4Address $IpV4Address
+                $splatNewNode = @{
+                    F5Name      = $F5Name 
+                    Token       = $Token
+                    NodeName    = $NodeName
+                    IpV4Address = $IpV4Address
+                    ErrorAction = $errorAction
+                }
+                New-F5Node @splatNewNode
             }
         }        
     }
