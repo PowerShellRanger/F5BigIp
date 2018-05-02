@@ -46,7 +46,7 @@ class F5VirtualServer
         $this.Profiles = [F5VirtualServer]::GetProfiles($this.ClientSslProfileName, $this.ServicePort)
     }
 
-    VirtualServer ([string]$name, [IpAddress]$ip, [string]$clientSslProfileName)
+    F5VirtualServer ([string]$name, [IpAddress]$ip, [string]$clientSslProfileName)
     {
         $this.Name = $name
         $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
@@ -56,7 +56,7 @@ class F5VirtualServer
         $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $this.ServicePort)
     }
 
-    VirtualServer ([string]$name, [IpAddress]$ip, [string]$servicePort, [string]$clientSslProfileName)
+    F5VirtualServer ([string]$name, [IpAddress]$ip, [string]$servicePort, [string]$clientSslProfileName)
     {
         $this.Name = $name
         $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
@@ -66,7 +66,7 @@ class F5VirtualServer
         $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
     }
 
-    VirtualServer ([string]$name, [string]$source, [IpAddress]$ip, [string]$servicePort,
+    F5VirtualServer ([string]$name, [string]$source, [IpAddress]$ip, [string]$servicePort,
         [snat]$snat, [string]$ipProtocol, [string]$pool, [string]$clientSslProfileName)
     {
         $this.Name = $name
