@@ -75,17 +75,28 @@ function Get-F5ClientSslProfile
         }
         if ($PSBoundParameters['GetAllClientSslProfiles'])
         {
-            $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
+            $splatGetAllClientSslProfile = @{                    
+                Headers     = $headers
+                Method      = "GET"
+                ContentType = "application/json"                
+                Uri         = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl"
+            }
             Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetAllClientSslProfile -ErrorAction $errorAction).items
         }
         else
         {
             foreach ($ClientSslProfile in $ClientSslProfileName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl/~Common~$ClientSslProfile"
+                $splatGetClientSslProfile = @{                    
+                    Headers     = $headers
+                    Method      = "GET"
+                    ContentType = "application/json"                
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/profile/client-ssl/~Common~$ClientSslProfile"
+                }
+                
                 Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                Invoke-RestMethod @splatGetClientSslProfile -ErrorAction $errorAction
             }
         }        
     }

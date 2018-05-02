@@ -75,17 +75,28 @@ function Get-F5VirtualServer
         }
         if ($PSBoundParameters['GetAllVirtualServers'])
         {
+            $splatGetAllVirtualServers = @{                    
+                Headers     = $headers
+                Method      = "GET"
+                ContentType = "application/json"                
+                Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
+            }
             $url = "https://$F5Name/mgmt/tm/ltm/virtual"
-            Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual"
+            (Invoke-RestMethod @splatGetAllVirtualServers -ErrorAction $errorAction).items
         }
         else
         {
             foreach ($VirtualServer in $VirtualServerName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                $splatGetVirtualServers = @{                    
+                    Headers     = $headers
+                    Method      = "GET"
+                    ContentType = "application/json"                
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
+                }
+                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
+                Invoke-RestMethod @splatGetVirtualServers -ErrorAction $errorAction
             }
         }        
     }

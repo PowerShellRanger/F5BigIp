@@ -75,17 +75,27 @@ function Get-F5Pool
         }
         if ($PSBoundParameters['GetAllPools'])
         {
-            $url = "https://$F5Name/mgmt/tm/ltm/pool"
-            Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            $splatGetAllPools = @{                    
+                Headers     = $headers
+                Method      = "GET"
+                ContentType = "application/json"                
+                Uri         = "https://$F5Name/mgmt/tm/ltm/pool"
+            }
+            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool"
+            (Invoke-RestMethod @splatGetAllPools -ErrorAction $errorAction).items
         }
         else
         {
             foreach ($Pool in $PoolName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                $splatGetPool = @{                    
+                    Headers     = $headers
+                    Method      = "GET"
+                    ContentType = "application/json"                
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
+                }
+                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
+                Invoke-RestMethod @splatGetPool -ErrorAction $errorAction
             }
         }        
     }

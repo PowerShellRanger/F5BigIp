@@ -75,17 +75,27 @@ function Get-F5Irule
         }
         if ($PSBoundParameters['GetAllIrules'])
         {
-            $url = "https://$F5Name/mgmt/tm/ltm/rule"
-            Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            $splatGetAllIrules = @{                    
+                Headers     = $headers
+                Method      = "GET"
+                ContentType = "application/json"                
+                Uri         = "https://$F5Name/mgmt/tm/ltm/rule"
+            }
+            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/rule"
+            (Invoke-RestMethod @splatGetAllIrules -ErrorAction $errorAction).items
         }
         else
         {
             foreach ($Irule in $IruleName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                $splatGetIrules = @{                    
+                    Headers     = $headers
+                    Method      = "GET"
+                    ContentType = "application/json"                
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
+                }
+                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
+                Invoke-RestMethod @splatGetIrules -ErrorAction $errorAction
             }
         }        
     }

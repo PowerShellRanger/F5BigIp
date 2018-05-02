@@ -82,17 +82,27 @@ function Get-F5SslCertificate
         }
         if ($PSBoundParameters['GetAllCertificates'])
         {
-            $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
-            Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            $splatGetSslCerts = @{                    
+                Headers     = $headers
+                Method      = "GET"
+                ContentType = "application/json"                
+                Uri         = "https://$F5Name/mgmt/tm/sys/file/ssl-cert"
+            }
+            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/sys/file/ssl-cert"
+            (Invoke-RestMethod @splatGetSslCerts -ErrorAction $errorAction).items
         }
         else
         {
             foreach ($certificate in $CertificateName)
             {                
-                $url = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                $splatCertificate = @{                    
+                    Headers     = $headers
+                    Method      = "GET"
+                    ContentType = "application/json"                
+                    Uri         = "https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
+                }
+                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/sys/file/ssl-cert/~Common~$certificate"
+                Invoke-RestMethod @splatCertificate -ErrorAction $errorAction
             }
         }        
     }

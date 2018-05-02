@@ -47,9 +47,14 @@ function Get-F5PoolMember
             'X-F5-Auth-Token' = $Token
         }
             
-        $url = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName/members"
-        Write-Verbose "Invoke Rest Method to: $url"
-        Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+        $splatGetPoolMembers = @{                    
+            Headers     = $headers
+            Method      = "GET"
+            ContentType = "application/json"                
+            Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName/members"
+        }
+        Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool/~Common~$PoolName/members"
+        Invoke-RestMethod @splatGetPoolMembers -ErrorAction $errorAction
     }
     end
     {

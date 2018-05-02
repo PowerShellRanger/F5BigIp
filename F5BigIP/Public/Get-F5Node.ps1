@@ -75,17 +75,27 @@ function Get-F5Node
         }
         if ($PSBoundParameters['GetAllNodes'])
         {
-            $url = "https://$F5Name/mgmt/tm/ltm/node"
-            Write-Verbose "Invoke Rest Method to: $url"
-            (Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction).items
+            $splatGetAllNodes = @{                    
+                Headers     = $headers
+                Method      = "GET"
+                ContentType = "application/json"                
+                Uri         = "https://$F5Name/mgmt/tm/ltm/node"
+            }
+            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node"
+            (Invoke-RestMethod @splatGetAllNodes -ErrorAction $errorAction).items
         }
         else
         {
             foreach ($Node in $NodeName)
             {                
-                $url = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                Write-Verbose "Invoke Rest Method to: $url"
-                Invoke-RestMethod -Method Get -Uri $url -Headers $headers -ContentType "application/json" -ErrorAction $errorAction
+                $splatGetNode = @{                    
+                    Headers     = $headers
+                    Method      = "GET"
+                    ContentType = "application/json"                
+                    Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
+                }
+                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
+                Invoke-RestMethod @splatGetNode -ErrorAction $errorAction
             }
         }        
     }
