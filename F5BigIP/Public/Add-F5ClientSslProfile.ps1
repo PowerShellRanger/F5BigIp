@@ -87,23 +87,37 @@ function Add-F5ClientSslProfile
             }
 
             Write-Verbose "Checking whether $ClientSslProfileName already exist on $F5Name"
-            $ClientSSLProfileParams = @{            
-                ClientSslProfileName = $ClientSslProfileName
-                CertificateName      = $CertificateName
-                CABundleName         = $CABundleName
-                DefaultSni           = $DefaultSni
+            $splatGetAllClientSSLProfile = @{            
+                F5Name               = $F5Name
+                Token                = $Token
             }
             
-            $allClientSslProfiles = Get-F5ClientSslProfile -F5Name $F5Name -Token $Token -GetAllClientSslProfiles
+            $allClientSslProfiles = Get-F5ClientSslProfile @splatGetAllClientSSLProfile -GetAllClientSslProfiles
             if ($allClientSslProfiles | Where-Object {$_.name -like $ClientSslProfileName})
             {
+                $splatUpdateClientSSLProfile = @{
+                    F5Name               = $F5Name
+                    Token                = $Token         
+                    ClientSslProfileName = $ClientSslProfileName
+                    CertificateName      = $CertificateName
+                    CABundleName         = $CABundleName
+                    DefaultSni           = $DefaultSni
+                }
                 Write-Verbose "Client SSL Profile already exist"
-                Update-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams                
+                Update-F5ClientSslProfile @splatUpdateClientSSLProfile -Confirm:$false
             }
             else
             {
+                $splatNewClientSSLProfile = @{
+                    F5Name               = $F5Name
+                    Token                = $Token                                
+                    ClientSslProfileName = $ClientSslProfileName
+                    CertificateName      = $CertificateName
+                    CABundleName         = $CABundleName
+                    DefaultSni           = $DefaultSni
+                }
                 Write-Verbose "Adding new Client SSL Profile"
-                New-F5ClientSslProfile -F5Name $F5Name -Token $Token @ClientSSLProfileParams
+                New-F5ClientSslProfile @splatNewClientSSLProfile -Confirm:$false
             }
         }        
     }

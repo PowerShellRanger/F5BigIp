@@ -36,7 +36,13 @@ InModuleScope -ModuleName $moduleName {
 
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
 
-            $return = Update-F5Node -F5Name $F5Name -Token $tokenMock -NodeName $nodeNameMock -IpV4Address $ipV4AddressMock -confirm:$false 
+            $splatUpdateF5Node = @{
+                F5Name      = $F5Name
+                Token       = $tokenMock
+                NodeName    = $nodeNameMock
+                IpV4Address = $ipV4AddressMock
+            }
+            $return = Update-F5Node @splatUpdateF5Node -confirm:$false 
 
             It "Should return object with correct properties" {
                 $return | Should be $true

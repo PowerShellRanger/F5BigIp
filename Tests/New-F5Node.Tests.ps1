@@ -34,7 +34,8 @@ InModuleScope -ModuleName $moduleName {
                 'X-F5-Auth-Token' = $tokenMock
             }
 
-            Mock -CommandName Invoke-RestMethod -MockWith {return $true}        
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}
+
             $splatNewF5Node = @{
                 F5Name   = $F5Name
                 Token    = $tokenMock
