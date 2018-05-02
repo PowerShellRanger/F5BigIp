@@ -90,7 +90,7 @@ function Get-F5SslCertificate
                 ErrorAction = $errorAction
             }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/sys/file/ssl-cert"
-            (Invoke-RestMethod @splatGetSslCerts -ErrorAction $errorAction).items
+            (Invoke-RestMethod @splatGetSslCerts).items
         }
         else
         {
