@@ -52,7 +52,6 @@ InModuleScope -ModuleName $moduleName {
             
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}
             Mock -CommandName Get-F5ClientSslProfile -MockWith {return $clientSslProfileMock}
-            Mock -CommandName Update-F5ClientSslProfile -MockWith {return $true}
             Mock -CommandName New-F5ClientSslProfile -MockWith {return $true}
                         
             $return = Add-F5ClientSslProfile @splatAddF5ClientSslProfile -Confirm:$false
@@ -60,90 +59,36 @@ InModuleScope -ModuleName $moduleName {
             It "Should return object with correct properties" {
                 $return | Should be $true
             }
+            
+            It 'Should check that we call New-F5ClientSslProfile once' {
+                Assert-MockCalled -CommandName New-F5ClientSslProfile -Exactly -Times 1
+            }
         }        
         
-        <#
-        Context 'Testing if IP of new node is used buy another node' {
-            $nodeMock = [PSCustomObject] @{
-                name    = "test1235"
-                address = $ipV4AddressMock 
-            }
-
-            Mock -CommandName Get-F5Node -MockWith {return $nodeMock}
-            Mock -CommandName Update-F5Node -MockWith {return $true}
-            Mock -CommandName New-F5Node -MockWith {return $true}
-
-            $return = Add-F5Node @splatAddF5Node -Confirm:$false
-
-            It "Should return object with correct properties" {
-                $return | Should be $null
-            }
-        }
-
-        Context 'Testing if IP of new node is used buy another node' {
-            $nodeMock = @(
+        Context 'Testing updating exisitng Client SSL Profile' {           
+            $clientSslProfileMock = @(
                 [PSCustomObject] @{
-                    name    = "test1235"
-                    address = $ipV4AddressMock
-                },
-                [PSCustomObject] @{
-                    name    = $nodeNameMock
-                    address = "127.0.0.2"
+                    name       = $clientSslProfileNameMock
+                    cert       = "/Common/testcert.crt"
+                    key        = "/Common/testcert.key"
+                    chain      = "/Common/$caBundleMock"
+                    sniDefault = "false"
                 }
             )
-
-            Mock -CommandName Get-F5Node -MockWith {return $nodeMock}
-            Mock -CommandName Update-F5Node -MockWith {return $true}
-            Mock -CommandName New-F5Node -MockWith {return $true}
-
-            $return = Add-F5Node @splatAddF5Node -Confirm:$false
-
-            It "Should return object with correct properties" {
-                $return | Should be $null
-            }
-        }
-
-        Context 'Testing if IP of new node is used buy another node w/Force' {
-            $nodeMock = @(
-                [PSCustomObject] @{
-                    name    = "test1235"
-                    address = $ipV4AddressMock
-                },
-                [PSCustomObject] @{
-                    name    = $nodeNameMock
-                    address = "127.0.0.2"
-                }
-            )
-
-            Mock -CommandName Get-F5Node -MockWith {return $nodeMock}
-            Mock -CommandName Update-F5Node -MockWith {return $true}
-            Mock -CommandName New-F5Node -MockWith {return $true}
-
-            $return = Add-F5Node @splatAddF5Node -Force -Confirm:$false
-
+            
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}
+            Mock -CommandName Get-F5ClientSslProfile -MockWith {return $clientSslProfileMock}
+            Mock -CommandName Update-F5ClientSslProfile -MockWith {return $true}
+                        
+            $return = Add-F5ClientSslProfile @splatAddF5ClientSslProfile -Confirm:$false
+            
             It "Should return object with correct properties" {
                 $return | Should be $true
             }
-        }        
 
-        Context 'Testing if IP of new node is used buy another node w/Force' {
-            $nodeMock = @(
-                [PSCustomObject] @{
-                    name    = "test1235"
-                    address = "127.0.0.2"
-                }
-            )
-
-            Mock -CommandName Get-F5Node -MockWith {return $nodeMock}
-            Mock -CommandName Update-F5Node -MockWith {return $true}
-            Mock -CommandName New-F5Node -MockWith {return $true}
-
-            $return = Add-F5Node @splatAddF5Node -Force -Confirm:$false
-
-            It "Should return object with correct properties" {
-                $return | Should be $true
+            It 'Should check that we call Update-F5ClientSslProfile once' {
+                Assert-MockCalled -CommandName Update-F5ClientSslProfile -Exactly -Times 1
             }
         }
-        #>  
     }
 }
