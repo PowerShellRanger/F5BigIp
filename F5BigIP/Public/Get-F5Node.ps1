@@ -52,6 +52,7 @@ function Get-F5Node
             {                
                 Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/node/~Common~$NodeName"                
                 [F5Node]::Get($nodeName, $Script:F5Session)
+            }
         }        
     }
     end
