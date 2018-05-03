@@ -15,23 +15,7 @@ function New-F5Node
         ConfirmImpact = "High"
     )]
     param
-    (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]        
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]        
-        [string]$Token,
-
+    (        
         # Name of Node to create
         [Parameter(
             Mandatory, 
@@ -50,7 +34,8 @@ function New-F5Node
         [string]$IpV4Address
     )
     begin
-    {
+    {                
+        Test-F5Session
     }
     process
     {
@@ -62,25 +47,9 @@ function New-F5Node
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            $headers = @{
-                'X-F5-Auth-Token' = $Token
-            }
+            $node = [F5Node]::New($NodeName, $IpV4Address)
 
-            $psObjectBody = [PSCustomObject] @{
-                name    = "$NodeName"
-                address = "$IpV4Address"
-            }
-            $body = $psObjectBody | ConvertTo-Json        
-
-            $splatInvokeRestMethod = @{
-                Uri         = "https://$F5Name/mgmt/tm/ltm/node"
-                ContentType = 'application/json'
-                Method      = 'POST'
-                Body        = $body
-                Headers     = $headers
-                ErrorAction = $errorAction
-            }
-            Invoke-RestMethod @splatInvokeRestMethod
+            $node.Create($F5Session)
         }    
     }
     end
