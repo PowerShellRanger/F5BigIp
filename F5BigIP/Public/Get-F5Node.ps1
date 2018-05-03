@@ -51,7 +51,6 @@ function Get-F5Node
         if ($PSBoundParameters['GetAllNodes'])
         {
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node"
-            #(Invoke-RestMethod @splatGetAllNodes).items
             try
             {
                 [F5Node]::GetAllNodes($F5Auth)

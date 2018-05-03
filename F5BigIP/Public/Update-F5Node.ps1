@@ -46,7 +46,7 @@ function Update-F5Node
             {
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
-
+            # Needs work to make function correctly
             $node = [F5Node]::New( $NodeName, $IpV4Address)
             try
             {
