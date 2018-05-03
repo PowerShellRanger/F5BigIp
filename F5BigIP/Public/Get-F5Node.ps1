@@ -15,35 +15,13 @@ function Get-F5Node
     )]
     param
     (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetNodesRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllNodes'
-        )]
-        [string]$F5Name,
-
         # Token Based Authentication
         [Parameter(
             Mandatory, 
             ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetNodesRequested'
+            ValueFromPipelineByPropertyName
         )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllNodes'
-        )]
-        [string]$Token,
+        [F5Authentication]$F5Auth,
 
         # Name of Nodes to get
         [Parameter(
@@ -70,34 +48,18 @@ function Get-F5Node
             $errorAction = $PSBoundParameters["ErrorAction"]
         }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
         if ($PSBoundParameters['GetAllNodes'])
         {
-            $splatGetAllNodes = @{                    
-                Headers     = $headers
-                Method      = "GET"
-                ContentType = "application/json"                
-                Uri         = "https://$F5Name/mgmt/tm/ltm/node"
-                ErrorAction = $errorAction
-            }
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node"
-            (Invoke-RestMethod @splatGetAllNodes).items
+            #(Invoke-RestMethod @splatGetAllNodes).items
+            [F5Node]::GetAllNodes($F5Auth)
         }
         else
         {
             foreach ($Node in $NodeName)
             {                
-                $splatGetNode = @{                    
-                    Headers     = $headers
-                    Method      = "GET"
-                    ContentType = "application/json"                
-                    Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                    ErrorAction = $errorAction
-                }
                 Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                Invoke-RestMethod @splatGetNode
+                [F5Node]::Get($nodeName, $F5Auth)
             }
         }        
     }
