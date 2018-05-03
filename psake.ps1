@@ -59,7 +59,7 @@ Task ScriptAnalysis -Depends Init {
     {
         foreach ($class in $classes)
         {
-            "Dot sourcing $($class.FullName) because classes...suck"
+            "Dot sourcing $($class.FullName)"
             . $($class.FullName)
         }
     }
