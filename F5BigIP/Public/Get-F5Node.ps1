@@ -15,14 +15,6 @@ function Get-F5Node
     )]
     param
     (
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]
-        [F5Authentication]$F5Auth,
-
         # Name of Nodes to get
         [Parameter(
             ParameterSetName = 'OnlyGetNodesRequested'
@@ -50,30 +42,16 @@ function Get-F5Node
 
         if ($PSBoundParameters['GetAllNodes'])
         {
-            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node"
-            try
-            {
-                [F5Node]::GetAllNodes($F5Auth)
-            }
-            catch
-            {
-                Write-Error $_
-            }
+            Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/node"
+            [F5Node]::GetAllNodes($Script:F5Session)
+
         }
         else
         {
             foreach ($Node in $NodeName)
             {                
-                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"                
-                try
-                {
-                    [F5Node]::Get($nodeName, $F5Auth)
-                }
-                catch
-                {
-                    Write-Error $_
-                }
-            }
+                Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/node/~Common~$NodeName"                
+                [F5Node]::Get($nodeName, $Script:F5Session)
         }        
     }
     end
