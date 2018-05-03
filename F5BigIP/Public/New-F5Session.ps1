@@ -40,7 +40,7 @@ function New-F5Session
     {
         if ($PSCmdlet.ShouldProcess("Generate Rest API Token for User: $($Credential.UserName) on F5: $F5Name"))
         {    
-            Write-Verbose 'Creating a new F5Session to $script:F5Session'
+            Write-Verbose "Creating a new Session to F5: $F5Name"
             $script:F5Session = [F5Session]::New($F5Name, $Credential)
         }
     }
