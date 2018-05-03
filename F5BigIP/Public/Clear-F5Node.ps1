@@ -40,8 +40,14 @@ function Clear-F5Node
 
             $node = [F5Node]::New()
             $node.Name = $NodeName
-
-            $node.Delete($script:F5Session)
+            try
+            {
+                $node.Delete($script:F5Session)
+            }
+            catch
+            {
+                throw $_
+            }
     }
     end
     {

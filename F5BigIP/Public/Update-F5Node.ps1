@@ -48,8 +48,14 @@ function Update-F5Node
             }
 
             $node = [F5Node]::New( $NodeName, $IpV4Address)
-
-            $node.Update($script:F5Session)
+            try
+            {
+                $node.Update($script:F5Session)
+            }
+            catch
+            {
+                throw $_
+            }
         } 
     }
     end

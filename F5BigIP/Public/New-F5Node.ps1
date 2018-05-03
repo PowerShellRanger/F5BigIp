@@ -48,8 +48,14 @@ function New-F5Node
             }
 
             $node = [F5Node]::New($NodeName, $IpV4Address)
-
-            $node.Create($script:F5Session)
+            try
+            {
+                $node.Create($script:F5Session)
+            }
+            catch
+            {
+                throw $_
+            }
         }    
     }
     end

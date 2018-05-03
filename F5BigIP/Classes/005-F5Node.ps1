@@ -144,7 +144,6 @@ class F5Node
             }
         } 
         $body = $hashBody | ConvertTo-Json
-        $body  
         
         $splatInvokeRestMethod = @{
             Uri         = $uri
