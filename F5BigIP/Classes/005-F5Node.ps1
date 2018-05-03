@@ -95,12 +95,11 @@ class F5Node
     }
 
     #Not Fullly Functional
-    [void] Update([F5Session]$f5Session)
+    hidden [void] Update([F5Session]$f5Session)
     {
         $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
         
         $hashBody = [PSCustomObject] @{
-            name    = "testNameChange"
             address = $this.IpAddress
         }
         $body = $hashBody | ConvertTo-Json  

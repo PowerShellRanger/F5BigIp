@@ -15,36 +15,6 @@ function Get-F5Pool
     )]
     param
     (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetPoolsRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllPools'
-        )]
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetPoolsRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllPools'
-        )]
-        [string]$Token,
-
         # Name of Certificates to get
         [Parameter(
             ParameterSetName = 'OnlyGetPoolsRequested'
@@ -75,29 +45,16 @@ function Get-F5Pool
         }
         if ($PSBoundParameters['GetAllPools'])
         {
-            $splatGetAllPools = @{                    
-                Headers     = $headers
-                Method      = "GET"
-                ContentType = "application/json"                
-                Uri         = "https://$F5Name/mgmt/tm/ltm/pool"
-                ErrorAction = $errorAction
-            }
-            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool"
-            (Invoke-RestMethod @splatGetAllPools).items
+            Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/pool"
+            [F5Pool]::GetAllNodes($Script:F5Session)
+
         }
         else
         {
             foreach ($Pool in $PoolName)
             {                
-                $splatGetPool = @{                    
-                    Headers     = $headers
-                    Method      = "GET"
-                    ContentType = "application/json"                
-                    Uri         = "https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
-                    ErrorAction = $errorAction
-                }
-                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/pool/~Common~$Pool"
-                Invoke-RestMethod @splatGetPool
+                Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/pool/~Common~$Pool"
+                [F5Pool]::Get($PoolName,$Script:F5Session)
             }
         }        
     }
