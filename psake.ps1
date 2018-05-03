@@ -1,5 +1,5 @@
 
-Import-module -name 'Pester' , 'psake' , 'PSScriptAnalyzer'
+Import-Module -Name 'Pester' , 'psake' , 'PSScriptAnalyzer'
 
 function Invoke-TestFailure
 {
@@ -48,11 +48,21 @@ Task Default -Depends ScriptAnalysis, UnitTests, Build, Clean
 
 Task Init {
     "Build System Details:"
-    $env:BUILD_REPOSITORY_NAME
+    $env:BUILD_REPOSITORY_NAME    
     "`n"
 }
 
-Task ScriptAnalysis -Depends Init {
+Task ScriptAnalysis -Depends Init {        
+    "Classes are a pain, so we must dot source them first..."
+    $classes = Get-ChildItem -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Classes" -Filter '*.ps1' 
+    if ($classes)
+    {
+        foreach ($class in $classes)
+        {
+            "Dot sourcing $($class.FullName) because classes...suck"
+            . $($class.FullName)
+        }
+    }
     "Starting script analysis..."
     Invoke-ScriptAnalyzer -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*\*.ps1"
 }
@@ -78,27 +88,18 @@ Task Build -Depends UnitTests {
 
     # Get public functions to export
     $functions = Get-ChildItem "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Public\*.ps1" | Select-Object -ExpandProperty BaseName
-    $classes = Get-ChildItem "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Classes\*.ps1" | Select-Object -ExpandProperty Name
-    
-    # Bump the module version
-    #$manifest = Import-PowerShellDataFile -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1"
-    #[version]$version = $manifest.ModuleVersion
-    
-    # Add one to the build of the version number
-    #[version]$newVersion = "{0}.{1}.{2}" -f $version.Major, $version.Minor, ($version.Build + 1)
     
     # Update the manifest file
     $splatUpdateModuleManifest = @{
         Path = "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1"
         ModuleVersion = $env:BUILD_BUILDNUMBER
         FunctionsToExport = $functions
-        ScriptsToProcess = @($classes | ForEach-Object { "Classes\$_" })
     }
     Update-ModuleManifest @splatUpdateModuleManifest
 }
 
 Task Clean {
-    "Starting cleaning enviroment..."        
+    "Starting cleaning environment..."        
     
     # Remove Test Results from previous runs    
     Remove-Item "$TestResultsPath\*.xml"
