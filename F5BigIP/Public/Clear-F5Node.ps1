@@ -48,6 +48,7 @@ function Clear-F5Node
             {
                 throw $_
             }
+        }
     }
     end
     {
