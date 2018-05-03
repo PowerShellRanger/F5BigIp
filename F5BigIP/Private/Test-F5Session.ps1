@@ -26,6 +26,7 @@ function Test-F5Session
         
         if ($script:F5Session.TimeStamp -ge (Get-Date).AddMinutes(-15))
         {
+            Write-Verbose "F5Session timed out. Creating a new session to F5: $($script:F5Session.F5Name)."
             New-F5Session -F5Name $script:F5Session.F5Name -Credential $script:F5Session.Credential
         }
     }
