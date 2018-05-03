@@ -16,22 +16,6 @@ function Update-F5Node
     )]
     param
     (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]
-        [string]$Token,
-
         # Name of Node to create
         [Parameter(
             Mandatory, 
@@ -51,36 +35,22 @@ function Update-F5Node
     )
     begin
     {
+        Test-F5Session
     }
     process
     {
-        if ($PSCmdlet.Shouldprocess("Updates node: $NodeName on F5: $F5Name"))
-        { 
+        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $F5Name"))
+        {                
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
             {
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            $headers = @{
-                'X-F5-Auth-Token' = $Token
-            }
+            $node = [F5Node]::New( $NodeName, $IpV4Address)
 
-            $psObjectBody = [PSCustomObject] @{
-                address = "$IpV4Address"
-            }
-            $body = $psObjectBody | ConvertTo-Json        
-
-            $splatInvokeRestMethod = @{
-                Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                ContentType = 'application/json'
-                Method      = 'Patch'
-                Body        = $body
-                Headers     = $headers
-                ErrorAction = $errorAction
-            }
-            Invoke-RestMethod @splatInvokeRestMethod
-        }
+            $node.Update($script:F5Session)
+        } 
     }
     end
     {
