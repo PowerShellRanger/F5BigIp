@@ -31,7 +31,7 @@ function New-F5Node
             ValueFromPipelineByPropertyName
         )]        
         [ValidatePattern("\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z")]
-        [string]$IpV4Address
+        [string]$IpAddress
     )
     begin
     {                
@@ -47,7 +47,7 @@ function New-F5Node
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            $node = [F5Node]::New($NodeName, $IpV4Address)
+            $node = [F5Node]::New($NodeName, $IpAddress)
 
             $node.Create($script:F5Session)
         }    
