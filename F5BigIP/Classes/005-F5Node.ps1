@@ -25,12 +25,12 @@ class F5Node
         $this.IpAddress = $ipAddress.IpAddress
     }
 
-    static [F5Node] Get([string]$nodeName, [F5Authentication]$f5Auth)
+    static [F5Node] Get([string]$nodeName, [F5Session]$f5Session)
     {                          
-        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$nodeName"
+        $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node/~Common~$nodeName"
 
         $splatGetNode = @{                    
-            Headers = $f5Auth.Header
+            Headers = $f5Session.Header
             Method = "GET"
             ContentType = "application/json"                
             Uri = $uri
@@ -41,12 +41,12 @@ class F5Node
         return [F5Node]::New($response.name, $response.address)
     }
 
-    static [F5Node[]] GetAllNodes([F5Authentication]$f5Auth)
+    static [F5Node[]] GetAllNodes([F5Session]$f5Session)
     {                        
-        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node" 
+        $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node" 
 
         $splatGetAllNodes = @{                    
-            Headers     = $f5Auth.Header
+            Headers     = $f5Session.Header
             Method      = "GET"
             ContentType = "application/json"                
             Uri         = $uri
@@ -65,9 +65,9 @@ class F5Node
         return $f5Nodes
     }
 
-    [void] Create([F5Authentication]$f5Auth)
+    [void] Create([F5Session]$f5Session)
     {
-        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node" 
+        $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node" 
 
         $hashBody = [PSCustomObject] @{
             name    = $this.Name
@@ -80,7 +80,7 @@ class F5Node
             ContentType = 'application/json'
             Method      = 'POST'
             Body        = $body
-            Headers     = $f5Auth.Header
+            Headers     = $f5Session.Header
             ErrorAction = 'Stop'
         }
 
@@ -95,9 +95,9 @@ class F5Node
     }
 
     #Not Fullly Functional
-    [void] Update([F5Authentication]$f5Auth)
+    [void] Update([F5Session]$f5Session)
     {
-        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
+        $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
         
         $hashBody = [PSCustomObject] @{
             name    = "testNameChange"
@@ -110,7 +110,7 @@ class F5Node
             ContentType = 'application/json'
             Method      = 'PUT'
             Body        = $body
-            Headers     = $f5Auth.Header
+            Headers     = $f5Session.Header
             ErrorAction = 'Stop'
         }
 
@@ -124,9 +124,9 @@ class F5Node
         }
     }
     
-    [void] SetState([F5State]$state,[F5Authentication]$f5Auth)
+    [void] SetState([F5State]$state,[F5Session]$f5Session)
     {
-        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
+        $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
         
 
         $hashBody = @{} 
@@ -151,7 +151,7 @@ class F5Node
             ContentType = 'application/json'
             Method      = 'PATCH'
             Body        = $body
-            Headers     = $f5Auth.Header
+            Headers     = $f5Session.Header
             ErrorAction = 'Stop'
         }
 
@@ -165,15 +165,15 @@ class F5Node
         }
     }
 
-    [void] Delete([F5Authentication]$f5Auth)
+    [void] Delete([F5Session]$f5Session)
     {
-        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
+        $uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
         
         $splatInvokeRestMethod = @{
             Uri         = $uri
             ContentType = 'application/json'
             Method      = 'DELETE'
-            Headers     = $f5Auth.Header
+            Headers     = $f5Session.Header
             ErrorAction = 'Stop'
         }
 
