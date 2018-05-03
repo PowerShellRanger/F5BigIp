@@ -1,11 +1,22 @@
+class F5State
+{
+    [ValidateSet("Enable","Disable","ForceOffline")]
+    [string]$State
+
+    F5State ([string]$state)
+    {
+        $this.State = $state
+    }
+}
+
 class F5Node
 {
     # Node Name 
     [string]$Name
 
     # Ip Address
-    [string]$IpAddress    
-    
+    [string]$IpAddress
+  
     F5Node () {}
 
     F5Node ([string]$name, [IpAddress]$ipAddress)
@@ -19,10 +30,10 @@ class F5Node
         $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$nodeName"
 
         $splatGetNode = @{                    
-            Headers     = $f5Auth.Header
-            Method      = "GET"
+            Headers = $f5Auth.Header
+            Method = "GET"
             ContentType = "application/json"                
-            Uri         = $uri
+            Uri = $uri
         }
         Write-Verbose "Invoke Rest Method to: $uri"
         $response = Invoke-RestMethod @splatGetNode
@@ -54,15 +65,15 @@ class F5Node
         return $f5Nodes
     }
 
-    [void] New([F5Authentication]$f5Auth)
+    [void] Create([F5Authentication]$f5Auth)
     {
         $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node" 
 
-        $psObjectBody = [PSCustomObject] @{
+        $hashBody = [PSCustomObject] @{
             name    = $this.Name
             address = $this.IpAddress
         }
-        $body = $psObjectBody | ConvertTo-Json        
+        $body = $hashBody | ConvertTo-Json        
         
         $splatInvokeRestMethod = @{
             Uri         = $uri
@@ -82,4 +93,97 @@ class F5Node
             Write-Error $_
         }
     }
+
+    #Not Fullly Functional
+    [void] Update([F5Authentication]$f5Auth)
+    {
+        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
+        
+        $hashBody = [PSCustomObject] @{
+            name    = "testNameChange"
+            address = $this.IpAddress
+        }
+        $body = $hashBody | ConvertTo-Json  
+        
+        $splatInvokeRestMethod = @{
+            Uri         = $uri
+            ContentType = 'application/json'
+            Method      = 'PUT'
+            Body        = $body
+            Headers     = $f5Auth.Header
+            ErrorAction = 'Stop'
+        }
+
+        try
+        {
+            [void](Invoke-RestMethod @splatInvokeRestMethod)
+        }
+        catch
+        {
+            Write-Error $_
+        }
+    }
+    
+    [void] SetState([F5State]$state,[F5Authentication]$f5Auth)
+    {
+        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
+        
+
+        $hashBody = @{} 
+        switch($State.state){
+            "Enable" {
+                $hashBody.Add("state","user-up")
+                $hashBody.Add("session","user-enabled")
+            }
+            "Disable" {
+                $hashBody.Add("session","user-disabled")
+            }
+            "ForceOffline" {
+                $hashBody.Add("state","user-down")
+                $hashBody.Add("session","user-disabled")
+            }
+        } 
+        $body = $hashBody | ConvertTo-Json
+        $body  
+        
+        $splatInvokeRestMethod = @{
+            Uri         = $uri
+            ContentType = 'application/json'
+            Method      = 'PATCH'
+            Body        = $body
+            Headers     = $f5Auth.Header
+            ErrorAction = 'Stop'
+        }
+
+        try
+        {
+            [void](Invoke-RestMethod @splatInvokeRestMethod)
+        }
+        catch
+        {
+            Write-Error $_
+        }
+    }
+
+    [void] Delete([F5Authentication]$f5Auth)
+    {
+        $uri = "https://$($f5Auth.F5Name)/mgmt/tm/ltm/node/~Common~$($this.Name)" 
+        
+        $splatInvokeRestMethod = @{
+            Uri         = $uri
+            ContentType = 'application/json'
+            Method      = 'DELETE'
+            Headers     = $f5Auth.Header
+            ErrorAction = 'Stop'
+        }
+
+        try
+        {
+            [void](Invoke-RestMethod @splatInvokeRestMethod)
+        }
+        catch
+        {
+            Write-Error $_
+        }
+    }    
 }

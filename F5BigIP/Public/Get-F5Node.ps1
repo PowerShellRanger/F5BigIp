@@ -52,14 +52,28 @@ function Get-F5Node
         {
             Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node"
             #(Invoke-RestMethod @splatGetAllNodes).items
-            [F5Node]::GetAllNodes($F5Auth)
+            try
+            {
+                [F5Node]::GetAllNodes($F5Auth)
+            }
+            catch
+            {
+                Write-Error $_
+            }
         }
         else
         {
             foreach ($Node in $NodeName)
             {                
-                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                [F5Node]::Get($nodeName, $F5Auth)
+                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"                
+                try
+                {
+                    [F5Node]::Get($nodeName, $F5Auth)
+                }
+                catch
+                {
+                    Write-Error $_
+                }
             }
         }        
     }
