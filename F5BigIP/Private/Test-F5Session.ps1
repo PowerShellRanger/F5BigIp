@@ -19,13 +19,14 @@ function Test-F5Session
     }
     process
     {        
-        if ($script:F5Session.TimeStamp -ge (Get-Date).AddMinutes(-15))
+        if (-not $script:F5Session)
         {
             throw "A valid F5Session was not found. Please create a new session using New-F5Session."
         }
-        elseif ($script:F5Session.TimeStamp -ge (Get-Date).AddMinutes(-15))
+        
+        if ($script:F5Session.TimeStamp -ge (Get-Date).AddMinutes(-15))
         {
-            New-F5Session -F5Name $Script:F5Session.F5Name -Credential $Script:F5Session.Credential -Confirm:$false
+            New-F5Session -F5Name $script:F5Session.F5Name -Credential $script:F5Session.Credential
         }
     }
     end
