@@ -13,22 +13,6 @@ function Add-F5Node
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param
     (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]
-        [string]$Token,
-
         # Name of Node to create
         [Parameter(
             Mandatory, 
@@ -68,7 +52,7 @@ function Add-F5Node
             }
 
             Write-Verbose "Checking whether $NodeName already exist on $F5Name"
-            $allNodes = Get-F5Node -F5Name $F5Name -Token $Token -GetAllNodes
+            $allNodes = [F5Node]::GetAllNodes($Script:F5Session)
             if ($allNodes | Where-Object {$_.name -like $NodeName -and $_.address -like $IpV4Address})
             {
                 Write-Verbose "Node already exist and has the correct IP"
@@ -81,14 +65,9 @@ function Add-F5Node
                     if ($PSBoundParameters['Force'])
                     {
                         Write-Verbose "Node already exist. Force switch accepted"
-                        $splatUpdateNode = @{
-                            F5Name      = $F5Name 
-                            Token       = $Token
-                            NodeName    = $NodeName
-                            IpV4Address = $IpV4Address
-                            ErrorAction = $errorAction
-                        }
-                        Update-F5Node @splatUpdateNode
+                        $node = [F5Node]::New( $NodeName, $IpV4Address)
+
+                        $node.Update($script:F5Session)
                     }
                     else 
                     {
@@ -102,14 +81,9 @@ function Add-F5Node
                 if ($PSBoundParameters['Force'])
                 {
                     Write-Verbose "Node already exist. Force switch accepted"
-                    $splatUpdateNode = @{
-                        F5Name      = $F5Name 
-                        Token       = $Token
-                        NodeName    = $NodeName
-                        IpV4Address = $IpV4Address
-                        ErrorAction = $errorAction
-                    }
-                    Update-F5Node @splatUpdateNode
+                    $node = [F5Node]::New( $NodeName, $IpV4Address)
+
+                    $node.Update($script:F5Session)
                 }
                 else 
                 {
@@ -120,14 +94,9 @@ function Add-F5Node
             else
             {
                 Write-Verbose "Creating new node with provided IP"
-                $splatNewNode = @{
-                    F5Name      = $F5Name 
-                    Token       = $Token
-                    NodeName    = $NodeName
-                    IpV4Address = $IpV4Address
-                    ErrorAction = $errorAction
-                }
-                New-F5Node @splatNewNode
+                $node = [F5Node]::New($NodeName, $IpV4Address)
+
+                $node.Create($script:F5Session)
             }
         }        
     }

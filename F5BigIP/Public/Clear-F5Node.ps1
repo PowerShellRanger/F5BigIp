@@ -16,22 +16,6 @@ function Clear-F5Node
     )]
     param
     (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]        
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName
-        )]        
-        [string]$Token,
-
         # Name of Node to create
         [Parameter(
             Mandatory, 
@@ -42,30 +26,28 @@ function Clear-F5Node
     )
     begin
     {
+        Test-F5Session
     }
     process
     {
-        if ($PSCmdlet.ShouldProcess("Deletes existing node: $NodeName on F5: $F5Name"))
-        {           
+        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $F5Name"))
+        {                
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
             {
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            $headers = @{
-                'X-F5-Auth-Token' = $Token
+            $node = [F5Node]::New()
+            $node.Name = $NodeName
+            try
+            {
+                $node.Delete($script:F5Session)
             }
-
-            $splatInvokeRestMethod = @{
-                Uri         = "https://$F5Name/mgmt/tm/ltm/node/~Common~$NodeName"
-                ContentType = 'application/json'
-                Method      = 'Delete'
-                Headers     = $headers
-                ErrorAction = $errorAction
+            catch
+            {
+                throw $_
             }
-            Invoke-RestMethod @splatInvokeRestMethod
-        }
     }
     end
     {

@@ -47,9 +47,15 @@ function New-F5Node
                 $errorAction = $PSBoundParameters["ErrorAction"]
             }
 
-            $node = [F5Node]::New($NodeName, $IpAddress)
-
-            $node.Create($script:F5Session)
+            $node = [F5Node]::New($NodeName, $IpV4Address)
+            try
+            {
+                $node.Create($script:F5Session)
+            }
+            catch
+            {
+                throw $_
+            }
         }    
     }
     end
