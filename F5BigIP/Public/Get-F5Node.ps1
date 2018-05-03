@@ -10,6 +10,7 @@ function Get-F5Node
     .EXAMPLE
        
     #>
+    [OutputType('F5Node', 'F5Node[]')]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetNodesRequested'
     )]
@@ -44,7 +45,6 @@ function Get-F5Node
         {
             Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/node"
             [F5Node]::GetAllNodes($Script:F5Session)
-
         }
         else
         {
