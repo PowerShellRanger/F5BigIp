@@ -19,16 +19,17 @@ InModuleScope -ModuleName $moduleName {
         $nodeNameMock = "test1234"
         $ipV4AddressMock = "127.0.0.1"
         
+        $script:F5Session = [F5Session]::New()
+        $script:F5Session.F5Name = $F5Name
+        $script:F5Session.Token = $tokenMock        
+        
         $splatAddF5Node = @{                    
-            F5Name      = $F5Name
-            Token       = $tokenMock
             NodeName    = $nodeNameMock
             IpV4Address = $ipV4AddressMock                
         }
         
         Context "Testing Parameters" {
             It "Should throw when mandatory parameters are not provided" {
-                $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.NodeName.Attributes.Mandatory | should be $true
                 $cmdlet.Parameters.IpV4Address.Attributes.Mandatory | should be $true
             }
@@ -42,6 +43,7 @@ InModuleScope -ModuleName $moduleName {
                 }
             )
             
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}
             Mock -CommandName Get-F5Node -MockWith {return $nodeMock}
             Mock -CommandName Update-F5Node -MockWith {return $true}
             Mock -CommandName New-F5Node -MockWith {return $true}
@@ -59,6 +61,7 @@ InModuleScope -ModuleName $moduleName {
                 address = $ipV4AddressMock 
             }
 
+            Mock -CommandName Invoke-RestMethod -MockWith {return $true}
             Mock -CommandName Get-F5Node -MockWith {return $nodeMock}
             Mock -CommandName Update-F5Node -MockWith {return $true}
             Mock -CommandName New-F5Node -MockWith {return $true}
