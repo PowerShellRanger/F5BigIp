@@ -1,5 +1,10 @@
-. C:\F5BigIP\F5BigIP\Classes\001-F5Session.ps1
-. C:\F5BigIP\F5BigIP\Classes\006-F5Node.ps1
+$scriptRoot = Split-Path $PSScriptRoot -Parent
+$classes = (Get-ChildItem -Name ($scriptRoot + "\F5BigIP\Classes\")).Fullname
+foreach($class in $classes){
+    . $class
+}
+
+Write-Host "$(Split-Path $PSScriptRoot -Parent)"
 
 Describe "Set" {
     BeforeAll {
