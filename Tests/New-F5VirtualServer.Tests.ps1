@@ -115,7 +115,7 @@ InModuleScope -ModuleName $moduleName {
             $virtualServerMock.ServicePort = "HTTPS"
             $clientSslProfileNameMock = "TestClientSSLProfile"
             $virtualServerMock.ClientSSLProfileName = $clientSslProfileNameMock
-            $virtualServerMock.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileNameMock,$virtualServerMock.ServicePort)
+            $virtualServerMock.Profiles = [F5VirtualServer]::GenerateProfiles($clientSslProfileNameMock,$virtualServerMock.ServicePort)
             
             Mock -CommandName Invoke-RestMethod -MockWith {return $true}
 
