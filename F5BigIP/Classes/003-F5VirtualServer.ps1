@@ -23,7 +23,7 @@ class F5VirtualServer
     [string]$IpProtocol = 'TCP'
 
     # Pool Name
-    # /Common/$pool
+    # /Common/$Pool
     [ValidatePattern("^\/Common\/(?:[^\/]+)")]
     [string]$Pool
 
@@ -38,64 +38,64 @@ class F5VirtualServer
 
     #VirtualServer () {}
 
-    F5VirtualServer ([string]$name, [IpAddress]$ip)
+    F5VirtualServer ([string]$Name, [IpAddress]$Ip)
     {
-        $this.Name = $name
-        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
-        $this.Rules = [F5VirtualServer]::GetRules($this.ServicePort)
-        $this.Profiles = [F5VirtualServer]::GetProfiles($this.ClientSslProfileName, $this.ServicePort)
+        $this.Name = $Name
+        $this.Destination = [F5VirtualServer]::GenerateDestination($Ip.IpAddress, $this.ServicePort)
+        $this.Rules = [F5VirtualServer]::GenerateRules($this.ServicePort)
+        $this.Profiles = [F5VirtualServer]::GenerateProfiles($this.ClientSslProfileName, $this.ServicePort)
     }
 
-    F5VirtualServer ([string]$name, [IpAddress]$ip, [string]$clientSslProfileName)
+    F5VirtualServer ([string]$Name, [IpAddress]$Ip, [string]$ClientSslProfileName)
     {
-        $this.Name = $name
-        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $this.ServicePort)
+        $this.Name = $Name
+        $this.Destination = [F5VirtualServer]::GenerateDestination($Ip.IpAddress, $this.ServicePort)
         $this.ServicePort = $this.ServicePort
-        $this.ClientSslProfileName = $clientSslProfileName
-        $this.Rules = [F5VirtualServer]::GetRules($this.ServicePort)
-        $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $this.ServicePort)
+        $this.ClientSslProfileName = $ClientSslProfileName
+        $this.Rules = [F5VirtualServer]::GenerateRules($this.ServicePort)
+        $this.Profiles = [F5VirtualServer]::GenerateProfiles($ClientSslProfileName, $this.ServicePort)
     }
 
-    F5VirtualServer ([string]$name, [IpAddress]$ip, [string]$servicePort, [string]$clientSslProfileName)
+    F5VirtualServer ([string]$Name, [IpAddress]$Ip, [string]$ServicePort, [string]$ClientSslProfileName)
     {
-        $this.Name = $name
-        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
-        $this.ServicePort = $servicePort
-        $this.ClientSslProfileName = $clientSslProfileName
-        $this.Rules = [F5VirtualServer]::GetRules($servicePort)
-        $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
+        $this.Name = $Name
+        $this.Destination = [F5VirtualServer]::GenerateDestination($Ip.IpAddress, $ServicePort)
+        $this.ServicePort = $ServicePort
+        $this.ClientSslProfileName = $ClientSslProfileName
+        $this.Rules = [F5VirtualServer]::GenerateRules($ServicePort)
+        $this.Profiles = [F5VirtualServer]::GenerateProfiles($ClientSslProfileName, $ServicePort)
     }
 
-    F5VirtualServer ([string]$name, [string]$source, [IpAddress]$ip, [string]$servicePort,
-        [snat]$snat, [string]$ipProtocol, [string]$pool, [string]$clientSslProfileName)
+    F5VirtualServer ([string]$Name, [string]$source, [IpAddress]$Ip, [string]$ServicePort,
+        [snat]$Snat, [string]$IpProtocol, [string]$Pool, [string]$ClientSslProfileName)
     {
-        $this.Name = $name
+        $this.Name = $Name
         $this.Source = $source
-        $this.Destination = [F5VirtualServer]::GetDestination($ip.IpAddress, $servicePort)
-        $this.ServicePort = $servicePort
-        $this.SourceAddressTranslation = @{type = $snat.SourceAddressTranslation}
-        $this.IpProtocol = $ipProtocol
-        $this.Pool = $pool
-        $this.ClientSslProfileName = $clientSslProfileName
-        $this.Rules = [F5VirtualServer]::GetRules($servicePort)
-        $this.Profiles = [F5VirtualServer]::GetProfiles($clientSslProfileName, $servicePort)
+        $this.Destination = [F5VirtualServer]::GenerateDestination($Ip.IpAddress, $ServicePort)
+        $this.ServicePort = $ServicePort
+        $this.SourceAddressTranslation = @{type = $Snat.SourceAddressTranslation}
+        $this.IpProtocol = $IpProtocol
+        $this.Pool = $Pool
+        $this.ClientSslProfileName = $ClientSslProfileName
+        $this.Rules = [F5VirtualServer]::GenerateRules($ServicePort)
+        $this.Profiles = [F5VirtualServer]::GenerateProfiles($ClientSslProfileName, $ServicePort)
     }
 
-    static [string] GetDestination([IpAddress]$ip, [string]$servicePort)
+    hidden static [string] GenerateDestination([IpAddress]$Ip, [string]$ServicePort)
     {                
-        if ($servicePort -eq 'HTTP') {return "/Common/$($ip.IpAddress):80"}
+        if ($ServicePort -eq 'HTTP') {return "/Common/$($Ip.IpAddress):80"}
         
-        return "/Common/$($ip.IpAddress):443"
+        return "/Common/$($Ip.IpAddress):443"
     }
 
-    static [string[]] GetRules([string]$servicePort)
+    hidden static [string[]] GenerateRules([string]$ServicePort)
     {                
-        if ($servicePort -eq 'HTTP') {return "/Common/_sys_https_redirect"}
+        if ($ServicePort -eq 'HTTP') {return "/Common/_sys_https_redirect"}
 
         return @("/Common/Security", "/Common/Standard")
     }
 
-    static [hashtable[]] GetProfiles([string]$clientSslProfileName, [string]$servicePort)
+    hidden static [hashtable[]] GenerateProfiles([string]$ClientSslProfileName, [string]$ServicePort)
     {
         $_profiles = New-Object 'System.Collections.Generic.List[hashtable]'                
         $hashtableProfiles = 
@@ -119,17 +119,17 @@ class F5VirtualServer
         }
         $hashtableProfiles | ForEach-Object { $_profiles.Add($_) }
 
-        if ($clientSslProfileName)
+        if ($ClientSslProfileName)
         {
             $profile = @{
-                name    = $clientSslProfileName
+                name    = $ClientSslProfileName
                 context = "clientside"
                 kind    = "ltm:virtual:profile"
             }
             $_profiles.Add($profile)
         }
 
-        if ($servicePort -ne 'HTTP')
+        if ($ServicePort -ne 'HTTP')
         {
             $profile = @{
                 name    = "serverssl";
@@ -141,6 +141,49 @@ class F5VirtualServer
 
         return $_profiles
     }
+
+    static [F5VirtualServer[]] GetVirtualServer([string[]]$VirtualServerName, [F5Session]$F5Session)
+    {
+        $_f5VirtualServers = New-Object 'System.Collections.Generic.List[F5VirtualServer]'
+
+        foreach ($server in $VirtualServerName)
+        {
+            $uri = "https://$($F5Session.F5Name)/mgmt/tm/ltm/virtual/~Common~$server"
+
+            $splatGetVirtualServer = @{                    
+                Headers     = $F5Session.Header
+                Method      = "GET"
+                ContentType = "application/json"
+                Uri         = $uri
+            }
+            Write-Verbose "Invoke Rest Method to: $uri"
+            $response = Invoke-RestMethod @splatGetVirtualServer
+                    
+            $_f5VirtualServers.Add([F5VirtualServer]::New($response.name, $response.address))
+        }
+        return $_f5VirtualServers
+    }
+
+    static [F5VirtualServer[]] GetAllVirtualServers([F5Session]$F5Session)
+    {                        
+        $uri = "https://$($F5Session.F5Name)/mgmt/tm/ltm/virtual"
+
+        $splatGetAllVirtualServers = @{
+            Headers     = $F5Session.Header
+            Method      = "GET"
+            ContentType = "application/json"                
+            Uri         = $uri
+        }
+        Write-Verbose "Invoke Rest Method to: $uri"
+        $response = Invoke-RestMethod @splatGetAllVirtualServers
+
+        $_f5VirtualServers = New-Object 'System.Collections.Generic.List[F5VirtualServer]'
+        foreach ($server in $response.items)
+        {                        
+            $_f5VirtualServers.Add([F5VirtualServer]::New($server.name, $server.address))
+        }
+        return $_f5VirtualServers
+    }
 }
 
 class snat
@@ -149,8 +192,8 @@ class snat
     [ValidateSet('SNAT', 'AutoMap', 'None')]
     [string]$SourceAddressTranslation
 
-    snat ([string]$snat)
+    snat ([string]$Snat)
     {
-        $this.SourceAddressTranslation = $snat
+        $this.SourceAddressTranslation = $Snat
     }
 }
