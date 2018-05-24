@@ -10,43 +10,16 @@ function Get-F5VirtualServer
     .EXAMPLE
        
     #>
+    [OutputType('F5VirtualServer')]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetVirtualServersRequested'
     )]
     param
-    (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetVirtualServersRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllVirtualServers'
-        )]
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetVirtualServersRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllVirtualServers'
-        )]
-        [string]$Token,
-
+    (                
         # Name of Virtual Servers to get
         [Parameter(
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName,
             ParameterSetName = 'OnlyGetVirtualServersRequested'
         )]
         [string[]]$VirtualServerName,
@@ -69,35 +42,18 @@ function Get-F5VirtualServer
         {
             $errorAction = $PSBoundParameters["ErrorAction"]
         }
-
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
+        
         if ($PSBoundParameters['GetAllVirtualServers'])
-        {
-            $splatGetAllVirtualServers = @{                    
-                Headers     = $headers
-                Method      = "GET"
-                ContentType = "application/json"                
-                Uri         = "https://$F5Name/mgmt/tm/ltm/virtual"
-                ErrorAction = $errorAction
-            }
-            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual"
-            (Invoke-RestMethod @splatGetAllVirtualServers).items
+        {            
+            Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/virtual"
+            [F5VirtualServer]::GetAllVirtualServers($Script:F5Session)
         }
         else
         {
-            foreach ($VirtualServer in $VirtualServerName)
-            {                
-                $splatGetVirtualServers = @{                    
-                    Headers     = $headers
-                    Method      = "GET"
-                    ContentType = "application/json"                
-                    Uri         = "https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
-                    ErrorAction = $errorAction
-                }
-                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/virtual/~Common~$VirtualServer"
-                Invoke-RestMethod @splatGetVirtualServers
+            foreach ($virtualServer in $VirtualServerName)
+            {                                
+                Write-Verbose "Invoke Rest Method to: https://$($Script:F5Session.F5Name)/mgmt/tm/ltm/virtual/~Common~$virtualServer"
+                [F5VirtualServer]::GetVirtualServer($virtualServer, $Script:F5Session)
             }
         }        
     }
