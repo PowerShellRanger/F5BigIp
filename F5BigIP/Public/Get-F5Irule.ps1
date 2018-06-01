@@ -1,4 +1,4 @@
-function Get-F5Irule
+function Get-F5iRule
 {
     <#
     .Synopsis
@@ -11,56 +11,27 @@ function Get-F5Irule
        
     #>
     [CmdletBinding(
-        DefaultParameterSetName = 'OnlyGetIrulesRequested'
+        DefaultParameterSetName = 'OnlyGetiRulesRequested'
     )]
     param
     (
-        # F5Name
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetIrulesRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllIrules'
-        )]
-        [string]$F5Name,
-
-        # Token Based Authentication
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'OnlyGetIrulesRequested'
-        )]
-        [Parameter(
-            Mandatory, 
-            ValueFromPipeline, 
-            ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllIrules'
-        )]
-        [string]$Token,
-
         # Name of iRule to get
         [Parameter(
-            ParameterSetName = 'OnlyGetIrulesRequested'
+            ParameterSetName = 'OnlyGetiRulesRequested'
         )]
-        [string[]]$IruleName,
+        [string[]]$Name,
         
         # Switch to get all iRules
         [Parameter(            
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName,
-            ParameterSetName = 'GetAllIrules'
+            ParameterSetName = 'GetiRules'
         )]
-        [switch]$GetAllIrules
+        [switch]$GetiRules
     )
     begin
     {
+        Test-F5Session
     }
     process
     {
@@ -70,34 +41,15 @@ function Get-F5Irule
             $errorAction = $PSBoundParameters["ErrorAction"]
         }
 
-        $headers = @{
-            'X-F5-Auth-Token' = $Token
-        }
-        if ($PSBoundParameters['GetAllIrules'])
+        if ($PSBoundParameters['GetiRules'])
         {
-            $splatGetAllIrules = @{                    
-                Headers     = $headers
-                Method      = "GET"
-                ContentType = "application/json"                
-                Uri         = "https://$F5Name/mgmt/tm/ltm/rule"
-                ErrorAction = $errorAction
-            }
-            Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/rule"
-            (Invoke-RestMethod @splatGetAllIrules).items
+            [F5iRule]::GetiRules($script:F5Session)
         }
         else
         {
-            foreach ($Irule in $IruleName)
+            foreach ($iRule in $Name)
             {                
-                $splatGetIrules = @{                    
-                    Headers     = $headers
-                    Method      = "GET"
-                    ContentType = "application/json"                
-                    Uri         = "https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
-                    ErrorAction = $errorAction
-                }
-                Write-Verbose "Invoke Rest Method to: https://$F5Name/mgmt/tm/ltm/rule/~Common~$Irule"
-                Invoke-RestMethod @splatGetIrules
+                [F5iRule]::GetiRule($iRule, $script:F5Session)
             }
         }        
     }
