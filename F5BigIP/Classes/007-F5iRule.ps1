@@ -127,16 +127,9 @@ class F5iRule
             Headers     = $f5Session.Header
             ErrorAction = 'Stop'
         }
-
-        try
-        {
-            Write-Verbose "Invoke Rest Method to: $($this.Uri)"
-            Invoke-RestMethod @splatInvokeRestMethod
-        }
-        catch
-        {
-            Write-Error $_
-        }
+        
+        Write-Verbose "Invoke Rest Method to: $($this.Uri)"
+        Invoke-RestMethod @splatInvokeRestMethod        
     }
 }
 
