@@ -39,7 +39,7 @@ function New-F5Node
     }
     process
     {
-        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $($Script:F5Session.F5Name)"))
         {                
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])

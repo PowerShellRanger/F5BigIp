@@ -30,7 +30,7 @@ function Clear-F5Node
     }
     process
     {
-        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $($Script:F5Session.F5Name)"))
         {                
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
@@ -42,7 +42,7 @@ function Clear-F5Node
             $node.Name = $NodeName
             try
             {
-                $node.Delete($script:F5Session)
+                $node.Delete($Script:F5Session)
             }
             catch
             {

@@ -39,7 +39,7 @@ function Update-F5Node
     }
     process
     {
-        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $F5Name"))
+        if ($PSCmdlet.ShouldProcess("Creates new node: $NodeName on F5: $($Script:F5Session.F5Name)"))
         {                
             $errorAction = $ErrorActionPreference        
             if ($PSBoundParameters["ErrorAction"])
@@ -50,7 +50,7 @@ function Update-F5Node
             $node = [F5Node]::New( $NodeName, $IpV4Address)
             try
             {
-                $node.Update($script:F5Session)
+                $node.Update($Script:F5Session)
             }
             catch
             {
