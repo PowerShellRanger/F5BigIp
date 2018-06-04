@@ -10,6 +10,7 @@ function Get-F5iRule
     .EXAMPLE
        
     #>
+    [OutputType('F5iRule')]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetiRulesRequested'
     )]
@@ -17,6 +18,8 @@ function Get-F5iRule
     (
         # Name of iRule to get
         [Parameter(
+            ValueFromPipeline, 
+            ValueFromPipelineByPropertyName,
             ParameterSetName = 'OnlyGetiRulesRequested'
         )]
         [string[]]$Name,
@@ -43,13 +46,13 @@ function Get-F5iRule
 
         if ($PSBoundParameters['GetiRules'])
         {
-            [F5iRule]::GetiRules($script:F5Session)
+            [F5iRule]::GetiRules($Script:F5Session)
         }
         else
         {
             foreach ($iRule in $Name)
             {                
-                [F5iRule]::GetiRule($iRule, $script:F5Session)
+                [F5iRule]::GetiRule($iRule, $Script:F5Session)
             }
         }        
     }
