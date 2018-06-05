@@ -57,7 +57,7 @@ class F5iRule
         return $f5iRules
     }
 
-    static [PSCustomObject[]] GetiRules([F5Session]$f5Session)
+    static [F5iRule[]] GetiRules([F5Session]$f5Session)
     {
         $_uri = "https://$($f5Session.F5Name)/mgmt/tm/ltm/rule/"
 
