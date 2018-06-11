@@ -35,7 +35,7 @@ InModuleScope -ModuleName $moduleName {
             }
         }
         
-        Context 'Testing adding exisitng node with correct IP' {           
+        Context 'Testing adding existing node with correct IP' {           
             $nodeMock = @(
                 [PSCustomObject] @{
                     name    = $nodeNameMock
