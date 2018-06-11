@@ -42,6 +42,7 @@ function New-F5Session
         {    
             Write-Verbose "Creating a new Session to F5: $F5Name"
             $Script:F5Session = [F5Session]::New($F5Name, $Credential)
+            $Script:F5Session
         }
     }
     end
