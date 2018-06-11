@@ -10,7 +10,10 @@ function Get-F5VirtualServer
     .EXAMPLE
        
     #>
-    [OutputType('F5VirtualServer')]
+    [OutputType(
+        [F5VirtualServer],
+        [F5VirtualServer[]]
+    )]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetVirtualServersRequested'
     )]

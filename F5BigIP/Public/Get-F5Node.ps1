@@ -10,7 +10,10 @@ function Get-F5Node
     .EXAMPLE
        
     #>
-    [OutputType('F5Node')]
+    [OutputType(
+        [F5Node],
+        [F5Node[]]
+    )]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetNodesRequested'
     )]

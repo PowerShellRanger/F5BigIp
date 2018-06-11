@@ -10,7 +10,10 @@ function Get-F5Pool
     .EXAMPLE
        
     #>
-    [OutputType('F5Pool')]
+    [OutputType(
+        [F5Pool],
+        [F5Pool[]]
+    )]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetPoolsRequested'
     )]
