@@ -35,6 +35,20 @@ function Invoke-TestFailure
     throw $errorRecord    
 }
 
+function Import-PsClass
+{
+    $classes = Get-ChildItem -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Classes" -Filter '*.ps1' 
+    if ($classes)
+    {
+        "Classes are a pain, so we must dot source them first..."
+        foreach ($class in $classes)
+        {
+            "Dot sourcing $($class.FullName)"
+            . $($class.FullName)
+        }
+    }
+}
+
 FormatTaskName "--------------- {0} ---------------"
 
 Properties {
@@ -53,26 +67,19 @@ Task Init {
 }
 
 Task ScriptAnalysis -Depends Init {        
-    "Classes are a pain, so we must dot source them first..."
-    $classes = Get-ChildItem -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Classes" -Filter '*.ps1' 
-    if ($classes)
-    {
-        foreach ($class in $classes)
-        {
-            "Dot sourcing $($class.FullName)"
-            . $($class.FullName)
-        }
-    }
+    . Import-PsClass
+
     "Starting script analysis..."
     Invoke-ScriptAnalyzer -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*\*.ps1"
 }
 
-Task UnitTests -Depends ScriptAnalysis {
-    "Starting unit tests..."
-    
+Task UnitTests -Depends ScriptAnalysis {        
     # Make sure Test Result location exists
     New-Item $testResultsPath -ItemType Directory -Force
+    
+    . Import-PsClass
 
+    "Starting unit tests..."
     $pesterResults = Invoke-Pester -Path "$testsPath" -OutputFile "$testResultsPath\UnitTest.xml" -OutputFormat NUnitXml -PassThru
     
     if ($pesterResults.FailedCount)
