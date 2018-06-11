@@ -10,7 +10,10 @@ function Get-F5iRule
     .EXAMPLE
        
     #>
-    [OutputType('F5iRule')]
+    [OutputType(
+        [F5iRule],
+        [F5iRule[]]
+    )]
     [CmdletBinding(
         DefaultParameterSetName = 'OnlyGetiRulesRequested'
     )]
