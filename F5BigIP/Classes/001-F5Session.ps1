@@ -40,7 +40,7 @@ class F5Session
         $psObjectBody = [PSCustomObject] @{
             username          = $($credential.UserName)
             password          = $($credential.GetNetworkCredential().Password)
-            loginProviderName = "tmos"
+            loginProviderName = 'tmos'
         }
         $body = $psobjectBody | ConvertTo-Json
 
