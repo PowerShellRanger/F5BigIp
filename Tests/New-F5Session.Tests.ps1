@@ -1,4 +1,4 @@
-<#
+
 $projectRoot = Resolve-Path "$PSScriptRoot\.."
 $moduleRoot = Split-Path (Resolve-Path "$projectRoot\*\*.psd1")
 $moduleName = Split-Path $moduleRoot -Leaf
@@ -34,13 +34,12 @@ InModuleScope -ModuleName $moduleName {
             $securePass = ConvertTo-SecureString -String $f5Pass -AsPlainText -Force
             $credential = New-Object -TypeName System.Management.Automation.PSCredential ($f5User, $securePass)
             
-            New-F5Session -F5Name 'F5Name' -Credential $credential
+            $session = New-F5Session -F5Name 'F5Name' -Credential $credential
 
             It 'Should call the F5Session Class' {
-                $Script:F5Session.F5Name | should be 'F5Name'
-                $Script:F5Session.Token | should be 'SomeToken'
+                $session.F5Name | should be 'F5Name'
+                $session.Token | should be 'SomeToken'
             }            
         }        
     }
 }
-#>
