@@ -1,4 +1,4 @@
-<#
+
 $projectRoot = Resolve-Path "$PSScriptRoot\.."
 $moduleRoot = Split-Path (Resolve-Path "$projectRoot\*\*.psd1")
 $moduleName = Split-Path $moduleRoot -Leaf
@@ -64,4 +64,3 @@ InModuleScope -ModuleName $moduleName {
         }        
     }
 }
-#>
