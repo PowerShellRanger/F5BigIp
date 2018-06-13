@@ -1,4 +1,4 @@
-<#
+
 $projectRoot = Resolve-Path "$PSScriptRoot\.."
 $moduleRoot = Split-Path (Resolve-Path "$projectRoot\*\*.psd1")
 $moduleName = Split-Path $moduleRoot -Leaf
@@ -8,14 +8,15 @@ Import-Module (Join-Path $moduleRoot "$moduleName.psm1") -force
 
 InModuleScope -ModuleName $moduleName {
 
-    Describe "Set" {
-        BeforeAll {
-            Mock -CommandName Invoke-RestMethod -Verifiable
-            $tokenMock = "IHH5ILDD6V4ZO43SEUFZEFOZAD"
+    Describe 'F5Node Class' {
+
+        BeforeAll {            
+            $tokenMock = 'IHH5ILDD6V4ZO43SEUFZEFOZAD'
             $F5Name = 'foo'
-            $script:F5Session = [F5Session]::New()
-            $script:F5Session.F5Name = $F5Name
-            $script:F5Session.Token = $tokenMock
+            $session = [F5Session]::New()
+            $session.F5Name = $F5Name
+            $session.Token = $tokenMock
+            $session.Header = @{'X-F5-Auth-Token' = $tokenMock}
         }
 
         BeforeEach {
@@ -25,19 +26,21 @@ InModuleScope -ModuleName $moduleName {
         }
 
         Context "When the Create method is called" {
-            It 'Should not throw an error' {
-                {$resource.Create($Script:F5Session)} | Should Not Throw
+            
+            Mock -CommandName Invoke-RestMethod -MockWith {} -Verifiable
 
-                Assert-MockCalled -CommandName Invoke-RestMethod -Scope It -Times 1 -Exactly -ParameterFilter {
-                    $Uri -eq "https://$($script:F5Session.F5Name)/mgmt/tm/ltm/node" `
+            It 'Should not return output' {
+                $resource.Create($session) | should be $null
+            }
+            It 'Should call Invoke-RestMethod one time' {
+                Assert-MockCalled -CommandName Invoke-RestMethod -Scope Context -Times 1 -Exactly -ParameterFilter {
+                    $Uri -eq "https://$($session.F5Name)/mgmt/tm/ltm/node" `
                         -and $ContentType -eq 'application/json' `
-                        -and $Method -eq 'POST' `
-                        -and $Headers.Keys -eq $mockedHeaders.Keys `
-                        -and $Headers.Values -eq $mockedHeaders.Values
+                        -and $Method -eq 'POST'
                 }
             }
         }
-
+        <#
         Context "When the Update method is called" {
             It 'Should not throw an error' {
                 {$resource.Update($Script:F5Session)} | Should Not Throw
@@ -87,6 +90,6 @@ InModuleScope -ModuleName $moduleName {
                 }
             }
         }
+        #>
     }
 }
-#>
