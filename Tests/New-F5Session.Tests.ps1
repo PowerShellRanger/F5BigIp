@@ -8,6 +8,10 @@ Import-Module (Join-Path $moduleRoot "$moduleName.psm1") -force
 
 InModuleScope -ModuleName $moduleName {
 
+    $sut = Split-Path $MyInvocation.MyCommand.ScriptBlock.File -Leaf
+    $cmdletName = $sut.Split('.')[0]
+    $cmdlet = Get-Command -Name $cmdletName
+
     Describe 'New-F5Session' {
 
         class F5Session
@@ -25,6 +29,14 @@ InModuleScope -ModuleName $moduleName {
             }
         }
 
+        Context 'Testing Parameters' {            
+
+            It "Should throw when mandatory parameters are not provided" {
+                $cmdlet.Parameters.F5Name.Attributes.Mandatory | should be $true
+                $cmdlet.Parameters.Credential.Attributes.Mandatory | should be $true
+            }        
+        }
+
         Context 'Testing function - Calls F5Session class' {
 
             $f5User = 'f5.user'
@@ -39,7 +51,10 @@ InModuleScope -ModuleName $moduleName {
             It 'Should call the F5Session Class' {
                 $session.F5Name | should be 'F5Name'
                 $session.Token | should be 'SomeToken'
-            }            
+            }
+            It 'Should create an object of the correct type' {
+                $session -is [F5Session] | should be $true
+            }
         }        
     }
 }
