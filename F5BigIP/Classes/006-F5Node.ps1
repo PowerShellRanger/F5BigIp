@@ -83,15 +83,7 @@ class F5Node
             Headers     = $f5Session.Header
             ErrorAction = 'Stop'
         }
-
-        try
-        {
-            [void](Invoke-RestMethod @splatInvokeRestMethod)
-        }
-        catch
-        {
-            Write-Error $_
-        }
+        [void](Invoke-RestMethod @splatInvokeRestMethod)                
     }
 
     #Not Fullly Functional
