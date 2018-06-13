@@ -47,16 +47,16 @@ Write-Verbose "Posting build version: $version to OnDemand for $($component.Name
 $buildPost = Invoke-RestMethod -Credential $creds -Method Post -Uri "$url/Builds" -Body ($build | ConvertTo-Json) -ContentType 'application/json'
 
 $deploymentStep = [PSCustomObject] @{
-    "`$type" = "OnDemand.Core.Entities.Deployments.ComponentDeploymentStep, OnDemand.Core"
-    ComponentId = $ComponentId
+    "`$type"      = "OnDemand.Core.Entities.Deployments.ComponentDeploymentStep, OnDemand.Core"
+    ComponentId   = $ComponentId
     ComponentName = $component.Name
-    BuildId = $buildPost.Id
-    Version = $version
-    DeployOrder = 0
-    Status = 'PENDING'
+    BuildId       = $buildPost.Id
+    Version       = $version
+    DeployOrder   = 0
+    Status        = 'PENDING'
 }
 
-if($EnvironmentId2){$EnvironmentId += $EnvironmentId2}
+if ($EnvironmentId2) {$EnvironmentId += $EnvironmentId2}
 
 foreach ($environment in $EnvironmentId)
 {
