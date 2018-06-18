@@ -24,7 +24,7 @@ InModuleScope -ModuleName $moduleName {
             $resource.Name = 'TestServer'
             $resource.IpAddress = '127.0.0.5'
         }
-
+        <#
         Context "When the Create method is called" {
             
             Mock -CommandName Invoke-RestMethod -MockWith {} -Verifiable
@@ -40,7 +40,7 @@ InModuleScope -ModuleName $moduleName {
                 }
             }
         }
-        <#
+        
         Context "When the Update method is called" {
             It 'Should not throw an error' {
                 {$resource.Update($Script:F5Session)} | Should Not Throw
