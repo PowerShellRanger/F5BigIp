@@ -18,6 +18,7 @@ function Set-F5MaintenanceMode
     (
         # Name of iRule
         [Parameter(
+            Mandatory,
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName           
         )]
@@ -25,6 +26,7 @@ function Set-F5MaintenanceMode
 
         # MaintenanceMode On/Off
         [Parameter(
+            Mandatory,
             ValueFromPipeline, 
             ValueFromPipelineByPropertyName            
         )]
@@ -57,6 +59,7 @@ function Set-F5MaintenanceMode
 
                 try 
                 {
+                    Write-Verbose "Trying to set Maintenance Mode '$MaintenanceMode' for iRule: $iRuleName"
                     $iRule.SetMaintenanceMode($MaintenanceMode, $Script:F5Session)
                 }
                 catch
