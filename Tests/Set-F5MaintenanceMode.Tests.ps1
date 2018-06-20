@@ -21,17 +21,24 @@ InModuleScope -ModuleName $moduleName {
                 $cmdlet.Parameters.MaintenanceMode.Attributes.Mandatory | should be $true
             }        
         }
-        <#
-        Context 'Testing function validates an iRule with Get-F5iRule' {
+        
+        Context 'Testing function does not continue if iRule does not exist' {
 
+            Mock -CommandName Test-F5Session -MockWith {} -Verifiable
             Mock -CommandName Get-F5iRule -MockWith {} -Verifiable
+            Mock -CommandName Write-Warning -MockWith {} -Verifiable
 
             Set-F5MaintenanceMode -Name foo -MaintenanceMode Off -Confirm:$false
 
             It 'Should call the Get-F5iRule function 1 time' {
                 Assert-MockCalled -CommandName Get-F5iRule -Times 1 -Exactly -Scope Context
-            }            
-        }
-        #>        
+            }
+            It 'Should call the Write-Warning cmdlet 1 time' {
+                Assert-MockCalled -CommandName Write-Warning -Times 1 -Exactly -Scope Context
+            }
+            It 'Should call the Test-F5Session function 1 time' {
+                Assert-MockCalled -CommandName Test-F5Session -Times 1 -Exactly -Scope Context
+            }
+        }        
     }
 }
