@@ -37,16 +37,20 @@ function Invoke-TestFailure
 
 function Import-PsClass
 {
-    $classes = Get-ChildItem -Path "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Classes" -Filter '*.ps1' 
-    if ($classes)
+    $path = "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\Classes"
+    if (Test-Path -Path $path)
     {
-        "Classes are a pain, so we must dot source them first..."
-        foreach ($class in $classes)
+        $classes = Get-ChildItem -Path $path -Filter '*.ps1' 
+        if ($classes)
         {
-            "Dot sourcing $($class.FullName)"
-            . $($class.FullName)
+            "Classes are a pain, so we must dot source them first..."
+            foreach ($class in $classes)
+            {
+                "Dot sourcing $($class.FullName)"
+                . $($class.FullName)
+            }
         }
-    }
+    }    
 }
 
 FormatTaskName "--------------- {0} ---------------"
@@ -98,8 +102,8 @@ Task Build -Depends UnitTests {
     
     # Update the manifest file
     $splatUpdateModuleManifest = @{
-        Path = "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1"
-        ModuleVersion = $env:BUILD_BUILDNUMBER
+        Path              = "$PSScriptRoot\$env:BUILD_REPOSITORY_NAME\*.psd1"
+        ModuleVersion     = $env:BUILD_BUILDNUMBER
         FunctionsToExport = $functions
     }
     Update-ModuleManifest @splatUpdateModuleManifest
