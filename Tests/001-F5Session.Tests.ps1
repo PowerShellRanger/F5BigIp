@@ -15,18 +15,18 @@ InModuleScope -ModuleName $moduleName {
             $session = [F5Session]::New()            
 
             It 'Should not throw an error' {
-                {[F5Session]::New()} | should not throw
+                {[F5Session]::New()} | Should not throw
             }
             It 'Should create an object with correct properties' {                
                 $properties = 'F5Name', 'Token', 'UserName', 'Header', 'Credential'
                 
                 foreach ($property in $session.psobject.Properties.Name)
                 {
-                    $properties | should contain $property
+                    $properties | Should -Contain $property
                 }
             }
             It 'Should create an object of the correct type' {
-                $session -is [F5Session] | should be $true
+                $session -is [F5Session] | Should -Be $true
             }
         }
 

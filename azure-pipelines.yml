@@ -1,0 +1,28 @@
+resources:
+- repo: self
+queue:
+  name: Think Finance on-prem
+  demands: DotNetFramework
+
+steps:
+- task: PowerShell@2
+  displayName: 'Powershell: build.ps1'
+  inputs:
+    targetType: filePath
+    filePath: build.ps1 
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to - StagingDirectory'
+  inputs:
+    contents: |
+      $(Build.Repository.Name)\**
+      deploy.ps1
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact - FromStagingDirectory'
+  inputs:
+    artifactName: '$(Build.Repository.Name)'
+
+
+
